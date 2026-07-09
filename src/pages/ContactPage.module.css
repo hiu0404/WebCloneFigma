@@ -215,7 +215,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .page {
     width: calc(100vw / var(--figma-scale, 1));
     min-height: calc(100vh / var(--figma-scale, 1));

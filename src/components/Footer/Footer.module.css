@@ -198,7 +198,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .inner {
     padding: 30px 18px 18px;
   }

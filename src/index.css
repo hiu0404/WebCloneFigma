@@ -33,6 +33,38 @@ body {
 
 img {
   display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  min-width: 0;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+strong,
+small,
+li,
+td,
+th {
+  overflow-wrap: break-word;
 }
 
 #root {

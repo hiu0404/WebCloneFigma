@@ -278,7 +278,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .page {
     width: calc(100vw / var(--figma-scale, 1));
     overflow: visible;

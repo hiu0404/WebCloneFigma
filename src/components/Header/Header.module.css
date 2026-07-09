@@ -338,7 +338,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .header {
     position: absolute;
     left: 0;
