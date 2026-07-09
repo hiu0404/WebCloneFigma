@@ -1,4 +1,4 @@
-.page {
+﻿.page {
   width: 1920px;
   min-height: 100vh;
   margin: 0 auto;
@@ -32,7 +32,7 @@
   height: 425px;
   background:
     linear-gradient(90deg, rgba(246, 251, 254, 0.98) 0 32%, rgba(246, 251, 254, 0.78) 48%, rgba(246, 251, 254, 0.18) 100%),
-    url('/assetsFull/home-dna-banner.png') center / cover no-repeat;
+    url('/assetsFull/page-banner-dna.png') center / cover no-repeat;
 }
 
 .heroTitle {
@@ -219,7 +219,7 @@
 }
 
 .sidebar::after {
-  content: "Bạn cần tư vấn sản phẩm?\A Đội ngũ chuyên gia của Ecolink luôn sẵn sàng đồng hành cùng bạn.\A +84 812 119 668";
+  content: "Báº¡n cáº§n tÆ° váº¥n sáº£n pháº©m?\A Äá»™i ngÅ© chuyÃªn gia cá»§a Ecolink luÃ´n sáºµn sÃ ng Ä‘á»“ng hÃ nh cÃ¹ng báº¡n.\A +84 812 119 668";
   display: block;
   margin-top: 32px;
   padding: 28px 24px;
@@ -335,7 +335,7 @@
 }
 
 .productcardContent::after {
-  content: "Xem chi tiết  →";
+  content: "Xem chi tiáº¿t  â†’";
   display: inline-flex;
   margin-top: 18px;
   color: #0078a7;
@@ -503,3 +503,4 @@
     font-size: calc(17px / var(--figma-scale, 1));
   }
 }
+

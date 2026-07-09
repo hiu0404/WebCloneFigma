@@ -78,7 +78,7 @@ export default function PICC() {
 
       <FigmaImage
         className={styles.hero}
-        src="/assetsFull/testimonial.png"
+        src="/assetsFull/page-banner-dna.png"
         alt=""
         ariaHidden
         width={1920}
@@ -176,3 +176,4 @@ export default function PICC() {
     </div>
   )
 }
+

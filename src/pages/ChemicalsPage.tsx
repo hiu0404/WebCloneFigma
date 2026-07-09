@@ -82,7 +82,7 @@ export function ChemicalsPage() {
 
       <FigmaImage
         className={styles.hero}
-        src="/assetsFull/testimonial.png"
+        src="/assetsFull/page-banner-dna.png"
         alt=""
         ariaHidden
         width={1920}
@@ -182,3 +182,4 @@ export function ChemicalsPage() {
     </div>
   )
 }
+

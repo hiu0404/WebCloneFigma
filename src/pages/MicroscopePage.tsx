@@ -80,7 +80,7 @@ const MicroscopePage = () => {
 
       <FigmaImage
         className={styles.hero}
-        src="/assetsFull/testimonial.png"
+        src="/assetsFull/page-banner-dna.png"
         alt=""
         ariaHidden
         width={1920}
@@ -151,3 +151,4 @@ const MicroscopePage = () => {
 }
 
 export default MicroscopePage
+

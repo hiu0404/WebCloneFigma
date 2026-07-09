@@ -31,7 +31,7 @@ const Trimmingtech = () => {
             <div className={styles.heroWrapper}>
                 <FigmaImage
                     className={styles.hero}
-                    src="/assetsFull/testimonial.png"
+                    src="/assetsFull/page-banner-dna.png"
                     alt=""
                     ariaHidden
                     width={1920}
