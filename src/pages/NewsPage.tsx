@@ -75,7 +75,7 @@ export default function NewsPage() {
       <Header />
 
       <section className={styles.hero}>
-        <FigmaImage className={styles.heroImage} src="/assetsFull/testimonial.png" alt="" ariaHidden />
+        <FigmaImage className={styles.heroImage} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden />
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <span>Tin tức & sự kiện</span>

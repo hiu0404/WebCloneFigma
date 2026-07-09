@@ -29,7 +29,7 @@
 }
 
 .heroOverlay {
-  background: linear-gradient(90deg, rgba(3, 44, 64, 0.86), rgba(3, 44, 64, 0.48) 58%, rgba(3, 44, 64, 0.2));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.35) 58%, rgba(255, 255, 255, 0.1));
 }
 
 .heroContent {
@@ -37,13 +37,13 @@
   z-index: 1;
   width: 1320px;
   margin: 0 auto;
-  color: #ffffff;
+  color: #111111;
 }
 
 .heroContent span,
 .sectionHeader span {
   display: inline-flex;
-  color: #32d0e6;
+  color: #187093;
   font-size: 15px;
   font-weight: 900;
   letter-spacing: 2.4px;
@@ -61,7 +61,7 @@
 .heroContent p {
   width: 760px;
   margin: 0;
-  color: rgba(255, 255, 255, 0.88);
+  color: #273f4a;
   font-size: 20px;
   line-height: 1.7;
 }
