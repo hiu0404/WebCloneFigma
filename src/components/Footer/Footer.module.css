@@ -200,12 +200,30 @@
 
 @media (max-width: 1024px) {
   .inner {
-    padding: 30px 18px 18px;
+    padding: 30px 28px 18px;
   }
 
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px;
+  }
+
+  .brand {
+    grid-column: span 2;
+  }
+
+  .brand a,
+  .column a,
+  .office a,
+  .office p {
+    overflow-wrap: anywhere;
+  }
+
+  .brand > a svg,
+  .office a svg,
+  .office p svg {
+    flex: 0 0 auto;
+    margin-top: 2px;
   }
 
   .logoLink {
@@ -242,8 +260,17 @@
 }
 
 @media (max-width: 640px) {
+  .inner {
+    padding: 28px 18px 16px;
+  }
+
   .grid {
+    grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  .brand {
+    grid-column: auto;
   }
 
   .brand p,
@@ -264,5 +291,29 @@
   .bottom div {
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .inner {
+    padding-inline: 14px;
+  }
+
+  .logoLink {
+    width: 138px;
+    height: 48px;
+  }
+
+  .brand p,
+  .office p,
+  .brand > a,
+  .office a,
+  .column a {
+    font-size: 13px;
+  }
+
+  .socials a {
+    width: 34px;
+    height: 34px;
   }
 }

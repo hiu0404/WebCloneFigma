@@ -1110,6 +1110,7 @@
   }
 
   .heroCopy p {
+    max-width: none;
     font-size: calc(15px / var(--figma-scale, 1));
     line-height: 1.65;
   }
@@ -1131,6 +1132,20 @@
   .heroVisual {
     height: calc(310px / var(--figma-scale, 1));
     margin-top: calc(22px / var(--figma-scale, 1));
+  }
+
+  .heroDots {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: calc(24px / var(--figma-scale, 1));
+    grid-auto-flow: column;
+    transform: translateX(-50%);
+  }
+
+  .heroDots button {
+    width: calc(12px / var(--figma-scale, 1));
+    height: calc(12px / var(--figma-scale, 1));
   }
 
   .heroMachine {
@@ -1187,7 +1202,12 @@
   .benefits div {
     gap: calc(14px / var(--figma-scale, 1));
     padding: calc(16px / var(--figma-scale, 1)) 0;
+    border-bottom: 1px solid rgba(13, 126, 169, 0.1);
     font-size: calc(13px / var(--figma-scale, 1));
+  }
+
+  .benefits div:last-child {
+    border-bottom: 0;
   }
 
   .benefits svg {
@@ -1214,6 +1234,15 @@
     left: calc(22px / var(--figma-scale, 1));
     right: calc(22px / var(--figma-scale, 1));
     bottom: calc(34px / var(--figma-scale, 1));
+  }
+
+  .categoryCard::before {
+    right: calc(20px / var(--figma-scale, 1));
+    bottom: calc(22px / var(--figma-scale, 1));
+    width: calc(36px / var(--figma-scale, 1));
+    height: calc(36px / var(--figma-scale, 1));
+    opacity: 1;
+    transform: none;
   }
 
   .solutionGrid,
@@ -1376,8 +1405,41 @@
   }
 
   .ctaStrip a {
+    width: 100%;
     min-height: calc(48px / var(--figma-scale, 1));
     font-size: calc(15px / var(--figma-scale, 1));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: calc(600px / var(--figma-scale, 1));
+  }
+
+  .heroInner {
+    padding-top: calc(28px / var(--figma-scale, 1));
+    padding-bottom: calc(62px / var(--figma-scale, 1));
+  }
+
+  .heroCopy h1 {
+    font-size: calc(29px / var(--figma-scale, 1));
+  }
+
+  .heroCopy p + p {
+    display: none;
+  }
+
+  .section h2,
+  .blockHeader h2 {
+    font-size: calc(21px / var(--figma-scale, 1));
+  }
+
+  .statsBand {
+    padding-inline: calc(18px / var(--figma-scale, 1));
+  }
+
+  .newsCard img {
+    height: calc(150px / var(--figma-scale, 1));
   }
 }
 

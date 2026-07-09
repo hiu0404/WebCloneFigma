@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import {
   FaChevronDown,
@@ -40,6 +40,7 @@ const productMenu = [
 
 export function Header() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { register, handleSubmit, watch, reset } = useForm<SearchForm>({
     defaultValues: { query: '' },
   })
@@ -47,6 +48,11 @@ export function Header() {
   const [allProducts, setAllProducts] = useState<SearchItem[]>([])
   const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(false)
+    setMenuOpen(false)
+  }, [location.pathname, location.search])
 
   useEffect(() => {
     let alive = true
@@ -180,7 +186,13 @@ export function Header() {
         </button>
       </div>
 
-      <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`} aria-label="Điều hướng chính">
+      <nav
+        className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}
+        aria-label="Điều hướng chính"
+        onClick={(event) => {
+          if ((event.target as HTMLElement).closest('a')) setMenuOpen(false)
+        }}
+      >
         <NavLink to="/">Trang chủ</NavLink>
         <NavLink to="/gioi-thieu">Giới thiệu</NavLink>
         <div className={styles.dropdown}>

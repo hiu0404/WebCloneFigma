@@ -15,7 +15,7 @@
   grid-template-columns: 270px 580px 210px 300px 1fr;
   align-items: center;
   gap: 34px;
-  width: 1720px;
+  width: min(1720px, calc(100% - 80px));
   height: 114px;
   margin: 0 auto;
 }
@@ -36,6 +36,7 @@
 
 .searchWrap {
   position: relative;
+  min-width: 0;
 }
 
 .search {
@@ -170,7 +171,7 @@
   display: flex;
   align-items: center;
   gap: 0;
-  width: 1720px;
+  width: min(1720px, calc(100% - 80px));
   height: 80px;
   margin: 0 auto;
   border-top: 1px solid rgba(255,255,255,0.18);
@@ -209,6 +210,7 @@
 
 .dropdown {
   position: relative;
+  flex: 0 0 auto;
 }
 
 .dropdownMenu {
@@ -383,6 +385,8 @@
   }
 
   .searchResultBox {
+    left: 0;
+    right: 0;
     top: calc(52px / var(--figma-scale, 1));
     max-height: calc(280px / var(--figma-scale, 1));
     border-radius: calc(8px / var(--figma-scale, 1));
@@ -420,6 +424,7 @@
     border-radius: calc(7px / var(--figma-scale, 1));
     background: rgba(255,255,255,0.1);
     cursor: pointer;
+    color: #ffffff;
   }
 
   .menuButton span {
@@ -451,8 +456,13 @@
     display: flex;
   }
 
+  .dropdown {
+    width: 100%;
+  }
+
   .nav > a,
   .dropdown > a {
+    justify-content: space-between;
     width: 100%;
     box-sizing: border-box;
     height: calc(46px / var(--figma-scale, 1));
@@ -463,9 +473,16 @@
     line-height: 1.2;
   }
 
+  .nav > a::after,
+  .dropdown > a::after {
+    display: none;
+  }
+
   .dropdownMenu {
     position: static;
     display: grid;
+    min-width: 0;
+    width: 100%;
     padding: 0;
     border-radius: 0;
     box-shadow: none;
@@ -476,12 +493,17 @@
 
   .dropdownMenu a {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     min-height: calc(42px / var(--figma-scale, 1));
-    padding-left: calc(34px / var(--figma-scale, 1));
+    padding: 0 calc(18px / var(--figma-scale, 1)) 0 calc(34px / var(--figma-scale, 1));
+    border-bottom: 1px solid #edf4f7;
     font-size: calc(13px / var(--figma-scale, 1));
   }
 
   .socials {
+    justify-content: flex-start;
+    gap: calc(18px / var(--figma-scale, 1));
     margin: 0;
     padding: calc(12px / var(--figma-scale, 1)) calc(18px / var(--figma-scale, 1));
     background: #f3f8fb;
