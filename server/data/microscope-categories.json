@@ -1,0 +1,16 @@
+[
+  {
+    "id": "light-microscopes",
+    "slug": "light-microscopes",
+    "label": "Kính hiển vi quang học",
+    "sortOrder": 1,
+    "status": "active"
+  },
+  {
+    "id": "digital-microscopes",
+    "slug": "digital-microscopes",
+    "label": "Kính hiển vi kỹ thuật số",
+    "sortOrder": 2,
+    "status": "active"
+  }
+]

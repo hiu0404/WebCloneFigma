@@ -1,0 +1,497 @@
+.page {
+  width: 1920px;
+  min-height: 100vh;
+  position: relative;
+  background: #ffffff;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.hero {
+  position: absolute;
+  left: 0;
+  top: 270px;
+  width: 1920px;
+  height: 461px;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.heroTitle {
+  position: absolute;
+  left: 145px;
+  top: 465px;
+  width: 1630px;
+  height: 234px;
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 61px;
+  text-align: center;
+  color: #ffffff;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.heroTitleSmall {
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  margin-top: -20px;
+}
+/* INTRO */
+
+.introSection {
+  width: 1400px;
+  max-width: calc(100% - 40px);
+  margin: 100px auto;
+  display: flex;
+  align-items: center;
+  gap: 70px;
+  margin-top: 780px;
+}
+
+.introLeft {
+  flex: 1;
+}
+
+.subTitle {
+  color: #187093;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}
+
+.introLeft h2 {
+  max-width: 720px;
+  font-size: 42px;
+  line-height: 1.22;
+  letter-spacing: 0;
+  color: #111111;
+  margin: 16px 0 24px;
+}
+
+.introLeft p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #4f5b63;
+  margin: 0 0 28px;
+}
+
+.introList {
+  display: grid;
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.introList li {
+  position: relative;
+  padding-left: 24px;
+  color: #4f5b63;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.introList li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #187093;
+}
+
+.introList strong {
+  color: #13242c;
+  font-weight: 700;
+}
+
+.introClosing {
+  max-width: 760px;
+  font-weight: 600;
+  color: #263942 !important;
+}
+
+.contactBtn {
+  width: 220px;
+  height: 60px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #187093;
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.contactBtn:hover {
+  transform: translateY(-5px);
+}
+
+.introRight {
+  flex: 1;
+}
+
+.introImage {
+  width: 100%;
+  height: auto;
+  border-radius: 24px;
+  object-fit: cover;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* SERVICES */
+
+.serviceSection {
+  width: 1400px;
+  max-width: calc(100% - 40px);
+
+  margin: 0 auto 120px;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 42px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #111111;
+
+  margin-bottom: 56px;
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.serviceCard {
+  background: #f8f8f8;
+
+  border-radius: 12px;
+
+  padding: 42px 30px;
+
+  transition: transform 0.3s, background 0.3s, color 0.3s;
+
+  text-align: center;
+}
+
+.serviceCard:hover {
+  transform: translateY(-10px);
+  background: #187093;
+  color: white;
+}
+
+.serviceIcon {
+  width: 76px;
+  height: 76px;
+
+  margin: 0 auto 26px;
+
+  border-radius: 50%;
+
+  background: white;
+  color: #187093;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.serviceCard h3 {
+  font-size: 23px;
+  line-height: 1.28;
+  margin: 0 0 14px;
+  letter-spacing: 0;
+}
+
+.serviceCard p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #536069;
+  margin: 0;
+}
+
+.serviceCard:hover p {
+  color: white;
+}
+
+/* SUPPORT BANNER */
+
+.supportBanner {
+  position: relative;
+
+  width: 100%;
+  height: 420px;
+
+  background-image: url("/assetsFull/testimonial.png");
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-bottom: 100px;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.bannerContent {
+  position: relative;
+  z-index: 2;
+
+  text-align: center;
+  color: white;
+  width: min(980px, calc(100% - 40px));
+}
+
+.bannerContent h2 {
+  font-size: 44px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  margin: 0 0 18px;
+}
+
+.bannerContent p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.bannerBtn {
+  width: 240px;
+  height: 65px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #187093;
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0;
+
+  cursor: pointer;
+
+  transition: transform 0.3s;
+}
+
+.bannerBtn:hover {
+  transform: scale(1.05);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .introSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .serviceGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: calc(100vw / var(--figma-scale, 1));
+    min-height: calc(100vh / var(--figma-scale, 1));
+    overflow: hidden;
+  }
+
+  .hero {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: calc(220px / var(--figma-scale, 1));
+    margin-top: calc(156px / var(--figma-scale, 1));
+  }
+
+  .heroTitle {
+    left: 0;
+    top: calc(156px / var(--figma-scale, 1));
+    width: 100%;
+    height: calc(220px / var(--figma-scale, 1));
+    padding: 0 calc(16px / var(--figma-scale, 1));
+    font-size: calc(34px / var(--figma-scale, 1));
+    line-height: calc(42px / var(--figma-scale, 1));
+  }
+
+  .heroTitleSmall {
+    font-size: calc(14px / var(--figma-scale, 1));
+    line-height: calc(20px / var(--figma-scale, 1));
+    margin-top: calc(-10px / var(--figma-scale, 1));
+  }
+
+  .introSection {
+    width: auto;
+    max-width: none;
+    margin: calc(40px / var(--figma-scale, 1)) calc(16px / var(--figma-scale, 1))
+      calc(54px / var(--figma-scale, 1));
+    gap: calc(28px / var(--figma-scale, 1));
+  }
+
+  .introLeft,
+  .introRight {
+    min-width: 0;
+  }
+
+  .subTitle {
+    font-size: calc(12px / var(--figma-scale, 1));
+    line-height: calc(18px / var(--figma-scale, 1));
+    letter-spacing: calc(1.6px / var(--figma-scale, 1));
+  }
+
+  .introLeft h2 {
+    max-width: none;
+    font-size: calc(28px / var(--figma-scale, 1));
+    line-height: calc(35px / var(--figma-scale, 1));
+    margin: calc(12px / var(--figma-scale, 1)) 0 calc(18px / var(--figma-scale, 1));
+  }
+
+  .introLeft p,
+  .introList li {
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(24px / var(--figma-scale, 1));
+  }
+
+  .introList {
+    max-width: none;
+    gap: calc(12px / var(--figma-scale, 1));
+    margin-bottom: calc(20px / var(--figma-scale, 1));
+  }
+
+  .introList li {
+    padding-left: calc(18px / var(--figma-scale, 1));
+  }
+
+  .introList li::before {
+    top: calc(10px / var(--figma-scale, 1));
+    width: calc(6px / var(--figma-scale, 1));
+    height: calc(6px / var(--figma-scale, 1));
+  }
+
+  .introClosing {
+    max-width: none;
+    margin-bottom: calc(22px / var(--figma-scale, 1)) !important;
+  }
+
+  .contactBtn {
+    width: calc(180px / var(--figma-scale, 1));
+    height: calc(50px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    font-size: calc(15px / var(--figma-scale, 1));
+  }
+
+  .contactBtn:hover,
+  .serviceCard:hover,
+  .bannerBtn:hover {
+    transform: none;
+  }
+
+  .introImage {
+    width: 100%;
+    max-height: calc(340px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    object-fit: cover;
+    box-shadow: 0 calc(10px / var(--figma-scale, 1)) calc(24px / var(--figma-scale, 1))
+      rgba(0, 0, 0, 0.12);
+  }
+
+  .serviceSection {
+    width: auto;
+    max-width: none;
+    margin: 0 calc(16px / var(--figma-scale, 1)) calc(56px / var(--figma-scale, 1));
+  }
+
+  .sectionTitle {
+    font-size: calc(30px / var(--figma-scale, 1));
+    line-height: calc(38px / var(--figma-scale, 1));
+    margin-bottom: calc(28px / var(--figma-scale, 1));
+  }
+
+  .serviceGrid {
+    grid-template-columns: 1fr;
+    gap: calc(16px / var(--figma-scale, 1));
+  }
+
+  .serviceCard {
+    padding: calc(24px / var(--figma-scale, 1)) calc(18px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+  }
+
+  .serviceIcon {
+    width: calc(58px / var(--figma-scale, 1));
+    height: calc(58px / var(--figma-scale, 1));
+    margin-bottom: calc(18px / var(--figma-scale, 1));
+    font-size: calc(18px / var(--figma-scale, 1));
+  }
+
+  .serviceCard h3 {
+    font-size: calc(21px / var(--figma-scale, 1));
+    line-height: calc(27px / var(--figma-scale, 1));
+    margin-bottom: calc(10px / var(--figma-scale, 1));
+  }
+
+  .serviceCard p {
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(24px / var(--figma-scale, 1));
+  }
+
+  .supportBanner {
+    height: calc(320px / var(--figma-scale, 1));
+    margin-bottom: calc(64px / var(--figma-scale, 1));
+    padding: 0 calc(16px / var(--figma-scale, 1));
+  }
+
+  .bannerContent {
+    width: 100%;
+  }
+
+  .bannerContent h2 {
+    font-size: calc(30px / var(--figma-scale, 1));
+    line-height: calc(38px / var(--figma-scale, 1));
+    margin-bottom: calc(14px / var(--figma-scale, 1));
+  }
+
+  .bannerContent p {
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(24px / var(--figma-scale, 1));
+    margin-bottom: calc(24px / var(--figma-scale, 1));
+  }
+
+  .bannerBtn {
+    width: calc(200px / var(--figma-scale, 1));
+    height: calc(52px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    font-size: calc(15px / var(--figma-scale, 1));
+  }
+}

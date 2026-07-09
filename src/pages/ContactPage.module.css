@@ -1,0 +1,366 @@
+.page {
+  width: 1920px;
+  min-height: 100vh;
+  position: relative;
+  background: #ffffff;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.hero {
+  position: absolute;
+  left: 0;
+  top: 270px;
+  width: 1920px;
+  height: 461px;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.heroTitle {
+  position: absolute;
+  left: 145px;
+  top: 465px;
+  width: 1630px;
+  height: 234px;
+  font-weight: 700;
+  font-size: 50px;
+  line-height: 61px;
+  text-align: center;
+  color: #ffffff;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+
+.heroTitleSmall {
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 28px;
+  margin-top: -20px;
+}
+
+.infoSection {
+  width: 1630px;
+  max-width: calc(100% - 290px);
+  margin: 910px auto 72px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
+}
+
+.infoCard {
+  min-height: 400px;
+  padding: 58px 28px 42px;
+  background: #f7f7f7;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 28px rgba(13, 51, 66, 0.06);
+}
+
+.infoIcon {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 28px;
+}
+
+.infoCard h2 {
+  font-size: 25px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #111111;
+  margin: 0 0 18px;
+}
+
+.infoCard p {
+  min-height: 88px;
+  font-size: 20px;
+  line-height: 1.45;
+  color: #263942;
+  margin: 0 0 22px;
+}
+
+.infoCard a {
+  margin-top: auto;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #187093;
+  text-decoration: none;
+}
+
+.infoCard a:hover,
+.infoCard a:focus {
+  color: #000000;
+}
+
+.consultSection {
+  width: 1630px;
+  max-width: calc(100% - 290px);
+  margin: 0 auto 114px;
+}
+
+.consultHeader {
+  text-align: center;
+  margin-bottom: 34px;
+}
+
+.consultHeader h2 {
+  font-size: 40px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #187093;
+  margin: 0 0 14px;
+}
+
+.consultHeader p {
+  font-size: 24px;
+  line-height: 1.45;
+  text-transform: uppercase;
+  color: #111111;
+  margin: 0;
+}
+
+.consultForm {
+  padding: 52px 139px 47px;
+  background: #187093;
+  border-radius: 10px;
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 44px;
+  margin-bottom: 53px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: #ffffff;
+  color: #111111;
+  font-size: 20px;
+  line-height: 24px;
+  font-family: inherit;
+}
+
+.input {
+  height: 55px;
+  border-radius: 25px;
+  padding: 0 24px;
+}
+
+.textarea {
+  min-height: 187px;
+  border-radius: 25px;
+  padding: 18px 24px;
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #6a6a6a;
+  font-weight: 400;
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 230px;
+  height: 57px;
+  margin: 27px auto 0;
+  background: #187093;
+  border: 3px solid #ffffff;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.submitBtn:hover,
+.submitBtn:focus {
+  background: #11536d;
+  transform: translateY(-3px);
+}
+
+.map {
+  width: 100%;
+  height: 502px;
+  object-fit: cover;
+}
+
+@media (max-width: 1200px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .inputRow {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: calc(100vw / var(--figma-scale, 1));
+    min-height: calc(100vh / var(--figma-scale, 1));
+    overflow: hidden;
+  }
+
+  .hero {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: calc(220px / var(--figma-scale, 1));
+    margin-top: calc(156px / var(--figma-scale, 1));
+  }
+
+  .heroTitle {
+    left: 0;
+    top: calc(156px / var(--figma-scale, 1));
+    width: 100%;
+    height: calc(220px / var(--figma-scale, 1));
+    padding: 0 calc(16px / var(--figma-scale, 1));
+    font-size: calc(34px / var(--figma-scale, 1));
+    line-height: calc(42px / var(--figma-scale, 1));
+  }
+
+  .heroTitleSmall {
+    font-size: calc(14px / var(--figma-scale, 1));
+    line-height: calc(20px / var(--figma-scale, 1));
+    margin-top: calc(-10px / var(--figma-scale, 1));
+  }
+
+  .infoSection {
+    width: auto;
+    max-width: none;
+    margin: calc(40px / var(--figma-scale, 1)) calc(16px / var(--figma-scale, 1))
+      calc(48px / var(--figma-scale, 1));
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+    gap: calc(16px / var(--figma-scale, 1));
+  }
+
+  .infoCard {
+    min-height: auto;
+    padding: calc(24px / var(--figma-scale, 1)) calc(18px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    box-shadow: 0 calc(10px / var(--figma-scale, 1)) calc(24px / var(--figma-scale, 1))
+      rgba(13, 51, 66, 0.06);
+  }
+
+  .infoIcon {
+    width: calc(48px / var(--figma-scale, 1));
+    height: calc(48px / var(--figma-scale, 1));
+    margin-bottom: calc(16px / var(--figma-scale, 1));
+  }
+
+  .infoIcon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .infoCard h2 {
+    font-size: calc(21px / var(--figma-scale, 1));
+    line-height: calc(27px / var(--figma-scale, 1));
+    margin-bottom: calc(10px / var(--figma-scale, 1));
+  }
+
+  .infoCard p {
+    min-height: 0;
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(24px / var(--figma-scale, 1));
+    margin-bottom: calc(14px / var(--figma-scale, 1));
+  }
+
+  .infoCard a {
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(22px / var(--figma-scale, 1));
+  }
+
+  .consultSection {
+    width: auto;
+    max-width: none;
+    margin: 0 calc(16px / var(--figma-scale, 1)) calc(56px / var(--figma-scale, 1));
+  }
+
+  .consultHeader {
+    margin-bottom: calc(24px / var(--figma-scale, 1));
+  }
+
+  .consultHeader h2 {
+    font-size: calc(30px / var(--figma-scale, 1));
+    line-height: calc(38px / var(--figma-scale, 1));
+    margin-bottom: calc(10px / var(--figma-scale, 1));
+  }
+
+  .consultHeader p {
+    font-size: calc(14px / var(--figma-scale, 1));
+    line-height: calc(22px / var(--figma-scale, 1));
+  }
+
+  .consultForm {
+    padding: calc(20px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+  }
+
+  .inputRow {
+    gap: calc(14px / var(--figma-scale, 1));
+    margin-bottom: calc(14px / var(--figma-scale, 1));
+  }
+
+  .input,
+  .textarea {
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(22px / var(--figma-scale, 1));
+  }
+
+  .input {
+    height: calc(48px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    padding: 0 calc(14px / var(--figma-scale, 1));
+  }
+
+  .textarea {
+    min-height: calc(150px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    padding: calc(14px / var(--figma-scale, 1));
+  }
+
+  .submitBtn {
+    width: calc(170px / var(--figma-scale, 1));
+    height: calc(50px / var(--figma-scale, 1));
+    margin-top: calc(18px / var(--figma-scale, 1));
+    border-width: calc(2px / var(--figma-scale, 1));
+    border-radius: calc(8px / var(--figma-scale, 1));
+    font-size: calc(15px / var(--figma-scale, 1));
+    line-height: calc(22px / var(--figma-scale, 1));
+  }
+
+  .submitBtn:hover,
+  .submitBtn:focus {
+    transform: none;
+  }
+
+  .map {
+    height: calc(280px / var(--figma-scale, 1));
+  }
+}

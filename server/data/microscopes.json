@@ -1,0 +1,101 @@
+[
+  {
+    "id": "ad9ccdu3ktzt",
+    "name": "Mica",
+    "model": "",
+    "categorySlug": "digital-microscopes",
+    "imageUrl": "/uploads/1783302600660_Mica.webp",
+    "shortDescription": "Mica - Microhub đầu tiên trên thế giới. Mọi thứ bạn cần để thúc đẩy khám phá, được hợp nhất trong một hệ thống dễ sử dụng. Phân tích đồng thời 4 màu trường rộng, độ phân giải confocal, hỗ trợ AI.",
+    "status": "active",
+    "createdAt": 1783302603795,
+    "updatedAt": 1783302603795
+  },
+  {
+    "id": "wnzp5j4mp0et",
+    "name": "Emspira 3",
+    "model": "",
+    "categorySlug": "digital-microscopes",
+    "imageUrl": "/uploads/1783302579898_Emspira_3.webp",
+    "shortDescription": "Hệ thống này kết hợp khả năng kiểm tra tối ưu và khả năng thích ứng với nhu cầu của bạn trong một hệ thống duy nhất.",
+    "status": "active",
+    "createdAt": 1783302581135,
+    "updatedAt": 1783302581135
+  },
+  {
+    "id": "2d7gancfoczz",
+    "name": "DVM6",
+    "model": "",
+    "categorySlug": "digital-microscopes",
+    "imageUrl": "/uploads/1783302627421_DVM6.webp",
+    "shortDescription": "Kính hiển vi kỹ thuật số dùng để chụp ảnh và phân tích 2D và 3D.",
+    "status": "active",
+    "createdAt": 1783302561182,
+    "updatedAt": 1783302629076
+  },
+  {
+    "id": "271abbykmfct",
+    "name": "DM750",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302540026_DM750.webp",
+    "shortDescription": "Kính hiển vi hai mắt dùng trong giảng dạy, dành cho nghiên cứu sinh sau tiến sĩ ngành khoa học sự sống, trang bị 4 hoặc 5 thấu kính hiệu chỉnh vô cực hoặc thấu kính phẳng tiêu sắc HI và khả năng quan sát huỳnh quang.",
+    "status": "active",
+    "createdAt": 1783302541790,
+    "updatedAt": 1783302541790
+  },
+  {
+    "id": "3r8pd6rpyknc",
+    "name": "Visoria P",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302517507_Visoria_B.webp",
+    "shortDescription": "Trải nghiệm hiệu quả và sự thoải mái được nâng cao trong công việc soi kính hiển vi hàng ngày của bạn. Kính hiển vi phân cực Visoria P sử dụng ánh sáng phân cực để nghiên cứu các đặc tính quang học của vật liệu và địa chất...",
+    "status": "active",
+    "createdAt": 1783302522664,
+    "updatedAt": 1783302522664
+  },
+  {
+    "id": "lqv646e829j7",
+    "name": "DM500",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302484067_DM500.webp",
+    "shortDescription": "Kính hiển vi hai mắt dùng trong giảng dạy, dành cho sinh viên ngành khoa học sự sống, trang bị 4 thấu kính phẳng tiêu sắc có khả năng hiệu chỉnh vô cực và chức năng huỳnh quang",
+    "status": "active",
+    "createdAt": 1783302487552,
+    "updatedAt": 1783302487552
+  },
+  {
+    "id": "e08g45cbl6k7",
+    "name": "DM3000 LED",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302454068_DM3000LED.webp",
+    "shortDescription": "Kính hiển vi hệ thống có thiết kế công thái học độc đáo với tự động hóa thông minh",
+    "status": "active",
+    "createdAt": 1783302459960,
+    "updatedAt": 1783302459960
+  },
+  {
+    "id": "aapy3gom39ey",
+    "name": "FS4000 LED",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302416649_FS4000LED.webp",
+    "shortDescription": "Kính hiển vi so sánh pháp y với đèn LED chiếu sáng",
+    "status": "active",
+    "createdAt": 1783302432707,
+    "updatedAt": 1783302432707
+  },
+  {
+    "id": "js0945ptymmk",
+    "name": "DM1000 LED",
+    "model": "",
+    "categorySlug": "light-microscopes",
+    "imageUrl": "/uploads/1783302370107_DM1000LED.webp",
+    "shortDescription": "Kính hiển vi DM1000 LED hệ thống có thiết kế công thái học độc đáo với đèn LED chiếu sáng",
+    "status": "active",
+    "createdAt": 1783302372635,
+    "updatedAt": 1783302372635
+  }
+]
