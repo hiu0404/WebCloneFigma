@@ -16,10 +16,10 @@ dist-ssr
 *.local
 
 # Admin auth secrets and audit data
-server/data/admin-auth.json
-server/data/admin-auth.log
-server/data/admin-rate-limit.json
-server/data/*.tmp
+server/data/
+
+# Runtime uploads
+public/uploads/
 
 # Editor directories and files
 .vscode/*

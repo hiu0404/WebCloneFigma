@@ -1,5 +1,10 @@
 # React + TypeScript + Vite
 
+## Deploy runtime data
+
+Dữ liệu admin/sản phẩm/danh mục và ảnh upload là dữ liệu runtime, không được quản lý bởi Git.
+Xem hướng dẫn backup và deploy tại [docs/deploy-runtime-data.md](docs/deploy-runtime-data.md).
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

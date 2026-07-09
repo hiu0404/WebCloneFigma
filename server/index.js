@@ -20,6 +20,7 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..')
 const dataDir = path.join(root, 'server', 'data')
+const dataExampleDir = path.join(root, 'server', 'data-example')
 const uploadsDir = path.join(root, 'public', 'uploads')
 const productsFile = path.join(dataDir, 'products.json')
 const categoriesFile = path.join(dataDir, 'categories.json')
@@ -31,6 +32,15 @@ const adminAuthFile = path.join(dataDir, 'admin-auth.json')
 const adminRateLimitFile = path.join(dataDir, 'admin-rate-limit.json')
 const adminAuditLogFile = path.join(dataDir, 'admin-auth.log')
 const distDir = path.join(root, 'dist')
+
+const runtimeJsonFiles = [
+  'products.json',
+  'categories.json',
+  'microscope-categories.json',
+  'microscopes.json',
+  'forensic-products.json',
+  'picc-products.json',
+]
 
 function loadEnvFile(filePath) {
   if (!fs.existsSync(filePath)) return
@@ -50,6 +60,19 @@ function loadEnvFile(filePath) {
     }
     if (!process.env[key]) process.env[key] = value
   }
+}
+
+function ensureRuntimeJsonFile(fileName) {
+  const runtimeFile = path.join(dataDir, fileName)
+  if (fs.existsSync(runtimeFile)) return
+
+  const exampleFile = path.join(dataExampleDir, fileName)
+  if (fs.existsSync(exampleFile)) {
+    fs.copyFileSync(exampleFile, runtimeFile)
+    return
+  }
+
+  fs.writeFileSync(runtimeFile, '[]\n', 'utf-8')
 }
 
 loadEnvFile(path.join(root, '.env.local'))
@@ -74,12 +97,7 @@ app.use(express.json({ limit: '2mb' }))
 
 fs.mkdirSync(dataDir, { recursive: true })
 fs.mkdirSync(uploadsDir, { recursive: true })
-if (!fs.existsSync(productsFile)) fs.writeFileSync(productsFile, '[]', 'utf-8')
-if (!fs.existsSync(categoriesFile)) fs.writeFileSync(categoriesFile, '[]', 'utf-8')
-if (!fs.existsSync(microscopeCategoriesFile)) fs.writeFileSync(microscopeCategoriesFile, '[]', 'utf-8')
-if (!fs.existsSync(microscopesFile)) fs.writeFileSync(microscopesFile, '[]', 'utf-8')
-if (!fs.existsSync(forensicProductsFile)) fs.writeFileSync(forensicProductsFile, '[]', 'utf-8')
-if (!fs.existsSync(piccProductsFile)) fs.writeFileSync(piccProductsFile, '[]', 'utf-8')
+for (const fileName of runtimeJsonFiles) ensureRuntimeJsonFile(fileName)
 
 const AUTH_COOKIE_NAME = 'admin_token'
 const ADMIN_SECRET_ENCRYPTION_KEY = String(process.env.ADMIN_SECRET_ENCRYPTION_KEY ?? '').trim()
@@ -412,8 +430,8 @@ function writeProducts(list) {
 }
 
 const defaultMicroscopeCategories = [
-  { id: 'light-microscopes', slug: 'light-microscopes', label: 'Kính hiển vi quang học', sortOrder: 1, status: 'active' },
-  { id: 'digital-microscopes', slug: 'digital-microscopes', label: 'Kính hiển vi kỹ thuật số', sortOrder: 2, status: 'active' },
+  { id: 'light-microscopes', slug: 'light-microscopes', label: 'K\u00ednh hi\u1ec3n vi quang h\u1ecdc', sortOrder: 1, status: 'active' },
+  { id: 'digital-microscopes', slug: 'digital-microscopes', label: 'K\u00ednh hi\u1ec3n vi k\u1ef9 thu\u1eadt s\u1ed1', sortOrder: 2, status: 'active' },
 ]
 
 function normalizeMicroscopeCategory(category, index = 0) {
@@ -528,82 +546,82 @@ function normalizePiccProduct(item) {
 }
 
 const defaultCategories = [
-  { id: 'equipment', slug: 'equipment', label: 'Sản phẩm thiết bị', sortOrder: 1, status: 'active', children: [] },
+  { id: 'equipment', slug: 'equipment', label: 'S\u1ea3n ph\u1ea9m thi\u1ebft b\u1ecb', sortOrder: 1, status: 'active', children: [] },
   {
     id: 'consumables',
     slug: 'consumables',
-    label: 'Vật tư tiêu hao',
+    label: 'V\u1eadt t\u01b0 ti\u00eau hao',
     sortOrder: 2,
     status: 'active',
     children: [
-      { id: 'lam-kinh', slug: 'lam-kinh', label: 'Lam kính', sortOrder: 1, status: 'active' },
-      { id: 'lamen-phu-tieu-ban', slug: 'lamen-phu-tieu-ban', label: 'Lamen phủ tiêu bản', sortOrder: 2, status: 'active' },
+      { id: 'lam-kinh', slug: 'lam-kinh', label: 'Lam k\u00ednh', sortOrder: 1, status: 'active' },
+      { id: 'lamen-phu-tieu-ban', slug: 'lamen-phu-tieu-ban', label: 'Lamen ph\u1ee7 ti\u00eau b\u1ea3n', sortOrder: 2, status: 'active' },
       { id: 'cassette', slug: 'cassette', label: 'Cassette', sortOrder: 3, status: 'active' },
-      { id: 'luoi-dao-cat-benh-pham', slug: 'luoi-dao-cat-benh-pham', label: 'Lưỡi dao cắt bệnh phẩm', sortOrder: 4, status: 'active' },
-      { id: 'nen-hat-tinh-khiet', slug: 'nen-hat-tinh-khiet', label: 'Nến hạt tinh khiết', sortOrder: 5, status: 'active' },
-      { id: 'khuon-duc-inox', slug: 'khuon-duc-inox', label: 'Khuôn đúc inox', sortOrder: 6, status: 'active' },
+      { id: 'luoi-dao-cat-benh-pham', slug: 'luoi-dao-cat-benh-pham', label: 'L\u01b0\u1ee1i dao c\u1eaft b\u1ec7nh ph\u1ea9m', sortOrder: 4, status: 'active' },
+      { id: 'nen-hat-tinh-khiet', slug: 'nen-hat-tinh-khiet', label: 'N\u1ebfn h\u1ea1t tinh khi\u1ebft', sortOrder: 5, status: 'active' },
+      { id: 'khuon-duc-inox', slug: 'khuon-duc-inox', label: 'Khu\u00f4n \u0111\u00fac inox', sortOrder: 6, status: 'active' },
     ],
   },
   {
     id: 'chemicals',
     slug: 'chemicals',
-    label: 'Hóa chất',
+    label: 'H\u00f3a ch\u1ea5t',
     sortOrder: 3,
     status: 'active',
     children: [
-      { id: 'nhuom-thuong-quy', slug: 'nhuom-thuong-quy', label: 'Nhuộm thường quy', sortOrder: 1, status: 'active' },
-      { id: 'nhuom-hoa-mo-mien-dich', slug: 'nhuom-hoa-mo-mien-dich', label: 'Nhuộm hóa mô miễn dịch', sortOrder: 2, status: 'active' },
-      { id: 'nhuom-dac-biet', slug: 'nhuom-dac-biet', label: 'Nhuộm đặc biệt', sortOrder: 3, status: 'active' },
+      { id: 'nhuom-thuong-quy', slug: 'nhuom-thuong-quy', label: 'Nhu\u1ed9m th\u01b0\u1eddng quy', sortOrder: 1, status: 'active' },
+      { id: 'nhuom-hoa-mo-mien-dich', slug: 'nhuom-hoa-mo-mien-dich', label: 'Nhu\u1ed9m h\u00f3a m\u00f4 mi\u1ec5n d\u1ecbch', sortOrder: 2, status: 'active' },
+      { id: 'nhuom-dac-biet', slug: 'nhuom-dac-biet', label: 'Nhu\u1ed9m \u0111\u1eb7c bi\u1ec7t', sortOrder: 3, status: 'active' },
     ],
   },
   {
     id: 'antibodies',
     slug: 'antibodies',
-    label: 'Kháng thể',
+    label: 'Kh\u00e1ng th\u1ec3',
     sortOrder: 4,
     status: 'active',
     children: [
-      { id: 'khang-the-vitro', slug: 'khang-the-vitro', label: 'Kháng thể Vitro', sortOrder: 1, status: 'active' },
+      { id: 'khang-the-vitro', slug: 'khang-the-vitro', label: 'Kh\u00e1ng th\u1ec3 Vitro', sortOrder: 1, status: 'active' },
       { id: 'quartett', slug: 'quartett', label: 'Quartett', sortOrder: 2, status: 'active' },
     ],
   },
   {
     id: 'forensic-science',
     slug: 'forensic-science',
-    label: 'Giám định, khoa học, kỹ thuật, hình sự',
+    label: 'Gi\u00e1m \u0111\u1ecbnh, khoa h\u1ecdc, k\u1ef9 thu\u1eadt, h\u00ecnh s\u1ef1',
     sortOrder: 5,
     status: 'active',
     children: [
       {
         id: 'giam-dinh-truyen-thong-co-hoc-sung-dan',
         slug: 'giam-dinh-truyen-thong-co-hoc-sung-dan',
-        label: 'Truyền thống, cơ học, súng đạn',
+        label: 'Truy\u1ec1n th\u1ed1ng, c\u01a1 h\u1ecdc, s\u00fang \u0111\u1ea1n',
         sortOrder: 1,
         status: 'active',
       },
       {
         id: 'giam-dinh-tai-lieu-chu-viet-tien-tem',
         slug: 'giam-dinh-tai-lieu-chu-viet-tien-tem',
-        label: 'Tài liệu, chữ viết, tiền, tem',
+        label: 'T\u00e0i li\u1ec7u, ch\u1eef vi\u1ebft, ti\u1ec1n, tem',
         sortOrder: 2,
         status: 'active',
       },
-      { id: 'giam-dinh-sinh-hoc', slug: 'giam-dinh-sinh-hoc', label: 'Sinh học', sortOrder: 3, status: 'active' },
+      { id: 'giam-dinh-sinh-hoc', slug: 'giam-dinh-sinh-hoc', label: 'Sinh h\u1ecdc', sortOrder: 3, status: 'active' },
       { id: 'giam-dinh-adn', slug: 'giam-dinh-adn', label: 'ADN', sortOrder: 4, status: 'active' },
     ],
   },
   {
     id: 'intensive-care',
     slug: 'intensive-care',
-    label: 'Hồi sức tích cực',
+    label: 'H\u1ed3i s\u1ee9c t\u00edch c\u1ef1c',
     sortOrder: 6,
     status: 'active',
     children: [
-      { id: 'picc-3f-1n', slug: 'picc-3f-1n', label: '(PICC) LOẠI 3F 1 nòng', sortOrder: 1, status: 'active' },
-      { id: 'picc-4f-1n', slug: 'picc-4f-1n', label: '(PICC) LOẠI 4F 1 nòng', sortOrder: 2, status: 'active' },
-      { id: 'picc-5fr-1n', slug: 'picc-5fr-1n', label: '(PICC) LOẠI 5F 1 nòng', sortOrder: 3, status: 'active' },
-      { id: 'picc-5fr-2n', slug: 'picc-5fr-2n', label: '(PICC) LOẠI 5F 2 nòng', sortOrder: 4, status: 'active' },
-      { id: 'picc-6f-3n', slug: 'picc-6f-3n', label: '(PICC) LOẠI 6F 3 nòng', sortOrder: 5, status: 'active' },
+      { id: 'picc-3f-1n', slug: 'picc-3f-1n', label: '(PICC) LO\u1ea0I 3F 1 n\u00f2ng', sortOrder: 1, status: 'active' },
+      { id: 'picc-4f-1n', slug: 'picc-4f-1n', label: '(PICC) LO\u1ea0I 4F 1 n\u00f2ng', sortOrder: 2, status: 'active' },
+      { id: 'picc-5fr-1n', slug: 'picc-5fr-1n', label: '(PICC) LO\u1ea0I 5F 1 n\u00f2ng', sortOrder: 3, status: 'active' },
+      { id: 'picc-5fr-2n', slug: 'picc-5fr-2n', label: '(PICC) LO\u1ea0I 5F 2 n\u00f2ng', sortOrder: 4, status: 'active' },
+      { id: 'picc-6f-3n', slug: 'picc-6f-3n', label: '(PICC) LO\u1ea0I 6F 3 n\u00f2ng', sortOrder: 5, status: 'active' },
     ],
   },
 ]

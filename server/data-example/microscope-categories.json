@@ -2,14 +2,14 @@
   {
     "id": "light-microscopes",
     "slug": "light-microscopes",
-    "label": "Kính hiển vi quang học",
+    "label": "K\u00ednh hi\u1ec3n vi quang h\u1ecdc",
     "sortOrder": 1,
     "status": "active"
   },
   {
     "id": "digital-microscopes",
     "slug": "digital-microscopes",
-    "label": "Kính hiển vi kỹ thuật số",
+    "label": "K\u00ednh hi\u1ec3n vi k\u1ef9 thu\u1eadt s\u1ed1",
     "sortOrder": 2,
     "status": "active"
   }
