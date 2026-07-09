@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -103,16 +103,16 @@ export function ProductDetailPage() {
         height={461}
       />
       <div className={styles.heroTitle}>
-        <div>Sáº£n pháº©m chi tiáº¿t</div>
-        <div className={styles.heroTitleSmall}>Trang chá»§ / Sáº£n pháº©m chi tiáº¿t</div>
+        <div>Sản phẩm chi tiết</div>
+        <div className={styles.heroTitleSmall}>Trang chủ / Sản phẩm chi tiết</div>
       </div>
 
       <main className={styles.container}>
         {loading ? (
-          <div className={styles.emptyState}>Äang táº£i sáº£n pháº©m...</div>
+          <div className={styles.emptyState}>Đang tải sản phẩm...</div>
         ) : !product ? (
           <div className={styles.emptyState}>
-            KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m. <Link to="/san-pham">Quay láº¡i danh sÃ¡ch sáº£n pháº©m</Link>
+            Không tìm thấy sản phẩm. <Link to="/san-pham">Quay lại danh sách sản phẩm</Link>
           </div>
         ) : (
           <>
@@ -139,7 +139,7 @@ export function ProductDetailPage() {
                     ) : null}
                     <div className={styles.shareRow}>
                       <span>Share to:</span>
-                      <Link to="/ContactPage" aria-label="LiÃªn há»‡ tÆ° váº¥n">â†—</Link>
+                      <Link to="/ContactPage" aria-label="Liên hệ tư vấn">↗</Link>
                     </div>
                   </div>
 
@@ -147,17 +147,17 @@ export function ProductDetailPage() {
                     <h1>{product.title}</h1>
                     {product.shortDescription ? <p className={styles.short}>{product.shortDescription}</p> : null}
                     <dl className={styles.metaGrid}>
-                      {product.price ? <><dt>GiÃ¡</dt><dd>{product.price}</dd></> : null}
-                      {product.sku ? <><dt>MÃ£ sáº£n pháº©m</dt><dd>{product.sku}</dd></> : null}
-                      {product.brand ? <><dt>HÃ£ng sáº£n xuáº¥t</dt><dd>{product.brand}</dd></> : null}
-                      {product.origin ? <><dt>Xuáº¥t xá»©</dt><dd>{product.origin}</dd></> : null}
-                      {childSlug ? <><dt>Danh má»¥c</dt><dd>{childLabel}</dd></> : null}
+                      {product.price ? <><dt>Giá</dt><dd>{product.price}</dd></> : null}
+                      {product.sku ? <><dt>Mã sản phẩm</dt><dd>{product.sku}</dd></> : null}
+                      {product.brand ? <><dt>Hãng sản xuất</dt><dd>{product.brand}</dd></> : null}
+                      {product.origin ? <><dt>Xuất xứ</dt><dd>{product.origin}</dd></> : null}
+                      {childSlug ? <><dt>Danh mục</dt><dd>{childLabel}</dd></> : null}
                     </dl>
                     <div className={styles.actions}>
-                      <Link className={styles.primaryButton} to="/ContactPage">LiÃªn há»‡ tÆ° váº¥n</Link>
+                      <Link className={styles.primaryButton} to="/ContactPage">Liên hệ tư vấn</Link>
                       {product.pdfUrl ? (
                         <a className={styles.secondaryButton} href={product.pdfUrl} target="_blank" rel="noreferrer">
-                          Táº£i PDF
+                          Tải PDF
                         </a>
                       ) : null}
                     </div>
@@ -170,16 +170,16 @@ export function ProductDetailPage() {
                     <span />
                   </div>
                   <div className={styles.tabBody}>
-                    <div className={styles.richText}>{product.description || product.shortDescription || 'ChÆ°a cÃ³ mÃ´ táº£ sáº£n pháº©m.'}</div>
+                    <div className={styles.richText}>{product.description || product.shortDescription || 'Chưa có mô tả sản phẩm.'}</div>
                     {product.specs ? (
                       <>
-                        <h2>ThÃ´ng sá»‘ ká»¹ thuáº­t</h2>
+                        <h2>Thông số kỹ thuật</h2>
                         <pre className={styles.specs}>{product.specs}</pre>
                       </>
                     ) : null}
                     {youtube ? (
                       <>
-                        <h2>Video sáº£n pháº©m</h2>
+                        <h2>Video sản phẩm</h2>
                         <div className={styles.videoWrap}>
                           <iframe src={youtube} title={product.title} allowFullScreen />
                         </div>
@@ -209,7 +209,7 @@ export function ProductDetailPage() {
                     })}
                   </div>
                 ) : (
-                  <div className={styles.relatedEmpty}>ChÆ°a cÃ³ sáº£n pháº©m liÃªn quan.</div>
+                  <div className={styles.relatedEmpty}>Chưa có sản phẩm liên quan.</div>
                 )}
               </aside>
             </div>

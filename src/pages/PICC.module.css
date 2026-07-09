@@ -1,4 +1,4 @@
-﻿.page {
+.page {
   width: 1920px;
   min-height: 100vh;
   margin: 0 auto;
@@ -219,7 +219,7 @@
 }
 
 .sidebar::after {
-  content: "Báº¡n cáº§n tÆ° váº¥n sáº£n pháº©m?\A Äá»™i ngÅ© chuyÃªn gia cá»§a Ecolink luÃ´n sáºµn sÃ ng Ä‘á»“ng hÃ nh cÃ¹ng báº¡n.\A +84 812 119 668";
+  content: "Bạn cần tư vấn sản phẩm?\A Đội ngũ chuyên gia của Ecolink luôn sẵn sàng đồng hành cùng bạn.\A +84 812 119 668";
   display: block;
   margin-top: 32px;
   padding: 28px 24px;
@@ -335,7 +335,7 @@
 }
 
 .productcardContent::after {
-  content: "Xem chi tiáº¿t  â†’";
+  content: "Xem chi tiết  →";
   display: inline-flex;
   margin-top: 18px;
   color: #0078a7;
