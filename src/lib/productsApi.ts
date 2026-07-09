@@ -1,5 +1,5 @@
 import type { Product } from './adminStore'
-import { deleteProduct, getProducts, normalizeLegacyProduct, upsertProduct } from './adminStore'
+import { deleteProduct, getProducts, normalizeLegacyProduct, sortProductsByDisplayOrder, upsertProduct } from './adminStore'
 import { apiBase, apiUrl } from './apiClient'
 
 class ApiError extends Error {
@@ -43,7 +43,7 @@ export async function apiGetProducts(): Promise<Product[]> {
     const res = await fetch(apiUrl('/api/products'), { credentials: 'include' })
     if (!res.ok) throw new Error('Failed to load products')
     const data = (await res.json()) as unknown
-    return Array.isArray(data) ? (data as Product[]).map(normalizeLegacyProduct) : []
+    return Array.isArray(data) ? sortProductsByDisplayOrder((data as Product[]).map(normalizeLegacyProduct)) : []
   } catch {
     if (import.meta.env.DEV) return getProducts()
     return []

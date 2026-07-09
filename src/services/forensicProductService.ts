@@ -31,7 +31,7 @@ function upsertLocal(input: ForensicProductInput) {
     return updated
   }
   const created = { ...input, status: input.status ?? 'active', createdAt: now, updatedAt: now }
-  writeLocal([created, ...list])
+  writeLocal([...list, created])
   return created
 }
 

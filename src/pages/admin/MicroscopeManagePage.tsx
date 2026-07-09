@@ -24,6 +24,7 @@ type FormValues = {
   categorySlug: string
   imageUrl: string
   shortDescription: string
+  sortOrder: number | ''
 }
 
 function emptyForm(categorySlug = ''): FormValues {
@@ -34,6 +35,7 @@ function emptyForm(categorySlug = ''): FormValues {
     categorySlug,
     imageUrl: '',
     shortDescription: '',
+    sortOrder: '',
   }
 }
 
@@ -93,6 +95,7 @@ export function MicroscopeManagePage() {
         categorySlug,
         imageUrl: values.imageUrl.trim() || undefined,
         shortDescription: values.shortDescription.trim(),
+        sortOrder: Number(values.sortOrder) || undefined,
         status: 'active',
       })
       await reload()
@@ -115,6 +118,7 @@ export function MicroscopeManagePage() {
       categorySlug: microscope.categorySlug,
       imageUrl: microscope.imageUrl ?? '',
       shortDescription: microscope.shortDescription,
+      sortOrder: microscope.sortOrder ?? '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -214,6 +218,11 @@ export function MicroscopeManagePage() {
                 <span className={styles.label}>Mô tả ngắn</span>
                 <textarea className={styles.textarea} rows={3} {...register('shortDescription')} />
               </label>
+              <label className={styles.field}>
+                <span className={styles.label}>Thứ tự hiển thị</span>
+                <input className={styles.input} type="number" min={1} step={1} {...register('sortOrder', { valueAsNumber: true })} />
+                <span className={styles.muted}>Nhập 1, 2, 3... Sản phẩm chưa nhập sẽ nằm cuối danh sách.</span>
+              </label>
             </div>
             <div className={styles.actions}>
               <button className={styles.button} type="submit" disabled={busy || activeCategories.length === 0}>
@@ -258,6 +267,7 @@ export function MicroscopeManagePage() {
                   <th>Ảnh</th>
                   <th>Model</th>
                   <th>Danh mục</th>
+                  <th>Thứ tự</th>
                   <th>Mô tả ngắn</th>
                   <th>Thao tác</th>
                 </tr>
@@ -275,6 +285,7 @@ export function MicroscopeManagePage() {
                     </td>
                     <td>{microscope.model}</td>
                     <td><span className={styles.pill}>{getMicroscopeCategoryLabel(categories, microscope.categorySlug)}</span></td>
+                    <td>{microscope.sortOrder ?? ''}</td>
                     <td>{microscope.shortDescription}</td>
                     <td>
                       <div className={styles.rowActions}>

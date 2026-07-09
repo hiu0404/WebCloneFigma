@@ -16,6 +16,7 @@ export type Microscope = {
   imageUrl?: string
   shortDescription: string
   status: MicroscopeCategoryStatus
+  sortOrder?: number
   createdAt: number
   updatedAt: number
 }
@@ -35,6 +36,7 @@ export type MicroscopeInput = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  sortOrder?: number
   status?: MicroscopeCategoryStatus
 }
 
@@ -68,11 +70,27 @@ export function normalizeMicroscopes(microscopes: Microscope[]) {
     .map((item) => ({
       ...item,
       imageUrl: item.imageUrl || undefined,
+      sortOrder: normalizeProductDisplayOrder(item.sortOrder),
       status: normalizeMicroscopeCategoryStatus(item.status),
       createdAt: Number(item.createdAt) || Date.now(),
       updatedAt: Number(item.updatedAt) || Date.now(),
     }))
     .filter((item) => item.id && item.name)
+    .sort(compareProductDisplayOrder)
+}
+
+export function normalizeProductDisplayOrder(value: unknown) {
+  const order = Number(value)
+  return Number.isFinite(order) && order > 0 ? order : undefined
+}
+
+export function compareProductDisplayOrder<T extends { sortOrder?: number; createdAt?: number; updatedAt?: number }>(a: T, b: T) {
+  const left = normalizeProductDisplayOrder(a.sortOrder)
+  const right = normalizeProductDisplayOrder(b.sortOrder)
+  if (left != null && right != null && left !== right) return left - right
+  if (left != null && right == null) return -1
+  if (left == null && right != null) return 1
+  return (Number(a.createdAt) || Number(a.updatedAt) || 0) - (Number(b.createdAt) || Number(b.updatedAt) || 0)
 }
 
 export function getMicroscopeCategoryLabel(categories: MicroscopeCategory[], slug?: string) {

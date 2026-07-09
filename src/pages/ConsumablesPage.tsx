@@ -7,6 +7,7 @@ import type { Product } from '../lib/adminStore'
 import { apiGetProducts } from '../services/productService'
 import { apiGetCategories } from '../services/categoryService'
 import { productMainImageUrl } from '../lib/productImages'
+import { compareByDisplayOrder } from '../lib/adminStore'
 import {
   getChildCategoryLabel,
   getProductChildCategorySlug,
@@ -67,8 +68,10 @@ export function ConsumablesPage() {
   }, [products])
 
   const shownProducts = useMemo(() => {
-    if (selectedGroup === 'all') return products
-    return products.filter((product) => getProductChildCategorySlug(product) === selectedGroup)
+    const list = selectedGroup === 'all'
+      ? products
+      : products.filter((product) => getProductChildCategorySlug(product) === selectedGroup)
+    return [...list].sort(compareByDisplayOrder)
   }, [products, selectedGroup])
 
   const selectedTitle =

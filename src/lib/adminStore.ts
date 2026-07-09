@@ -20,6 +20,7 @@ export type Product = {
   youtubeUrl?: string
   status?: 'active' | 'draft' | 'hidden'
   featured?: boolean
+  sortOrder?: number
   createdAt: number
   updatedAt: number
 }
@@ -37,7 +38,7 @@ function safeJsonParse<T>(raw: string | null, fallback: T): T {
 
 export function getProducts(): Product[] {
   const list = safeJsonParse<Product[]>(localStorage.getItem(LS_PRODUCTS_KEY), [])
-  return Array.isArray(list) ? list.map(normalizeLegacyProduct) : []
+  return Array.isArray(list) ? sortProductsByDisplayOrder(list.map(normalizeLegacyProduct)) : []
 }
 
 export function getProductById(id: string): Product | undefined {
@@ -67,9 +68,27 @@ export function upsertProduct(input: Omit<Product, 'createdAt' | 'updatedAt'> & 
     createdAt: normalizedInput.createdAt ?? input.createdAt ?? now,
     updatedAt: normalizedInput.updatedAt ?? input.updatedAt ?? now,
   }
-  const next = [created, ...list]
+  const next = [...list, created]
   localStorage.setItem(LS_PRODUCTS_KEY, JSON.stringify(next))
   return created
+}
+
+function normalizeDisplayOrder(value: unknown) {
+  const order = Number(value)
+  return Number.isFinite(order) && order > 0 ? order : undefined
+}
+
+export function compareByDisplayOrder<T extends { sortOrder?: number; createdAt?: number; updatedAt?: number }>(a: T, b: T) {
+  const left = normalizeDisplayOrder(a.sortOrder)
+  const right = normalizeDisplayOrder(b.sortOrder)
+  if (left != null && right != null && left !== right) return left - right
+  if (left != null && right == null) return -1
+  if (left == null && right != null) return 1
+  return (Number(a.createdAt) || Number(a.updatedAt) || 0) - (Number(b.createdAt) || Number(b.updatedAt) || 0)
+}
+
+export function sortProductsByDisplayOrder<T extends Product>(products: T[]): T[] {
+  return [...products].sort(compareByDisplayOrder)
 }
 
 export function normalizeLegacyProduct<T extends Partial<Product>>(input: T): T {
@@ -92,6 +111,7 @@ export function normalizeLegacyProduct<T extends Partial<Product>>(input: T): T 
     chemicalGroup: parentCategorySlug === 'chemicals' ? categorySlug : input.chemicalGroup,
     status: input.status ?? 'active',
     featured: Boolean(input.featured),
+    sortOrder: normalizeDisplayOrder(input.sortOrder),
   }
 }
 

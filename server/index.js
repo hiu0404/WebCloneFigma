@@ -470,6 +470,7 @@ function readMicroscopes() {
     .filter((item) => item && typeof item === 'object')
     .map(normalizeMicroscope)
     .filter((item) => item.id && item.name)
+    .sort(compareDisplayOrder)
 }
 
 function writeMicroscopes(list) {
@@ -486,6 +487,7 @@ function normalizeMicroscope(item) {
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
     shortDescription: String(item?.shortDescription || '').trim(),
     status: item?.status === 'hidden' ? 'hidden' : 'active',
+    sortOrder: normalizeDisplayOrder(item?.sortOrder),
     createdAt: Number(item?.createdAt) || now,
     updatedAt: Number(item?.updatedAt) || now,
   }
@@ -496,6 +498,7 @@ function readForensicProducts() {
     .filter((item) => item && typeof item === 'object')
     .map(normalizeForensicProduct)
     .filter((item) => item.id && item.name)
+    .sort(compareDisplayOrder)
 }
 
 function writeForensicProducts(list) {
@@ -513,6 +516,7 @@ function normalizeForensicProduct(item) {
     shortDescription: String(item?.shortDescription || '').trim(),
     specs: String(item?.specs || '').trim() || undefined,
     status: item?.status === 'hidden' ? 'hidden' : 'active',
+    sortOrder: normalizeDisplayOrder(item?.sortOrder),
     createdAt: Number(item?.createdAt) || now,
     updatedAt: Number(item?.updatedAt) || now,
   }
@@ -523,6 +527,7 @@ function readPiccProducts() {
     .filter((item) => item && typeof item === 'object')
     .map(normalizePiccProduct)
     .filter((item) => item.id && item.name)
+    .sort(compareDisplayOrder)
 }
 
 function writePiccProducts(list) {
@@ -540,6 +545,7 @@ function normalizePiccProduct(item) {
     shortDescription: String(item?.shortDescription || '').trim(),
     specs: String(item?.specs || '').trim() || undefined,
     status: item?.status === 'hidden' ? 'hidden' : 'active',
+    sortOrder: normalizeDisplayOrder(item?.sortOrder),
     createdAt: Number(item?.createdAt) || now,
     updatedAt: Number(item?.updatedAt) || now,
   }
@@ -757,6 +763,20 @@ function normalizeProductImages(p) {
   return next
 }
 
+function normalizeDisplayOrder(value) {
+  const order = Number(value)
+  return Number.isFinite(order) && order > 0 ? order : undefined
+}
+
+function compareDisplayOrder(a, b) {
+  const left = normalizeDisplayOrder(a?.sortOrder)
+  const right = normalizeDisplayOrder(b?.sortOrder)
+  if (left != null && right != null && left !== right) return left - right
+  if (left != null && right == null) return -1
+  if (left == null && right != null) return 1
+  return (Number(a?.createdAt) || Number(a?.updatedAt) || 0) - (Number(b?.createdAt) || Number(b?.updatedAt) || 0)
+}
+
 function normalizeProductCategoryFields(p) {
   if (!p || typeof p !== 'object') return p
   const parentCategorySlug = p.parentCategorySlug || p.category || 'equipment'
@@ -778,6 +798,7 @@ function normalizeProductCategoryFields(p) {
     chemicalGroup: parentCategorySlug === 'chemicals' ? categorySlug : p.chemicalGroup,
     status: p.status || 'active',
     featured: Boolean(p.featured),
+    sortOrder: normalizeDisplayOrder(p.sortOrder),
   }
 }
 
@@ -1096,7 +1117,7 @@ app.delete('/api/categories/:id', requireAdminApi, (req, res) => {
 })
 
 app.get('/api/products', (_req, res) => {
-  res.json(readProducts().map(normalizeProductCategoryFields).map(normalizeProductImages))
+  res.json(readProducts().map(normalizeProductCategoryFields).map(normalizeProductImages).sort(compareDisplayOrder))
 })
 
 app.post('/api/products', requireAdminApi, (req, res) => {
@@ -1123,6 +1144,7 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     youtubeUrl,
     status,
     featured,
+    sortOrder,
   } = req.body ?? {}
   if (!id || !title) return res.status(400).json({ error: 'Missing id/title' })
 
@@ -1165,6 +1187,7 @@ app.post('/api/products', requireAdminApi, (req, res) => {
       youtubeUrl,
       status: normalizedStatus,
       featured: Boolean(featured),
+      sortOrder: normalizeDisplayOrder(sortOrder),
       updatedAt: now,
     }
     list[idx] = updated
@@ -1189,10 +1212,11 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     youtubeUrl,
     status: normalizedStatus,
     featured: Boolean(featured),
+    sortOrder: normalizeDisplayOrder(sortOrder),
     createdAt: now,
     updatedAt: now,
   }
-  writeProducts([created, ...list])
+  writeProducts([...list, created])
   return res.json(normalizeProductImages(created))
 })
 
@@ -1261,6 +1285,7 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
   const imageUrl = normalizeUploadRef(String(req.body?.imageUrl || '').trim()) || undefined
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
+  const sortOrder = normalizeDisplayOrder(req.body?.sortOrder)
   if (!id || !name) return res.status(400).json({ error: 'Missing microscope id/name' })
   if (!categorySlug) return res.status(400).json({ error: 'Missing microscope category' })
 
@@ -1277,6 +1302,7 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
     imageUrl,
     shortDescription,
     status,
+    sortOrder,
     updatedAt: now,
   }
   if (index >= 0) {
@@ -1287,7 +1313,7 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
   }
 
   const created = { ...base, createdAt: now }
-  writeMicroscopes([created, ...list])
+  writeMicroscopes([...list, created])
   res.json(created)
 })
 
@@ -1311,6 +1337,7 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const specs = String(req.body?.specs || '').trim() || undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
+  const sortOrder = normalizeDisplayOrder(req.body?.sortOrder)
   if (!id || !name) return res.status(400).json({ error: 'Missing forensic product id/name' })
   if (!categorySlug) return res.status(400).json({ error: 'Missing forensic product category' })
 
@@ -1329,6 +1356,7 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
     shortDescription,
     specs,
     status,
+    sortOrder,
     updatedAt: now,
   }
   if (index >= 0) {
@@ -1339,7 +1367,7 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
   }
 
   const created = { ...base, createdAt: now }
-  writeForensicProducts([created, ...list])
+  writeForensicProducts([...list, created])
   res.json(created)
 })
 
@@ -1363,6 +1391,7 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const specs = String(req.body?.specs || '').trim() || undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
+  const sortOrder = normalizeDisplayOrder(req.body?.sortOrder)
   if (!id || !name) return res.status(400).json({ error: 'Missing PICC product id/name' })
   if (!categorySlug) return res.status(400).json({ error: 'Missing PICC product category' })
 
@@ -1381,6 +1410,7 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
     shortDescription,
     specs,
     status,
+    sortOrder,
     updatedAt: now,
   }
   if (index >= 0) {
@@ -1391,7 +1421,7 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
   }
 
   const created = { ...base, createdAt: now }
-  writePiccProducts([created, ...list])
+  writePiccProducts([...list, created])
   res.json(created)
 })
 

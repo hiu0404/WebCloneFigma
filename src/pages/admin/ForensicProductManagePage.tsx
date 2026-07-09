@@ -29,6 +29,7 @@ type FormValues = {
   imageUrl: string
   shortDescription: string
   specs: string
+  sortOrder: number | ''
 }
 
 function emptyForm(categorySlug = ''): FormValues {
@@ -40,6 +41,7 @@ function emptyForm(categorySlug = ''): FormValues {
     imageUrl: '',
     shortDescription: '',
     specs: '',
+    sortOrder: '',
   }
 }
 
@@ -101,6 +103,7 @@ export function ForensicProductManagePage() {
         imageUrl: values.imageUrl.trim() || undefined,
         shortDescription: values.shortDescription.trim(),
         specs: values.specs.trim() || undefined,
+        sortOrder: Number(values.sortOrder) || undefined,
         status: 'active',
       })
       await reload()
@@ -124,6 +127,7 @@ export function ForensicProductManagePage() {
       imageUrl: product.imageUrl ?? '',
       shortDescription: product.shortDescription,
       specs: product.specs ?? '',
+      sortOrder: product.sortOrder ?? '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -227,6 +231,11 @@ export function ForensicProductManagePage() {
                 <span className={styles.label}>Thông số kỹ thuật</span>
                 <textarea className={styles.textarea} rows={5} {...register('specs')} />
               </label>
+              <label className={styles.field}>
+                <span className={styles.label}>Thứ tự hiển thị</span>
+                <input className={styles.input} type="number" min={1} step={1} {...register('sortOrder', { valueAsNumber: true })} />
+                <span className={styles.muted}>Nhập 1, 2, 3... Sản phẩm chưa nhập sẽ nằm cuối danh sách.</span>
+              </label>
             </div>
             <div className={styles.actions}>
               <button className={styles.button} type="submit" disabled={busy || activeCategories.length === 0}>
@@ -271,6 +280,7 @@ export function ForensicProductManagePage() {
                   <th>Ảnh</th>
                   <th>Model</th>
                   <th>Danh mục</th>
+                  <th>Thứ tự</th>
                   <th>Mô tả ngắn</th>
                   <th>Thao tác</th>
                 </tr>
@@ -288,6 +298,7 @@ export function ForensicProductManagePage() {
                     </td>
                     <td>{product.model}</td>
                     <td><span className={styles.pill}>{getChildCategoryLabel(categories, PARENT_SLUG, product.categorySlug)}</span></td>
+                    <td>{product.sortOrder ?? ''}</td>
                     <td>{product.shortDescription}</td>
                     <td>
                       <div className={styles.rowActions}>

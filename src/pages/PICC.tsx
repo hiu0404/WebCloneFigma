@@ -6,6 +6,7 @@ import styles from './ChemicalsPage.module.css'
 import { apiGetCategories } from '../services/categoryService'
 import { apiGetPiccProducts } from '../services/piccProductService'
 import type { PiccProduct } from '../data/piccProducts'
+import { compareByDisplayOrder } from '../lib/adminStore'
 import {
   getChildCategoryLabel,
   isCategoryVisible,
@@ -64,8 +65,8 @@ export default function PICC() {
   }, [products])
 
   const shownProducts = useMemo(() => {
-    if (selectedGroup === 'all') return products
-    return products.filter((product) => product.categorySlug === selectedGroup)
+    const list = selectedGroup === 'all' ? products : products.filter((product) => product.categorySlug === selectedGroup)
+    return [...list].sort(compareByDisplayOrder)
   }, [products, selectedGroup])
 
   const pageTitle = 'Hồi sức tích cực'

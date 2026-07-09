@@ -29,6 +29,7 @@ type AdminProductFormValues = {
   youtubeUrl: string
   status: NonNullable<Product['status']>
   featured: boolean
+  sortOrder: number | ''
 }
 
 const LS_ADMIN_DRAFT_KEY = 'admin_product_draft_v1'
@@ -64,6 +65,7 @@ function emptyForm(): AdminProductFormValues {
     youtubeUrl: '',
     status: 'active',
     featured: false,
+    sortOrder: '',
   }
 }
 
@@ -77,6 +79,7 @@ function buildInitialFormDefaults(): AdminProductFormValues {
     brand: saved.brand ?? '',
     origin: saved.origin ?? '',
     status: saved.status ?? 'active',
+    sortOrder: saved.sortOrder ?? '',
   }
 }
 
@@ -100,6 +103,7 @@ function toFormValues(product: Product): AdminProductFormValues {
     youtubeUrl: normalized.youtubeUrl ?? '',
     status: normalized.status ?? 'active',
     featured: Boolean(normalized.featured),
+    sortOrder: normalized.sortOrder ?? '',
   }
 }
 
@@ -148,6 +152,7 @@ export function AdminProductsPage() {
   const persistBrand = useWatch({ control: form.control, name: 'brand' })
   const persistOrigin = useWatch({ control: form.control, name: 'origin' })
   const persistStatus = useWatch({ control: form.control, name: 'status' })
+  const persistSortOrder = useWatch({ control: form.control, name: 'sortOrder' })
   const imageUrlWatch = useWatch({ control: form.control, name: 'imageUrl' })
   const imageUrlsWatch = useWatch({ control: form.control, name: 'imageUrls' })
 
@@ -208,9 +213,10 @@ export function AdminProductsPage() {
       brand: persistBrand,
       origin: persistOrigin,
       status: persistStatus,
+      sortOrder: Number(persistSortOrder) || undefined,
     }
     localStorage.setItem(LS_ADMIN_DRAFT_KEY, JSON.stringify(toSave))
-  }, [selectedCategory, selectedCategorySlug, persistPrice, persistBrand, persistOrigin, persistStatus, editingId])
+  }, [selectedCategory, selectedCategorySlug, persistPrice, persistBrand, persistOrigin, persistStatus, persistSortOrder, editingId])
 
   useEffect(() => {
     localStorage.setItem(LS_ADMIN_KEEP_KEY, keepValues ? '1' : '0')
@@ -278,6 +284,7 @@ export function AdminProductsPage() {
         youtubeUrl: values.youtubeUrl.trim() || undefined,
         status: values.status,
         featured: values.featured,
+        sortOrder: Number(values.sortOrder) || undefined,
       })
 
       await apiUpsertProduct(draftSubmit)
@@ -293,6 +300,7 @@ export function AdminProductsPage() {
           brand: values.brand,
           origin: values.origin,
           status: values.status,
+          sortOrder: values.sortOrder,
         })
       } else {
         reset(emptyForm())
@@ -545,6 +553,12 @@ export function AdminProductsPage() {
                 </span>
               </label>
 
+              <label className={styles.field}>
+                <span className={styles.label}>Thứ tự hiển thị</span>
+                <input className={styles.input} type="number" min={1} step={1} {...register('sortOrder', { valueAsNumber: true })} />
+                <span className={styles.muted}>Nhập 1, 2, 3... Sản phẩm chưa nhập sẽ nằm cuối danh sách.</span>
+              </label>
+
               <label className={`${styles.field} ${styles.full}`}>
                 <span className={styles.label}>Mô tả ngắn *</span>
                 <textarea
@@ -646,6 +660,7 @@ export function AdminProductsPage() {
                     <th>Danh mục cha</th>
                     <th>Danh mục con</th>
                     <th>Trạng thái</th>
+                    <th>Thứ tự</th>
                     <th>Giá</th>
                     <th>SKU</th>
                     <th>Thao tác</th>
@@ -675,6 +690,7 @@ export function AdminProductsPage() {
                         <td>
                           <span className={statusClass(product.status)}>{statusLabel(product.status)}</span>
                         </td>
+                        <td>{product.sortOrder ?? ''}</td>
                         <td>{product.price ?? ''}</td>
                         <td>{product.sku ?? ''}</td>
                         <td>

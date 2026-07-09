@@ -6,6 +6,7 @@ import styles from './ChemicalsPage.module.css'
 import { apiGetCategories } from '../services/categoryService'
 import { apiGetForensicProducts } from '../services/forensicProductService'
 import type { ForensicProduct } from '../data/forensicProducts'
+import { compareByDisplayOrder } from '../lib/adminStore'
 import {
   getChildCategoryLabel,
   isCategoryVisible,
@@ -87,8 +88,8 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
   }, [products])
 
   const shownProducts = useMemo(() => {
-    if (selectedGroup === 'all') return products
-    return products.filter((product) => product.categorySlug === selectedGroup)
+    const list = selectedGroup === 'all' ? products : products.filter((product) => product.categorySlug === selectedGroup)
+    return [...list].sort(compareByDisplayOrder)
   }, [products, selectedGroup])
 
   const pageTitle = 'Giám định, khoa học, kỹ thuật, hình sự'

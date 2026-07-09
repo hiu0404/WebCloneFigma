@@ -12,6 +12,7 @@ import {
 } from '../data/microscopes'
 import { apiGetMicroscopeCategories } from '../services/microscopeCategoryService'
 import { apiGetMicroscopes } from '../services/microscopeService'
+import { compareByDisplayOrder } from '../lib/adminStore'
 import styles from './MicroscopePage.module.css'
 
 const PAGE_PATH = '/MicroscopePage'
@@ -63,8 +64,8 @@ const MicroscopePage = () => {
   }, [microscopes])
 
   const shownMicroscopes = useMemo(() => {
-    if (selectedSlug === 'all') return microscopes
-    return microscopes.filter((item) => item.categorySlug === selectedSlug)
+    const list = selectedSlug === 'all' ? microscopes : microscopes.filter((item) => item.categorySlug === selectedSlug)
+    return [...list].sort(compareByDisplayOrder)
   }, [microscopes, selectedSlug])
 
   function selectCategory(slug: string) {
