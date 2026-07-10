@@ -80,7 +80,7 @@ export function Footer({ top }: FooterProps) {
           <span>© 2026 Ecolink. All rights reserved.</span>
           <div>
             <NavLink to="/">Chính sách bảo mật</NavLink>
-            <NavLink to="/">Điều khoản sử dụng</NavLink>
+            <NavLink to="/">Điều khoản sử dụnggg</NavLink>
           </div>
         </div>
       </div>

@@ -1075,8 +1075,20 @@
 @media (max-width: 1024px) {
   .page {
     width: calc(100vw / var(--figma-scale, 1));
+    min-width: calc(100vw / var(--figma-scale, 1));
     min-height: auto;
     overflow: visible;
+  }
+
+  .page main,
+  .hero,
+  .benefits,
+  .section,
+  .statsBand,
+  .bottomContent,
+  .ctaStrip {
+    width: calc(100vw / var(--figma-scale, 1));
+    max-width: none;
   }
 
   .hero {
@@ -1090,7 +1102,7 @@
   .benefits,
   .section,
   .bottomContent {
-    width: 100%;
+    width: calc(100vw / var(--figma-scale, 1));
   }
 
   .heroInner {
