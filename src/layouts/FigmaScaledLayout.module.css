@@ -23,3 +23,15 @@
   width: 1920px;
   transform-origin: top left;
 }
+
+@media (max-width: 1024px) {
+  .viewport,
+  .stage,
+  .stageClip,
+  .stageInner {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+    box-sizing: border-box;
+  }
+}

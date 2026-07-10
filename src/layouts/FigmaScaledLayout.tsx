@@ -15,12 +15,12 @@ function computeScale(width: number): number {
 }
 
 export function FigmaScaledLayout() {
-  const [scale, setScale] = useState(() =>
-    typeof document !== 'undefined' ? computeScale(readViewportWidth()) : 1,
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof document !== 'undefined' ? readViewportWidth() : FIGMA_LAYOUT_WIDTH_PX,
   )
 
   useEffect(() => {
-    const tick = () => setScale(computeScale(readViewportWidth()))
+    const tick = () => setViewportWidth(readViewportWidth())
 
     tick()
     window.addEventListener('resize', tick)
@@ -31,6 +31,19 @@ export function FigmaScaledLayout() {
     }
   }, [])
 
+  const isResponsiveViewport = viewportWidth <= 1024
+  const scale = isResponsiveViewport ? 1 : computeScale(viewportWidth)
+  const stageStyle = {
+    zoom: scale,
+    '--figma-scale': scale,
+    ...(isResponsiveViewport ? { width: '100%', maxWidth: '100%' } : null),
+  } as CSSProperties
+  const fallbackStageStyle = {
+    transform: isResponsiveViewport ? 'none' : `scale(${scale})`,
+    '--figma-scale': scale,
+    ...(isResponsiveViewport ? { width: '100%', maxWidth: '100%' } : null),
+  } as CSSProperties
+
   const zoomOk =
     typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('zoom', '1')
 
@@ -38,10 +51,10 @@ export function FigmaScaledLayout() {
     const clipW = FIGMA_LAYOUT_WIDTH_PX * scale
     return (
       <div className={styles.viewport}>
-        <div className={`${styles.stageClip}`} style={{ width: clipW }}>
+        <div className={`${styles.stageClip}`} style={{ width: isResponsiveViewport ? '100%' : clipW }}>
           <div
             className={styles.stageInner}
-            style={{ transform: `scale(${scale})`, '--figma-scale': scale } as CSSProperties}
+            style={fallbackStageStyle}
           >
             <Outlet />
           </div>
@@ -54,7 +67,7 @@ export function FigmaScaledLayout() {
 
   return (
     <div className={styles.viewport}>
-      <div className={styles.stage} style={{ zoom: scale, '--figma-scale': scale } as CSSProperties}>
+      <div className={styles.stage} style={stageStyle}>
         <Outlet />
       </div>
       <Footer />

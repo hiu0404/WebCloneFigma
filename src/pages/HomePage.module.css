@@ -1074,11 +1074,11 @@
 
 @media (max-width: 1024px) {
   .page {
-    width: calc(100vw / var(--figma-scale, 1));
-    min-width: calc(100vw / var(--figma-scale, 1));
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     min-height: auto;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
   }
 
   .page main,
@@ -1088,18 +1088,9 @@
   .statsBand,
   .bottomContent,
   .ctaStrip {
-    width: calc(100vw / var(--figma-scale, 1));
-    max-width: none;
-  }
-
-  .page main,
-  .hero,
-  .section,
-  .productCard,
-  .solutionCard,
-  .newsCard,
-  .ctaStrip {
-    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .hero {
@@ -1113,7 +1104,8 @@
   .benefits,
   .section,
   .bottomContent {
-    width: calc(100vw / var(--figma-scale, 1));
+    width: 100%;
+    max-width: 100%;
   }
 
   .heroInner {
@@ -1159,11 +1151,13 @@
 
   .heroDots {
     right: auto;
-    left: 50%;
+    left: 0;
+    right: 0;
     top: auto;
     bottom: calc(24px / var(--figma-scale, 1));
-    grid-auto-flow: column;
-    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    transform: none;
   }
 
   .heroDots button {
@@ -1348,7 +1342,9 @@
   .newsCard a,
   .blockHeader a,
   .morePartner {
+    max-width: 100%;
     font-size: calc(13px / var(--figma-scale, 1));
+    overflow-wrap: anywhere;
   }
 
   .productCard {
@@ -1362,7 +1358,10 @@
   }
 
   .productImage img {
+    width: 100%;
+    height: auto;
     max-height: calc(150px / var(--figma-scale, 1));
+    object-fit: contain;
   }
 
   .productInfo {
@@ -1370,10 +1369,10 @@
   }
 
   .productMeta div {
-    grid-template-columns: calc(76px / var(--figma-scale, 1)) 1fr;
-    gap: calc(10px / var(--figma-scale, 1));
+    grid-template-columns: 1fr;
+    gap: calc(5px / var(--figma-scale, 1));
     min-height: 0;
-    padding: calc(7px / var(--figma-scale, 1)) 0;
+    padding: calc(9px / var(--figma-scale, 1)) 0;
   }
 
   .productMeta dt {
@@ -1381,7 +1380,7 @@
   }
 
   .productMeta dd {
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .sliderButton {

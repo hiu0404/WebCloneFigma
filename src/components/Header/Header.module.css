@@ -345,7 +345,8 @@
     position: absolute;
     left: 0;
     right: auto;
-    width: calc(100vw / var(--figma-scale, 1));
+    width: 100%;
+    max-width: 100%;
     height: calc(156px / var(--figma-scale, 1));
   }
 
