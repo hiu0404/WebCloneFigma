@@ -1077,7 +1077,8 @@
     width: calc(100vw / var(--figma-scale, 1));
     min-width: calc(100vw / var(--figma-scale, 1));
     min-height: auto;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .page main,
@@ -1089,6 +1090,16 @@
   .ctaStrip {
     width: calc(100vw / var(--figma-scale, 1));
     max-width: none;
+  }
+
+  .page main,
+  .hero,
+  .section,
+  .productCard,
+  .solutionCard,
+  .newsCard,
+  .ctaStrip {
+    overflow-x: hidden;
   }
 
   .hero {
@@ -1261,6 +1272,53 @@
   .productGrid,
   .categoryGrid {
     gap: calc(14px / var(--figma-scale, 1));
+  }
+
+  .heroCopy,
+  .heroCopy h1,
+  .heroCopy p,
+  .benefits div,
+  .benefits span,
+  .categoryCard,
+  .categoryCard strong,
+  .solutionCard,
+  .solutionCard div,
+  .solutionCard h3,
+  .solutionCard p,
+  .productCard,
+  .productInfo,
+  .productCard h3,
+  .productMeta,
+  .productMeta div,
+  .productMeta dt,
+  .productMeta dd,
+  .newsCard,
+  .newsCard h3,
+  .blockHeader,
+  .blockHeader h2,
+  .ctaStrip,
+  .ctaStrip div,
+  .ctaStrip span,
+  .ctaStrip small {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .heroCopy h1,
+  .heroCopy p,
+  .benefits span,
+  .categoryCard strong,
+  .solutionCard h3,
+  .solutionCard p,
+  .productCard h3,
+  .productMeta dt,
+  .productMeta dd,
+  .newsCard h3,
+  .blockHeader h2,
+  .ctaStrip span,
+  .ctaStrip small {
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .solutionCard {
