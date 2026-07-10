@@ -132,6 +132,7 @@ export function AdminProductsPage() {
   const [page, setPage] = useState(1)
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null)
   const [toast, setToast] = useState('')
+  const [galleryUrlDraft, setGalleryUrlDraft] = useState('')
 
   const defaultValues = useMemo(() => buildInitialFormDefaults(), [])
   const form = useForm<AdminProductFormValues>({
@@ -325,6 +326,24 @@ export function AdminProductsPage() {
     }
   }
 
+  function addGalleryImageUrl() {
+    const cleanedUrl = sanitizeAdminMainImageUrl(galleryUrlDraft)
+    if (!cleanedUrl) {
+      showToast('URL anh khong hop le')
+      return
+    }
+
+    const currentUrls = sanitizeAdminImageUrls(getValues('imageUrls') ?? [])
+    if (currentUrls.includes(cleanedUrl)) {
+      showToast('URL anh nay da co trong gallery')
+      return
+    }
+
+    setValue('imageUrls', [...currentUrls, cleanedUrl], { shouldDirty: true, shouldValidate: true })
+    setGalleryUrlDraft('')
+    showToast('Da them URL anh vao gallery')
+  }
+
   async function confirmDelete() {
     if (!deleteTarget) return
     setBusy(true)
@@ -460,7 +479,16 @@ export function AdminProductsPage() {
                     event.target.value = ''
                   }}
                 />
-                <input type="hidden" {...register('imageUrl', { required: 'Vui lòng chọn hình ảnh sản phẩm' })} />
+                <input
+                  className={styles.input}
+                  type="url"
+                  placeholder="Hoac dan URL anh ngoai: https://..."
+                  {...register('imageUrl', {
+                    required: 'Vui long chon hoac nhap URL hinh anh san pham',
+                    validate: (value) =>
+                      Boolean(sanitizeAdminMainImageUrl(value)) || 'URL hinh anh khong hop le',
+                  })}
+                />
                 {imageUrlWatch ? (
                   <div className={styles.imagePreview}>
                     <img src={imageUrlWatch} alt="" />
@@ -472,7 +500,7 @@ export function AdminProductsPage() {
                 {errors.imageUrl ? <span className={styles.error}>{errors.imageUrl.message}</span> : null}
               </label>
 
-              <label className={styles.field}>
+              <div className={styles.field}>
                 <span className={styles.label}>Gallery ảnh</span>
                 <input
                   className={styles.input}
@@ -486,7 +514,10 @@ export function AdminProductsPage() {
                     try {
                       const urls: string[] = []
                       for (const file of files) urls.push(await apiUploadImage(file))
-                      setValue('imageUrls', [...(getValues('imageUrls') ?? []), ...urls])
+                      setValue('imageUrls', [...(getValues('imageUrls') ?? []), ...urls], {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
                       showToast('Đã thêm ảnh vào gallery')
                     } catch (err) {
                       showToast(err instanceof Error ? err.message : 'Upload gallery thất bại')
@@ -496,10 +527,20 @@ export function AdminProductsPage() {
                     }
                   }}
                 />
+                <input
+                  className={styles.input}
+                  type="url"
+                  placeholder="Hoac dan URL anh phu roi bam them"
+                  value={galleryUrlDraft}
+                  onChange={(event) => setGalleryUrlDraft(event.target.value)}
+                />
+                <button className={styles.secondaryButton} type="button" onClick={addGalleryImageUrl} disabled={!galleryUrlDraft.trim()}>
+                  Them URL anh phu
+                </button>
                 <span className={styles.muted}>
                   {imageUrlsWatch?.length ? `Đang có ${imageUrlsWatch.length} ảnh phụ` : 'Chưa có ảnh phụ'}
                 </span>
-              </label>
+              </div>
 
               <label className={styles.field}>
                 <span className={styles.label}>Mã sản phẩm</span>
