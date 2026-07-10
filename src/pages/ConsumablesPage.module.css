@@ -386,21 +386,33 @@
 
 @media (max-width: 1024px) {
   .page {
-    width: calc(100vw / var(--figma-scale, 1));
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     overflow: visible;
+  }
+
+  .heroWrapper {
+    position: relative;
+    margin-top: calc(156px / var(--figma-scale, 1));
+    height: calc(340px / var(--figma-scale, 1));
   }
 
   .hero,
   .heroOverlay {
-    top: calc(156px / var(--figma-scale, 1));
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
-    height: calc(340px / var(--figma-scale, 1));
+    max-width: 100%;
+    height: 100%;
   }
 
   .heroTitle {
     left: calc(18px / var(--figma-scale, 1));
-    top: calc(210px / var(--figma-scale, 1));
+    top: calc(54px / var(--figma-scale, 1));
     width: calc(100% - (36px / var(--figma-scale, 1)));
+    max-width: 100%;
   }
 
   .heroTitle h1,
@@ -415,8 +427,9 @@
 
   .container {
     width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
-    margin: calc(470px / var(--figma-scale, 1)) auto calc(50px / var(--figma-scale, 1));
+    margin: calc(22px / var(--figma-scale, 1)) 0 calc(50px / var(--figma-scale, 1));
     padding: 0 calc(16px / var(--figma-scale, 1));
   }
 

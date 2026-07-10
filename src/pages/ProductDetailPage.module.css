@@ -364,8 +364,11 @@
 
 @media (max-width: 1024px) {
   .page {
-    width: calc(100vw / var(--figma-scale, 1));
-    min-height: calc(100vh / var(--figma-scale, 1));
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow: visible;
   }
 
   .hero {
@@ -373,6 +376,7 @@
     left: auto;
     top: auto;
     width: 100%;
+    max-width: 100%;
     height: calc(220px / var(--figma-scale, 1));
     margin-top: calc(156px / var(--figma-scale, 1));
   }
@@ -381,6 +385,7 @@
     left: 0;
     top: calc(156px / var(--figma-scale, 1));
     width: 100%;
+    max-width: 100%;
     height: calc(220px / var(--figma-scale, 1));
     padding: 0 calc(16px / var(--figma-scale, 1));
     font-size: calc(34px / var(--figma-scale, 1));
@@ -394,10 +399,29 @@
   }
 
   .container {
-    width: auto;
-    max-width: none;
-    margin: calc(40px / var(--figma-scale, 1)) calc(16px / var(--figma-scale, 1))
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: calc(40px / var(--figma-scale, 1)) 0
       calc(56px / var(--figma-scale, 1));
+    padding: 0 calc(16px / var(--figma-scale, 1));
+  }
+
+  .layout,
+  .mainColumn,
+  .productHero,
+  .gallery,
+  .summary,
+  .tabsPanel,
+  .relatedSidebar,
+  .metaGrid,
+  .summary h1,
+  .short,
+  .richText,
+  .specs {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .layout,
@@ -406,12 +430,21 @@
   }
 
   .imageFrame {
+    width: 100%;
+    max-width: 100%;
     height: calc(320px / var(--figma-scale, 1));
+  }
+
+  .imageFrame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   .summary h1 {
     font-size: calc(24px / var(--figma-scale, 1));
     line-height: calc(31px / var(--figma-scale, 1));
+    overflow-wrap: anywhere;
   }
 
   .short,
@@ -421,6 +454,7 @@
   .metaGrid dd {
     font-size: calc(15px / var(--figma-scale, 1));
     line-height: calc(24px / var(--figma-scale, 1));
+    overflow-wrap: anywhere;
   }
 
   .metaGrid {

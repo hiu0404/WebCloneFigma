@@ -377,7 +377,9 @@
 
 @media (max-width: 1024px) {
   .page {
-    width: calc(100vw / var(--figma-scale, 1));
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     overflow: visible;
   }
 
@@ -389,6 +391,7 @@
   .heroTitle,
   .container {
     width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
   }
 
@@ -411,8 +414,23 @@
   }
 
   .container {
-    margin: calc(-34px / var(--figma-scale, 1)) auto calc(50px / var(--figma-scale, 1));
+    margin: calc(-34px / var(--figma-scale, 1)) 0 calc(50px / var(--figma-scale, 1));
     padding: 0 calc(16px / var(--figma-scale, 1));
+  }
+
+  .benefitBar,
+  .categorypage,
+  .sidebar,
+  .content,
+  .toolbar,
+  .productGrid,
+  .productCard,
+  .productBody,
+  .productBody h2,
+  .productBody p {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .benefitBar,
@@ -492,6 +510,12 @@
     height: calc(210px / var(--figma-scale, 1));
   }
 
+  .productImage {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
   .productBody {
     padding: 0 calc(22px / var(--figma-scale, 1)) calc(24px / var(--figma-scale, 1));
   }
@@ -499,6 +523,12 @@
   .productBody h2 {
     min-height: 0;
     font-size: calc(17px / var(--figma-scale, 1));
+    overflow-wrap: anywhere;
+  }
+
+  .productBody p,
+  .detailLink {
+    overflow-wrap: anywhere;
   }
 }
 
