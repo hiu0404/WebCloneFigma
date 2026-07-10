@@ -99,3 +99,17 @@ export async function apiUploadImage(file: File): Promise<string> {
     throw err instanceof Error ? err : new Error('Upload failed')
   }
 }
+
+export async function apiUploadProductImage(file: File): Promise<string> {
+  const fd = new FormData()
+  fd.append('file', file)
+  const res = await fetch(apiUrl('/api/products/upload-image'), {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  })
+  if (!res.ok) throw await apiErrorFromResponse(res, 'Upload ảnh sản phẩm thất bại')
+  const data = (await res.json()) as { url?: string }
+  if (!data.url) throw new Error('Backend không trả về đường dẫn ảnh')
+  return data.url
+}

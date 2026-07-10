@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { FiEdit2, FiPlus, FiRefreshCw, FiTrash2 } from 'react-icons/fi'
 import { getCategoryLabel, getChildCategoryLabel, isCategoryVisible, type AdminCategory } from '../../data/categories'
 import { newId, normalizeLegacyProduct, type Product } from '../../lib/adminStore'
-import { apiDeleteProduct, apiGetProducts, apiUploadImage, apiUpsertProduct } from '../../services/productService'
+import { apiDeleteProduct, apiGetProducts, apiUploadImage, apiUploadProductImage, apiUpsertProduct } from '../../services/productService'
 import { apiGetCategories } from '../../services/categoryService'
 import { sanitizeAdminImageUrls, sanitizeAdminMainImageUrl } from '../../lib/adminImages'
 import { productMainImageUrl } from '../../lib/productImages'
@@ -316,7 +316,7 @@ export function AdminProductsPage() {
   async function uploadOne(file: File, field: 'imageUrl' | 'pdfUrl') {
     setBusy(true)
     try {
-      const url = await apiUploadImage(file)
+      const url = field === 'imageUrl' ? await apiUploadProductImage(file) : await apiUploadImage(file)
       setValue(field, url, { shouldDirty: true, shouldValidate: true })
       showToast('Tải file thành công')
     } catch (err) {
@@ -467,8 +467,9 @@ export function AdminProductsPage() {
                 <input className={styles.input} {...register('brand')} />
               </label>
 
-              <label className={styles.field}>
+              <div className={styles.field}>
                 <span className={styles.label}>Hình ảnh *</span>
+                <span className={styles.muted}>Tải ảnh từ máy tính:</span>
                 <input
                   className={styles.input}
                   type="file"
@@ -481,8 +482,9 @@ export function AdminProductsPage() {
                 />
                 <input
                   className={styles.input}
-                  type="url"
-                  placeholder="Hoac dan URL anh ngoai: https://..."
+                  type="text"
+                  inputMode="url"
+                  placeholder="Hoặc nhập link ảnh bên ngoài: https://..."
                   {...register('imageUrl', {
                     required: 'Vui long chon hoac nhap URL hinh anh san pham',
                     validate: (value) =>
@@ -498,7 +500,7 @@ export function AdminProductsPage() {
                   <span className={styles.muted}>Chưa chọn ảnh chính</span>
                 )}
                 {errors.imageUrl ? <span className={styles.error}>{errors.imageUrl.message}</span> : null}
-              </label>
+              </div>
 
               <div className={styles.field}>
                 <span className={styles.label}>Gallery ảnh</span>
@@ -513,7 +515,7 @@ export function AdminProductsPage() {
                     setBusy(true)
                     try {
                       const urls: string[] = []
-                      for (const file of files) urls.push(await apiUploadImage(file))
+                      for (const file of files) urls.push(await apiUploadProductImage(file))
                       setValue('imageUrls', [...(getValues('imageUrls') ?? []), ...urls], {
                         shouldDirty: true,
                         shouldValidate: true,
@@ -529,7 +531,8 @@ export function AdminProductsPage() {
                 />
                 <input
                   className={styles.input}
-                  type="url"
+                  type="text"
+                  inputMode="url"
                   placeholder="Hoac dan URL anh phu roi bam them"
                   value={galleryUrlDraft}
                   onChange={(event) => setGalleryUrlDraft(event.target.value)}

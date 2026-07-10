@@ -22,6 +22,7 @@ const root = path.join(__dirname, '..')
 const dataDir = path.join(root, 'server', 'data')
 const dataExampleDir = path.join(root, 'server', 'data-example')
 const uploadsDir = path.join(root, 'public', 'uploads')
+const productUploadsDir = path.join(uploadsDir, 'products')
 const productsFile = path.join(dataDir, 'products.json')
 const categoriesFile = path.join(dataDir, 'categories.json')
 const microscopeCategoriesFile = path.join(dataDir, 'microscope-categories.json')
@@ -97,6 +98,7 @@ app.use(express.json({ limit: '2mb' }))
 
 fs.mkdirSync(dataDir, { recursive: true })
 fs.mkdirSync(uploadsDir, { recursive: true })
+fs.mkdirSync(productUploadsDir, { recursive: true })
 for (const fileName of runtimeJsonFiles) ensureRuntimeJsonFile(fileName)
 
 const AUTH_COOKIE_NAME = 'admin_token'
@@ -1444,6 +1446,35 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: uploadMaxBytes },
+})
+
+const productImageStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, productUploadsDir),
+  filename: (_req, file, cb) => {
+    const safe = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_')
+    cb(null, `${Date.now()}_${safe}`)
+  },
+})
+const productImageUpload = multer({
+  storage: productImageStorage,
+  limits: { fileSize: uploadMaxBytes },
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) return cb(null, true)
+    cb(new Error('Chỉ chấp nhận file hình ảnh'))
+  },
+})
+
+app.post('/api/products/upload-image', requireAdminApi, (req, res, next) => {
+  productImageUpload.single('file')(req, res, (err) => {
+    if (err) {
+      if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ error: `File quá lớn (tối đa ${uploadMaxMb} MB)`, code: err.code })
+      }
+      return res.status(400).json({ error: err.message || 'Upload ảnh thất bại' })
+    }
+    if (!req.file) return res.status(400).json({ error: 'Không có file ảnh' })
+    return res.json({ url: `/uploads/products/${req.file.filename}` })
+  })
 })
 
 app.post('/api/upload', requireAdminApi, (req, res, next) => {
