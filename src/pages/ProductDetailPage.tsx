@@ -112,7 +112,7 @@ export function ProductDetailPage() {
           <div className={styles.emptyState}>Đang tải sản phẩm...</div>
         ) : !product ? (
           <div className={styles.emptyState}>
-            Không tìm thấy sản phẩm. <Link to="/san-pham">Quay lại danh sách sản phẩm</Link>
+            Không tìm thấy sản phẩm. <Link to="/EquipmentPage">Quay lại danh sách sản phẩm</Link>
           </div>
         ) : (
           <>

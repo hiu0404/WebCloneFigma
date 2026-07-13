@@ -3,9 +3,8 @@ import { FigmaScaledLayout } from './layouts/FigmaScaledLayout'
 import { HomePage } from './pages/HomePage'
 import { ContactPage } from './pages/ContactPage'
 import { AboutPage } from './pages/AboutPage'
-import { ProductPage } from './pages/ProductPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
-import { EquipmentPage } from './pages/EquipmentPage'
+import { EquipmentCatalogPage } from './pages/EquipmentCatalogPage'
 import { VatTuTieuHaoPage } from './pages/VatTuTieuHaoPage'
 import { ChemicalsPage } from './pages/ChemicalsPage'
 import { AntibodiesPage } from './pages/AntibodiesPage'
@@ -28,24 +27,14 @@ import { PiccProductManagePage } from './pages/admin/PiccProductManagePage'
 import { MicroscopeCategoryManagePage } from './pages/admin/MicroscopeCategoryManagePage'
 import { MicroscopeManagePage } from './pages/admin/MicroscopeManagePage'
 import MicroscopePage from './pages/MicroscopePage'
-import Trimmingtech from './pages/Trimmingtech'
-import TissueProcessing from './pages/TissueProcessing'
-import Scaning from './pages/Scaning'
-import LaserCassette from './pages/LaserCassette'
 import LaserSlide from './pages/LaserSlide'
-import Immunohistochemistry from './pages/Immunohistochemistry'
-import DyeingMachine from './pages/DyeingMachine'
-import CuttingMachine from './pages/CuttingMachine'
-import Casting from './pages/Casting'
 import SupportService from './pages/SupportService'
 import BrandPage from './pages/BrandPage'
 import NewsPage from './pages/NewsPage'
 import PICC from './pages/PICC'
-import DryingTable from './pages/DryingTable'
-import TissueTension from './pages/TissueTension'
-import LaminatingMachine from './pages/LaminatingMachine'
 import ForensicPage from './pages/ForensicPage'
 import { ScrollToTop } from './components/ScrollToTop'
+import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
 export default function App() {
   return (
     <BrowserRouter>
@@ -57,8 +46,8 @@ export default function App() {
           <Route path="/SupportService" element={<SupportService />} />
           <Route path="/BrandPage" element={<BrandPage />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
-          <Route path="/san-pham" element={<ProductPage />} />
-          <Route path="/EquipmentPage" element={<EquipmentPage />} />
+          <Route path="/san-pham" element={<Navigate to="/EquipmentPage" replace />} />
+          <Route path="/EquipmentPage" element={<EquipmentCatalogPage />} />
           <Route path="/san-pham-chi-tiet" element={<ProductDetailPage />} />
           <Route path="/vat-tu-tieu-hao" element={<VatTuTieuHaoPage />} />
           <Route path="/vat-tu-tieu-hao/:categorySlug" element={<VatTuTieuHaoPage />} />
@@ -69,18 +58,18 @@ export default function App() {
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/MicroscopePage" element={<MicroscopePage />} />
           <Route path="/MicroscopePage/:categorySlug" element={<MicroscopePage />} />
-          <Route path="/Trimmingtech" element={<Trimmingtech />} />
-          <Route path="/TissueProcessing" element={<TissueProcessing />} />
-          <Route path="/Scaning" element={<Scaning />} />
-          <Route path="/LaserCassette" element={<LaserCassette />} />
+          <Route path="/Trimmingtech" element={<EquipmentCatalogPage categorySlug="trimmingtech" />} />
+          <Route path="/TissueProcessing" element={<EquipmentCatalogPage categorySlug="tissue-processing" />} />
+          <Route path="/Scaning" element={<EquipmentCatalogPage categorySlug="scaning" />} />
+          <Route path="/LaserCassette" element={<EquipmentCatalogPage categorySlug="laser-cassette" />} />
           <Route path="/LaserSlide" element={<LaserSlide />} />
-          <Route path="/Immunohistochemistry" element={<Immunohistochemistry />} />
-          <Route path="/DyeingMachine" element={<DyeingMachine />} />
-          <Route path="/CuttingMachine" element={<CuttingMachine />} />
-          <Route path="/Casting" element={<Casting />} />
-          <Route path="/DryingTable" element={<DryingTable />} />
-          <Route path="/TissueTension" element={<TissueTension />} />
-          <Route path="/LaminatingMachine" element={<LaminatingMachine />} />
+          <Route path="/Immunohistochemistry" element={<EquipmentCatalogPage categorySlug="immunohistochemistry" />} />
+          <Route path="/DyeingMachine" element={<EquipmentCatalogPage categorySlug="dyeing-machine" />} />
+          <Route path="/CuttingMachine" element={<EquipmentCatalogPage categorySlug="cutting-machine" />} />
+          <Route path="/Casting" element={<EquipmentCatalogPage categorySlug="casting" />} />
+          <Route path="/DryingTable" element={<EquipmentCatalogPage categorySlug="drying-table" />} />
+          <Route path="/TissueTension" element={<EquipmentCatalogPage categorySlug="tissue-tension" />} />
+          <Route path="/LaminatingMachine" element={<EquipmentCatalogPage categorySlug="laminating-machine" />} />
           <Route path="/PICC" element={<PICC />} />
           <Route path="/PICC/:categorySlug" element={<PICC />} />
           <Route path="/GiamDinhKhoaHocKyThuatHinhSu" element={<ForensicPage />} />
@@ -95,6 +84,7 @@ export default function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="products" element={<ProductManagePage />} />
+            <Route path="equipment-categories" element={<EquipmentCategoryManagePage />} />
             <Route path="products/PICC" element={<PiccProductManagePage />} />
             <Route path="categories" element={<CategoryManagePage />} />
             <Route path="consumables" element={<ConsumableCategoryManagePage />} />

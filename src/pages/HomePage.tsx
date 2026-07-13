@@ -255,7 +255,7 @@ export function HomePage() {
         <section className={styles.section}>
           <div className={styles.blockHeader}>
             <h2>Sản phẩm nổi bật</h2>
-            <Link to="/san-pham">Xem tất cả <FaArrowRight /></Link>
+            <Link to="/EquipmentPage">Xem tất cả <FaArrowRight /></Link>
           </div>
           <div className={styles.productShell}>
             <button className={`${styles.sliderButton} ${styles.sliderPrev}`} type="button" aria-label="Trước">
@@ -273,7 +273,7 @@ export function HomePage() {
                       <div><dt>Model:</dt><dd>{item.model}</dd></div>
                       <div><dt>Hãng sx:</dt><dd>{item.manufacturer}</dd></div>
                     </dl>
-                    <Link className={styles.productDetailLink} to="/san-pham">Chi tiết <FaArrowRight /></Link>
+                    <Link className={styles.productDetailLink} to="/EquipmentPage">Chi tiết <FaArrowRight /></Link>
                   </div>
                 </article>
               ))}

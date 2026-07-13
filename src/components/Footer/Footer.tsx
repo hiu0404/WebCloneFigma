@@ -10,7 +10,7 @@ type FooterProps = {
 const quickLinks = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Giới thiệu', to: '/gioi-thieu' },
-  { label: 'Sản phẩm', to: '/san-pham' },
+  { label: 'Sản phẩm', to: '/EquipmentPage' },
   { label: 'Giải pháp', to: '/EquipmentPage' },
   { label: 'Dịch vụ hỗ trợ', to: '/SupportService' },
   { label: 'Tin tức', to: '/tin-tuc' },

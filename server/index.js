@@ -554,7 +554,22 @@ function normalizePiccProduct(item) {
 }
 
 const defaultCategories = [
-  { id: 'equipment', slug: 'equipment', label: 'S\u1ea3n ph\u1ea9m thi\u1ebft b\u1ecb', sortOrder: 1, status: 'active', children: [] },
+  {
+    id: 'equipment', slug: 'equipment', label: 'S\u1ea3n ph\u1ea9m thi\u1ebft b\u1ecb', sortOrder: 1, status: 'active',
+    children: [
+      { id: 'trimmingtech', slug: 'trimmingtech', label: 'B\u00e0n ph\u1eabu t\u00edch b\u1ec7nh ph\u1ea9m', sortOrder: 1, status: 'active' },
+      { id: 'tissue-processing', slug: 'tissue-processing', label: 'M\u00e1y x\u1eed l\u00fd m\u00f4 b\u1ec7nh ph\u1ea9m', sortOrder: 2, status: 'active' },
+      { id: 'casting', slug: 'casting', label: 'M\u00e1y \u0111\u00fac m\u00f4 b\u1ec7nh ph\u1ea9m', sortOrder: 3, status: 'active' },
+      { id: 'cutting-machine', slug: 'cutting-machine', label: 'M\u00e1y c\u1eaft b\u1ec7nh ph\u1ea9m', sortOrder: 4, status: 'active' },
+      { id: 'tissue-tension', slug: 'tissue-tension', label: 'B\u1ec3 c\u0103ng m\u00f4', sortOrder: 5, status: 'active' },
+      { id: 'drying-table', slug: 'drying-table', label: 'B\u00e0n s\u1ea5y ti\u00eau b\u1ea3n', sortOrder: 6, status: 'active' },
+      { id: 'dyeing-machine', slug: 'dyeing-machine', label: 'M\u00e1y nhu\u1ed9m ti\u00eau b\u1ea3n HE', sortOrder: 7, status: 'active' },
+      { id: 'immunohistochemistry', slug: 'immunohistochemistry', label: 'M\u00e1y nhu\u1ed9m h\u00f3a m\u00f4 mi\u1ec5n d\u1ecbch', sortOrder: 8, status: 'active' },
+      { id: 'laminating-machine', slug: 'laminating-machine', label: 'M\u00e1y d\u00e1n lamen t\u1ef1 \u0111\u1ed9ng', sortOrder: 9, status: 'active' },
+      { id: 'scaning', slug: 'scaning', label: 'M\u00e1y qu\u00e9t ti\u00eau b\u1ea3n k\u1ef9 thu\u1eadt s\u1ed1', sortOrder: 10, status: 'active' },
+      { id: 'laser-cassette', slug: 'laser-cassette', label: 'M\u00e1y in m\u00e3 v\u1ea1ch cassette', sortOrder: 11, status: 'active' },
+    ],
+  },
   {
     id: 'consumables',
     slug: 'consumables',
@@ -669,6 +684,15 @@ function readCategories() {
   if (Array.isArray(parsed) && parsed.length > 0) {
     const categories = cloneCategories(parsed)
     let changed = false
+    const equipment = categories.find((item) => item.slug === 'equipment')
+    const defaultEquipment = defaultCategories.find((item) => item.slug === 'equipment')
+    if (equipment && defaultEquipment && !equipment.equipmentCategoriesInitialized) {
+      if (equipment.children.length === 0) {
+        equipment.children = defaultEquipment.children.map((child) => ({ ...child }))
+      }
+      equipment.equipmentCategoriesInitialized = true
+      changed = true
+    }
     for (const defaultCategory of defaultCategories) {
       if (!categories.some((item) => item.slug === defaultCategory.slug)) {
         categories.push({ ...defaultCategory, children: defaultCategory.children.map((child) => ({ ...child })) })

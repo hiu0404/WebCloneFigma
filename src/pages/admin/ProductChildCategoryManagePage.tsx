@@ -24,7 +24,7 @@ type FormValues = {
 }
 
 type Props = {
-  parentSlug: 'consumables' | 'chemicals' | 'antibodies' | 'forensic-science' | 'intensive-care'
+  parentSlug: 'equipment' | 'consumables' | 'chemicals' | 'antibodies' | 'forensic-science' | 'intensive-care'
   title: string
   description: string
   itemLabel: string

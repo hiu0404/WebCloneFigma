@@ -16,6 +16,7 @@ import styles from './AdminLayout.module.css'
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: FiGrid, end: true },
   { to: '/admin/products', label: 'Quản lý sản phẩm', icon: FiPackage },
+  { to: '/admin/equipment-categories', label: 'Danh mục sản phẩm thiết bị', icon: FiBox },
   { to: '/admin/categories', label: 'Quản lý danh mục', icon: FiLayers },
   { to: '/admin/consumables', label: 'Danh mục vật tư tiêu hao', icon: FiBox },
   { to: '/admin/chemical-categories', label: 'Danh mục hóa chất', icon: FiLayers },

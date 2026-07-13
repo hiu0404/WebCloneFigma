@@ -277,6 +277,7 @@
   background: #ffffff;
   box-shadow: 0 12px 34px rgba(18, 75, 95, 0.06);
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  text-decoration: none;
 }
 
 .productcard img,
@@ -375,6 +376,67 @@
 
   .productcard:hover img {
     transform: scale(1.05);
+  }
+}
+
+.equipmentCard .productcardContent::after {
+  display: none;
+}
+
+.equipmentCard .productcardContent h3 {
+  min-height: 49px;
+  margin-bottom: 16px;
+}
+
+.equipmentMeta {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+}
+
+.equipmentMeta > div {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+
+.equipmentMeta dt {
+  color: #587383;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.equipmentMeta dd {
+  min-width: 0;
+  margin: 0;
+  color: #164a6d;
+  font-size: 14px;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.detailButton {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px !important;
+  margin: 20px 0 0 !important;
+  padding: 0 16px !important;
+  border-radius: 7px !important;
+  background: #0879a8 !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+
+.detailButton b {
+  transition: transform 0.2s ease;
+}
+
+@media (hover: hover) {
+  .equipmentCard:hover .detailButton b {
+    transform: translateX(4px);
   }
 }
 
