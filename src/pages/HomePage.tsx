@@ -20,6 +20,9 @@ import { FigmaImage } from '../components/FigmaImage'
 import { Header } from '../components/Header/Header'
 import styles from './HomePage.module.css'
 import { apiGetBrands } from '../services/brandService'
+import type { Product } from '../lib/adminStore'
+import { productMainImageUrl } from '../lib/productImages'
+import { apiGetProducts } from '../services/productService'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/EquipmentPage' },
@@ -53,44 +56,6 @@ const solutions = [
     title: 'Giải pháp IHC & ISH',
     text: 'Hệ thống nhuộm hóa mô miễn dịch và lai tại chỗ chất lượng cao.',
     to: '/Immunohistochemistry',
-  },
-]
-
-const products = [
-  {
-    id: 'vitrostainer-42',
-    name: 'Máy nhuộm hóa mô miễn dịch tự động (công suất 42 slide)',
-    model: 'VitroStainer 42',
-    manufacturer: 'Vitro S.A',
-    image: '/assetsFull/VT42.gif',
-  },
-  {
-    name: 'Máy in cassette tự động (600 cassette)',
-    model: 'UC-600',
-    id: 'uc-600',
-    manufacturer: 'Citotest',
-    image: '/assetsFull/UC600.webp',
-  },
-  {
-    name: 'Máy in lam kính tự động (100 lam kính)',
-    model: 'US-100',
-    id: 'us-100',
-    manufacturer: 'Citotest',
-    image: '/assetsFull/US100.webp',
-  },
-  {
-    name: 'Máy quét tiêu bản tự động (200 slide/giờ)',
-    model: 'VX504',
-    id: 'vx504',
-    manufacturer: 'Huron',
-    image: '/assetsFull/VX504.webp',
-  },
-  {
-    name: 'Máy quét tiêu bản tự động (360 slide/giờ)',
-    model: 'HT540',
-    id: 'ht540',
-    manufacturer: 'Huron',
-    image: '/assetsFull/HT540.webp',
   },
 ]
 
@@ -147,6 +112,7 @@ const heroSlides = [
 export function HomePage() {
   const [activeHero, setActiveHero] = useState(0)
   const [homepagePartners, setHomepagePartners] = useState(partners)
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -163,6 +129,19 @@ export function HomePage() {
         items
           .filter((item) => item.status === 'active' && item.featured)
           .map((item) => ({ image: item.imageUrl ?? '', name: item.name, url: item.url })),
+      )
+    })
+    return () => { alive = false }
+  }, [])
+
+  useEffect(() => {
+    let alive = true
+    apiGetProducts().then((items) => {
+      if (!alive) return
+      setFeaturedProducts(
+        items
+          .filter((item) => (item.status ?? 'active') === 'active' && item.featured)
+          .slice(0, 5),
       )
     })
     return () => { alive = false }
@@ -282,16 +261,18 @@ export function HomePage() {
               <FaChevronLeft />
             </button>
             <div className={styles.productGrid}>
-              {products.map((item) => (
-                <article className={styles.productCard} key={item.name}>
+              {featuredProducts.map((item) => {
+                const image = productMainImageUrl(item)
+                return (
+                <article className={styles.productCard} key={item.id}>
                   <div className={styles.productImage}>
-                    <FigmaImage src={item.image} alt="" ariaHidden />
+                    {image ? <FigmaImage src={image} alt={item.title} /> : null}
                   </div>
                   <div className={styles.productInfo}>
-                    <h3>{item.name}</h3>
+                    <h3>{item.title}</h3>
                     <dl className={styles.productMeta}>
-                      <div><dt>Model:</dt><dd>{item.model}</dd></div>
-                      <div><dt>Hãng sx:</dt><dd>{item.manufacturer}</dd></div>
+                      <div><dt>Model:</dt><dd>{item.sku || 'Đang cập nhật'}</dd></div>
+                      <div><dt>Hãng sx:</dt><dd>{item.brand || 'Đang cập nhật'}</dd></div>
                     </dl>
                     <Link
                       className={styles.productDetailLink}
@@ -301,7 +282,8 @@ export function HomePage() {
                     </Link>
                   </div>
                 </article>
-              ))}
+                )
+              })}
             </div>
             <button className={`${styles.sliderButton} ${styles.sliderNext}`} type="button" aria-label="Sau">
               <FaChevronRight />
