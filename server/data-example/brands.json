@@ -1,0 +1,93 @@
+[
+  {
+    "id": "leica-microsystems",
+    "name": "Leica Microsystems",
+    "country": "Germany",
+    "url": "https://www.leica-microsystems.com/",
+    "description": "Kính hiển vi, giải pháp hình ảnh khoa học, thiết bị giải phẫu bệnh và pháp y.",
+    "imageUrl": "/assetsFull/Lecia.svg",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 1,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "rapid-labs",
+    "name": "Rapid Labs",
+    "country": "United Kingdom",
+    "url": "https://www.rapidlabs.co.uk/",
+    "description": "Sản phẩm chẩn đoán và xét nghiệm chất lượng cao.",
+    "imageUrl": "/assetsFull/image 1.png",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 2,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "bio-optica",
+    "name": "Bio-Optica",
+    "country": "Italy",
+    "url": "https://www.bio-optica.it/",
+    "description": "Thiết bị và hóa chất chuyên dụng cho phòng xét nghiệm và giải phẫu bệnh.",
+    "imageUrl": "/assetsFull/bio.png",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 3,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "lupetec",
+    "name": "Lupetec",
+    "country": "Brazil",
+    "url": "https://lupetec.com.br/",
+    "description": "Thiết bị phòng thí nghiệm và giải pháp xử lý mô hiện đại.",
+    "imageUrl": "/assetsFull/lupetec.png",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 4,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "citotest",
+    "name": "Citotest",
+    "country": "China",
+    "url": "https://www.citotest.com/",
+    "description": "Vật tư tiêu hao, lam kính và thiết bị phục vụ phòng xét nghiệm.",
+    "imageUrl": "/assetsFull/citotest.webp",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 5,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "huron",
+    "name": "Huron Digital Pathology",
+    "country": "Canada",
+    "url": "https://www.hurontechnologies.com/",
+    "description": "Giải pháp scan lam kính và số hóa tiêu bản giải phẫu bệnh.",
+    "imageUrl": "/assetsFull/logo HR 1.png",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 6,
+    "createdAt": 0,
+    "updatedAt": 0
+  },
+  {
+    "id": "plan1health",
+    "name": "Plan1Health",
+    "country": "Italy",
+    "url": "https://www.p1h.it/en/homepage-new-english/",
+    "description": "Giải pháp đường truyền tĩnh mạch, PICC và vật tư can thiệp mạch máu.",
+    "imageUrl": "/assetsFull/Plan1Health.png",
+    "featured": true,
+    "status": "active",
+    "sortOrder": 7,
+    "createdAt": 0,
+    "updatedAt": 0
+  }
+]

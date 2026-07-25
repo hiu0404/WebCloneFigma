@@ -15,6 +15,51 @@ import {
   type AdminCategory,
 } from '../data/categories'
 
+const homepageProducts: Product[] = [
+  {
+    id: 'vitrostainer-42',
+    title: 'Máy nhuộm hóa mô miễn dịch tự động (công suất 42 slide)',
+    sku: 'VitroStainer 42',
+    brand: 'Vitro S.A',
+    imageUrl: '/assetsFull/VT42.gif',
+  },
+  {
+    id: 'uc-600',
+    title: 'Máy in cassette tự động (600 cassette)',
+    sku: 'UC-600',
+    brand: 'Citotest',
+    imageUrl: '/assetsFull/UC600.webp',
+  },
+  {
+    id: 'us-100',
+    title: 'Máy in lam kính tự động (100 lam kính)',
+    sku: 'US-100',
+    brand: 'Citotest',
+    imageUrl: '/assetsFull/US100.webp',
+  },
+  {
+    id: 'vx504',
+    title: 'Máy quét tiêu bản tự động (200 slide/giờ)',
+    sku: 'VX504',
+    brand: 'Huron',
+    imageUrl: '/assetsFull/VX504.webp',
+  },
+  {
+    id: 'ht540',
+    title: 'Máy quét tiêu bản tự động (360 slide/giờ)',
+    sku: 'HT540',
+    brand: 'Huron',
+    imageUrl: '/assetsFull/HT540.webp',
+  },
+].map((product) => ({
+  ...product,
+  parentCategorySlug: 'equipment',
+  status: 'active',
+  featured: true,
+  createdAt: 0,
+  updatedAt: 0,
+}))
+
 function galleryImages(product: Product | undefined): string[] {
   if (!product) return []
   const urls = [product.imageUrl, ...(product.imageUrls ?? [])]
@@ -70,7 +115,10 @@ export function ProductDetailPage() {
     }
   }, [])
 
-  const product = useMemo(() => (id ? catalog.find((item) => item.id === id) : undefined), [catalog, id])
+  const product = useMemo(
+    () => (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
+    [catalog, id],
+  )
   const images = useMemo(() => galleryImages(product), [product])
   const mainImage = selectedImage || images[0] || productMainImageUrl(product) || ''
   const parentSlug = product ? getProductParentCategorySlug(product) : ''

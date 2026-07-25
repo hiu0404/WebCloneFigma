@@ -19,6 +19,7 @@ import { GiScales } from 'react-icons/gi'
 import { FigmaImage } from '../components/FigmaImage'
 import { Header } from '../components/Header/Header'
 import styles from './HomePage.module.css'
+import { apiGetBrands } from '../services/brandService'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/EquipmentPage' },
@@ -57,6 +58,7 @@ const solutions = [
 
 const products = [
   {
+    id: 'vitrostainer-42',
     name: 'Máy nhuộm hóa mô miễn dịch tự động (công suất 42 slide)',
     model: 'VitroStainer 42',
     manufacturer: 'Vitro S.A',
@@ -65,24 +67,28 @@ const products = [
   {
     name: 'Máy in cassette tự động (600 cassette)',
     model: 'UC-600',
+    id: 'uc-600',
     manufacturer: 'Citotest',
     image: '/assetsFull/UC600.webp',
   },
   {
     name: 'Máy in lam kính tự động (100 lam kính)',
     model: 'US-100',
+    id: 'us-100',
     manufacturer: 'Citotest',
     image: '/assetsFull/US100.webp',
   },
   {
     name: 'Máy quét tiêu bản tự động (200 slide/giờ)',
     model: 'VX504',
+    id: 'vx504',
     manufacturer: 'Huron',
     image: '/assetsFull/VX504.webp',
   },
   {
     name: 'Máy quét tiêu bản tự động (360 slide/giờ)',
     model: 'HT540',
+    id: 'ht540',
     manufacturer: 'Huron',
     image: '/assetsFull/HT540.webp',
   },
@@ -140,12 +146,26 @@ const heroSlides = [
 
 export function HomePage() {
   const [activeHero, setActiveHero] = useState(0)
+  const [homepagePartners, setHomepagePartners] = useState(partners)
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveHero((current) => (current + 1) % heroSlides.length)
     }, 5200)
     return () => window.clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    let alive = true
+    apiGetBrands().then((items) => {
+      if (!alive) return
+      setHomepagePartners(
+        items
+          .filter((item) => item.status === 'active' && item.featured)
+          .map((item) => ({ image: item.imageUrl ?? '', name: item.name, url: item.url })),
+      )
+    })
+    return () => { alive = false }
   }, [])
 
   return (
@@ -273,7 +293,12 @@ export function HomePage() {
                       <div><dt>Model:</dt><dd>{item.model}</dd></div>
                       <div><dt>Hãng sx:</dt><dd>{item.manufacturer}</dd></div>
                     </dl>
-                    <Link className={styles.productDetailLink} to="/EquipmentPage">Chi tiết <FaArrowRight /></Link>
+                    <Link
+                      className={styles.productDetailLink}
+                      to={`/san-pham-chi-tiet?id=${encodeURIComponent(item.id)}`}
+                    >
+                      Chi tiết <FaArrowRight />
+                    </Link>
                   </div>
                 </article>
               ))}
@@ -322,7 +347,7 @@ export function HomePage() {
               <h2>Đối tác hàng đầu</h2>
             </div>
             <div className={styles.partnerGrid}>
-              {partners.map((partner) => (
+              {homepagePartners.map((partner) => (
                 <a
                   className={styles.partnerCard}
                   href={partner.url}

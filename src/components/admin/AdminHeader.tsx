@@ -14,6 +14,7 @@ const pageTitles: Record<string, string> = {
   '/admin/microscope-categories': 'Danh mục kính hiển vi',
   '/admin/microscopes': 'Quản lý kính hiển vi',
   '/admin/news': 'Tin tức',
+  '/admin/brands': 'Quản lý hãng đại diện',
   '/admin/security': 'Bảo mật admin',
   '/admin/settings': 'Cài đặt',
 }

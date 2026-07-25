@@ -35,6 +35,7 @@ import PICC from './pages/PICC'
 import ForensicPage from './pages/ForensicPage'
 import { ScrollToTop } from './components/ScrollToTop'
 import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
+import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
 export default function App() {
   return (
     <BrowserRouter>
@@ -99,6 +100,7 @@ export default function App() {
             <Route path="microscope-categories" element={<MicroscopeCategoryManagePage />} />
             <Route path="microscopes" element={<MicroscopeManagePage />} />
             <Route path="news" element={<AdminSimplePage title="Tin tức" description="Khu vực quản lý tin tức sẽ dùng chung layout admin." />} />
+            <Route path="brands" element={<AdminBrandsPage />} />
             <Route path="security" element={<AdminSecurityPage />} />
             <Route path="settings" element={<AdminSimplePage title="Cài đặt" description="Khu vực cấu hình hệ thống admin." />} />
           </Route>

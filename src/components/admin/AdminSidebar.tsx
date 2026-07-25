@@ -9,6 +9,7 @@ import {
   FiSearch,
   FiSettings,
   FiShield,
+  FiTag,
 } from 'react-icons/fi'
 import { logoutAdminSession } from '../../lib/adminAuthApi'
 import styles from './AdminLayout.module.css'
@@ -28,6 +29,7 @@ const navItems = [
   { to: '/admin/microscope-categories', label: 'Danh mục kính hiển vi', icon: FiLayers },
   { to: '/admin/microscopes', label: 'Quản lý kính hiển vi', icon: FiSearch },
   { to: '/admin/news', label: 'Tin tức', icon: FiFileText },
+  { to: '/admin/brands', label: 'Quản lý hãng đại diện', icon: FiTag },
   { to: '/admin/security', label: 'Bảo mật admin', icon: FiShield },
   { to: '/admin/settings', label: 'Cài đặt', icon: FiSettings },
 ]

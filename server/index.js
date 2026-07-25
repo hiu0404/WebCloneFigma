@@ -29,6 +29,7 @@ const microscopeCategoriesFile = path.join(dataDir, 'microscope-categories.json'
 const microscopesFile = path.join(dataDir, 'microscopes.json')
 const forensicProductsFile = path.join(dataDir, 'forensic-products.json')
 const piccProductsFile = path.join(dataDir, 'picc-products.json')
+const brandsFile = path.join(dataDir, 'brands.json')
 const adminAuthFile = path.join(dataDir, 'admin-auth.json')
 const adminRateLimitFile = path.join(dataDir, 'admin-rate-limit.json')
 const adminAuditLogFile = path.join(dataDir, 'admin-auth.log')
@@ -41,6 +42,7 @@ const runtimeJsonFiles = [
   'microscopes.json',
   'forensic-products.json',
   'picc-products.json',
+  'brands.json',
 ]
 
 function loadEnvFile(filePath) {
@@ -429,6 +431,32 @@ function readProducts() {
 
 function writeProducts(list) {
   fs.writeFileSync(productsFile, JSON.stringify(list, null, 2), 'utf-8')
+}
+
+function normalizeBrands(list) {
+  return (Array.isArray(list) ? list : [])
+    .map((brand, index) => ({
+      ...brand,
+      id: String(brand.id || '').trim(),
+      name: String(brand.name || '').trim(),
+      country: String(brand.country || '').trim(),
+      url: String(brand.url || '').trim(),
+      description: String(brand.description || '').trim(),
+      imageUrl: normalizeUploadRef(String(brand.imageUrl || '').trim()),
+      featured: Boolean(brand.featured),
+      status: brand.status === 'hidden' ? 'hidden' : 'active',
+      sortOrder: normalizeDisplayOrder(brand.sortOrder) ?? index + 1,
+    }))
+    .filter((brand) => brand.id && brand.name)
+    .sort(compareDisplayOrder)
+}
+
+function readBrands() {
+  return normalizeBrands(readJsonFile(brandsFile, []))
+}
+
+function writeBrands(list) {
+  writeJsonFileAtomic(brandsFile, normalizeBrands(list))
 }
 
 const defaultMicroscopeCategories = [
@@ -1250,6 +1278,46 @@ app.delete('/api/products/:id', requireAdminApi, (req, res) => {
   const id = req.params.id
   const next = readProducts().filter((p) => p.id !== id)
   writeProducts(next)
+  res.json({ ok: true })
+})
+
+app.get('/api/brands', (_req, res) => {
+  res.json(readBrands())
+})
+
+app.post('/api/brands', requireAdminApi, (req, res) => {
+  const now = Date.now()
+  const id = String(req.body?.id || '').trim()
+  const name = String(req.body?.name || '').trim()
+  if (!id || !name) return res.status(400).json({ error: 'Thiếu mã hoặc tên hãng' })
+
+  const input = {
+    id,
+    name,
+    country: String(req.body?.country || '').trim(),
+    url: String(req.body?.url || '').trim(),
+    description: String(req.body?.description || '').trim(),
+    imageUrl: normalizeUploadRef(String(req.body?.imageUrl || '').trim()),
+    featured: Boolean(req.body?.featured),
+    status: req.body?.status === 'hidden' ? 'hidden' : 'active',
+    sortOrder: normalizeDisplayOrder(req.body?.sortOrder),
+  }
+  const brands = readBrands()
+  const index = brands.findIndex((brand) => brand.id === id)
+  const saved = index >= 0
+    ? { ...brands[index], ...input, updatedAt: now }
+    : { ...input, createdAt: now, updatedAt: now }
+  if (index >= 0) brands[index] = saved
+  else brands.push(saved)
+  writeBrands(brands)
+  res.json(saved)
+})
+
+app.delete('/api/brands/:id', requireAdminApi, (req, res) => {
+  const id = String(req.params.id || '')
+  const brands = readBrands()
+  if (!brands.some((brand) => brand.id === id)) return res.status(404).json({ error: 'Không tìm thấy hãng' })
+  writeBrands(brands.filter((brand) => brand.id !== id))
   res.json({ ok: true })
 })
 

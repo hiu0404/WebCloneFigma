@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
+import { apiGetBrands } from "../services/brandService";
 import styles from "./BrandPage.module.css";
 
 const brands = [
@@ -55,6 +57,23 @@ const brands = [
 ];
 
 export default function BrandPage() {
+  const [displayBrands, setDisplayBrands] = useState(brands);
+
+  useEffect(() => {
+    let alive = true;
+    apiGetBrands().then((items) => {
+      if (!alive) return;
+      setDisplayBrands(items.filter((item) => item.status === 'active').map((item) => ({
+        image: item.imageUrl ?? '',
+        name: item.name,
+        country: item.country,
+        url: item.url,
+        desc: item.description,
+      })));
+    });
+    return () => { alive = false; };
+  }, []);
+
   return (
     <div className={styles.page}>
       <Header />
@@ -87,8 +106,8 @@ export default function BrandPage() {
 
       <section className={styles.brandSection}>
         <div className={styles.brandGrid}>
-          {brands.map((brand, index) => (
-            <div className={styles.brandCard} key={index}>
+          {displayBrands.map((brand) => (
+            <div className={styles.brandCard} key={brand.name}>
               <div className={styles.brandImageWrapper}>
                 <img src={brand.image} alt={brand.name} className={styles.brandImage} />
               </div>
