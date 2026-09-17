@@ -70,7 +70,7 @@ export function Footer({ top }: FooterProps) {
 
           <div className={styles.office}>
             <h3>Hồ Chí Minh</h3>
-            <p><FaMapMarkerAlt />Văn phòng: TP. HCM: Số 48, đường S7, P. Tây Thạnh, TP. Hồ Chí Minh.</p>
+            <p><FaMapMarkerAlt />Văn phòng TP. HCM: Số 48, đường S7, P. Tây Thạnh, TP. Hồ Chí Minh.</p>
             <a href="tel:+84812119668"><FaPhoneAlt /> +84 812 119 668</a>
             <a href="mailto:info.ecolinkvn@gmail.com"><FaEnvelope /> info.ecolinkvn@gmail.com</a>
           </div>
@@ -80,7 +80,7 @@ export function Footer({ top }: FooterProps) {
           <span>© 2026 Ecolink. All rights reserved.</span>
           <div>
             <NavLink to="/">Chính sách bảo mật</NavLink>
-            <NavLink to="/">Điều khoản sử dụnggg</NavLink>
+            <NavLink to="/">Điều khoản sử dụng</NavLink>
           </div>
         </div>
       </div>
