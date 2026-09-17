@@ -15,6 +15,7 @@ import {
 import { productMainImageUrl } from '../lib/productImages'
 import { apiGetCategories } from '../services/categoryService'
 import { apiGetProducts } from '../services/productService'
+import { productUrl } from '../lib/seo'
 import styles from './ConsumablesPage.module.css'
 
 export const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
@@ -109,7 +110,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
             {loading ? <div className={styles.emptyState}>Đang tải sản phẩm...</div> : shownProducts.length ? (
               <div className={styles.productgrid}>{shownProducts.map((item) => {
                 const image = productMainImageUrl(item)
-                return <Link className={`${styles.productcard} ${styles.equipmentCard}`} to={`/san-pham-chi-tiet?id=${encodeURIComponent(item.id)}`} key={item.id}>
+                return <Link className={`${styles.productcard} ${styles.equipmentCard}`} to={productUrl(item)} key={item.id}>
                   {image ? <img src={image} alt={item.title} /> : <div className={styles.imagePlaceholder} />}
                   <div className={styles.productcardContent}>
                     <h3>{item.title}</h3>

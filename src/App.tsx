@@ -50,6 +50,7 @@ export default function App() {
           <Route path="/san-pham" element={<Navigate to="/EquipmentPage" replace />} />
           <Route path="/EquipmentPage" element={<EquipmentCatalogPage />} />
           <Route path="/san-pham-chi-tiet" element={<ProductDetailPage />} />
+          <Route path="/san-pham/:slug" element={<ProductDetailPage />} />
           <Route path="/vat-tu-tieu-hao" element={<VatTuTieuHaoPage />} />
           <Route path="/vat-tu-tieu-hao/:categorySlug" element={<VatTuTieuHaoPage />} />
           <Route path="/ChemicalsPage" element={<ChemicalsPage />} />

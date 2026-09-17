@@ -23,6 +23,7 @@ import { apiGetBrands } from '../services/brandService'
 import type { Product } from '../lib/adminStore'
 import { productMainImageUrl } from '../lib/productImages'
 import { apiGetProducts } from '../services/productService'
+import { productUrl } from '../lib/seo'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/EquipmentPage' },
@@ -276,7 +277,7 @@ export function HomePage() {
                     </dl>
                     <Link
                       className={styles.productDetailLink}
-                      to={`/san-pham-chi-tiet?id=${encodeURIComponent(item.id)}`}
+                      to={productUrl(item)}
                     >
                       Chi tiết <FaArrowRight />
                     </Link>

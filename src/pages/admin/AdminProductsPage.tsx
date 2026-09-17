@@ -27,6 +27,9 @@ type AdminProductFormValues = {
   specs: string
   pdfUrl: string
   youtubeUrl: string
+  slug: string
+  seoTitle: string
+  seoDescription: string
   status: NonNullable<Product['status']>
   featured: boolean
   sortOrder: number | ''
@@ -63,6 +66,9 @@ function emptyForm(): AdminProductFormValues {
     specs: '',
     pdfUrl: '',
     youtubeUrl: '',
+    slug: '',
+    seoTitle: '',
+    seoDescription: '',
     status: 'active',
     featured: false,
     sortOrder: '',
@@ -101,6 +107,9 @@ function toFormValues(product: Product): AdminProductFormValues {
     specs: normalized.specs ?? '',
     pdfUrl: normalized.pdfUrl ?? '',
     youtubeUrl: normalized.youtubeUrl ?? '',
+    slug: normalized.slug ?? '',
+    seoTitle: normalized.seoTitle ?? '',
+    seoDescription: normalized.seoDescription ?? '',
     status: normalized.status ?? 'active',
     featured: Boolean(normalized.featured),
     sortOrder: normalized.sortOrder ?? '',
@@ -283,6 +292,9 @@ export function AdminProductsPage() {
         specs: values.specs.trim() || undefined,
         pdfUrl: values.pdfUrl.trim() || undefined,
         youtubeUrl: values.youtubeUrl.trim() || undefined,
+        slug: values.slug.trim() || undefined,
+        seoTitle: values.seoTitle.trim() || undefined,
+        seoDescription: values.seoDescription.trim() || undefined,
         status: values.status,
         featured: values.featured,
         sortOrder: Number(values.sortOrder) || undefined,
@@ -578,6 +590,21 @@ export function AdminProductsPage() {
               <label className={styles.field}>
                 <span className={styles.label}>Video YouTube</span>
                 <input className={styles.input} placeholder="https://www.youtube.com/watch?v=..." {...register('youtubeUrl')} />
+              </label>
+
+              <label className={styles.field}>
+                <span className={styles.label}>Slug SEO</span>
+                <input className={styles.input} placeholder="Tự tạo từ tên sản phẩm nếu để trống" {...register('slug')} />
+              </label>
+
+              <label className={styles.field}>
+                <span className={styles.label}>SEO Title</span>
+                <input className={styles.input} placeholder="Tự tạo: Tên sản phẩm | Ecolink" {...register('seoTitle')} />
+              </label>
+
+              <label className={`${styles.field} ${styles.full}`}>
+                <span className={styles.label}>SEO Description</span>
+                <textarea className={styles.textarea} rows={3} placeholder="Tự tạo từ mô tả sản phẩm nếu để trống" {...register('seoDescription')} />
               </label>
 
               <label className={styles.field}>

@@ -516,6 +516,10 @@ function normalizeMicroscope(item) {
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
     shortDescription: String(item?.shortDescription || '').trim(),
+    slug: String(item?.slug || '').trim() || undefined,
+    seoTitle: String(item?.seoTitle || '').trim() || undefined,
+    seoDescription: String(item?.seoDescription || '').trim() || undefined,
+    legacySlugs: Array.isArray(item?.legacySlugs) ? item.legacySlugs.filter((value) => typeof value === 'string') : undefined,
     status: item?.status === 'hidden' ? 'hidden' : 'active',
     sortOrder: normalizeDisplayOrder(item?.sortOrder),
     createdAt: Number(item?.createdAt) || now,
@@ -544,6 +548,10 @@ function normalizeForensicProduct(item) {
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
     shortDescription: String(item?.shortDescription || '').trim(),
+    slug: String(item?.slug || '').trim() || undefined,
+    seoTitle: String(item?.seoTitle || '').trim() || undefined,
+    seoDescription: String(item?.seoDescription || '').trim() || undefined,
+    legacySlugs: Array.isArray(item?.legacySlugs) ? item.legacySlugs.filter((value) => typeof value === 'string') : undefined,
     specs: String(item?.specs || '').trim() || undefined,
     status: item?.status === 'hidden' ? 'hidden' : 'active',
     sortOrder: normalizeDisplayOrder(item?.sortOrder),
@@ -573,6 +581,10 @@ function normalizePiccProduct(item) {
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
     shortDescription: String(item?.shortDescription || '').trim(),
+    slug: String(item?.slug || '').trim() || undefined,
+    seoTitle: String(item?.seoTitle || '').trim() || undefined,
+    seoDescription: String(item?.seoDescription || '').trim() || undefined,
+    legacySlugs: Array.isArray(item?.legacySlugs) ? item.legacySlugs.filter((value) => typeof value === 'string') : undefined,
     specs: String(item?.specs || '').trim() || undefined,
     status: item?.status === 'hidden' ? 'hidden' : 'active',
     sortOrder: normalizeDisplayOrder(item?.sortOrder),
@@ -856,6 +868,72 @@ function normalizeProductCategoryFields(p) {
   }
 }
 
+const SITE_URL = String(process.env.SITE_URL || 'https://eco-link.vn').replace(/\/$/, '')
+
+function makeSeoSlug(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char])
+}
+
+function seoDescription(item) {
+  const text = String(item.seoDescription || item.description || item.shortDescription || `Thông tin sản phẩm ${item.title || item.name} tại Ecolink.`)
+    .replace(/\s+/g, ' ').trim()
+  return text.slice(0, 160)
+}
+
+function seoProduct(type, item, categories = []) {
+  const name = String(item.title || item.name || '').trim()
+  const slug = String(item.slug || makeSeoSlug(name) || item.id).trim()
+  const parentSlug = item.parentCategorySlug || item.category || (type === 'microscope' ? 'microscopes' : type === 'picc' ? 'intensive-care' : type === 'forensic' ? 'forensic-science' : 'equipment')
+  const childSlug = item.categorySlug || ''
+  const parent = categories.find((category) => category.slug === parentSlug)
+  const child = parent?.children?.find((category) => category.slug === childSlug)
+  return {
+    ...item,
+    type,
+    name,
+    slug,
+    seoTitle: String(item.seoTitle || `${name} | Ecolink`).trim(),
+    seoDescription: seoDescription(item),
+    canonicalPath: `/san-pham/${encodeURIComponent(slug)}`,
+    categoryLabel: child?.label || parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
+    parentCategoryLabel: parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
+  }
+}
+
+function allSeoProducts({ activeOnly = false } = {}) {
+  const categories = readCategories()
+  const records = [
+    ...readProducts().map((item) => seoProduct('product', normalizeProductCategoryFields(item), categories)),
+    ...readMicroscopes().map((item) => seoProduct('microscope', item, categories)),
+    ...readForensicProducts().map((item) => seoProduct('forensic', item, categories)),
+    ...readPiccProducts().map((item) => seoProduct('picc', item, categories)),
+  ]
+  return activeOnly ? records.filter((item) => item.status === 'active') : records
+}
+
+function findSeoProductBySlug(slug) {
+  return allSeoProducts().find((item) => item.slug === slug || item.legacySlugs?.includes(slug))
+}
+
+function findSeoProductByLegacyId(id) {
+  return readProducts().map((item) => seoProduct('product', normalizeProductCategoryFields(item), readCategories())).find((item) => item.id === id)
+}
+
+function listSlugForId(list, id) {
+  return String(list.find((item) => item.id === id)?.slug || '').trim()
+}
+
 app.post('/api/admin/login/start', (req, res) => {
   if (!adminAuthConfigured()) {
     auditAdminAuth(req, 'login_failure', 'failure', { reason: 'auth_not_configured' })
@@ -1086,6 +1164,40 @@ app.post('/api/admin/totp/reset/cancel', requireAdminApi, (req, res) => {
 
 app.use('/uploads', express.static(uploadsDir))
 
+app.get('/robots.txt', (_req, res) => {
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api\nSitemap: ${SITE_URL}/sitemap.xml\n`)
+})
+
+app.get('/sitemap.xml', (_req, res) => {
+  const urls = new Map()
+  const add = (pathName, lastmod) => urls.set(pathName, lastmod ? new Date(lastmod).toISOString().slice(0, 10) : null)
+  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage'].forEach((pathName) => add(pathName))
+  const categoryBases = { consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC' }
+  const equipmentLegacy = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' }
+  for (const category of readCategories().filter((item) => item.status === 'active')) {
+    for (const child of category.children.filter((item) => item.status === 'active')) {
+      const pathName = category.slug === 'equipment' ? equipmentLegacy[child.slug] : categoryBases[category.slug] ? `${categoryBases[category.slug]}/${encodeURIComponent(child.slug)}` : null
+      if (pathName) add(pathName)
+    }
+  }
+  for (const product of allSeoProducts({ activeOnly: true })) add(product.canonicalPath, product.updatedAt)
+  const body = [...urls.entries()].map(([pathName, lastmod]) => `  <url><loc>${SITE_URL}${pathName}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`).join('\n')
+  res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`)
+})
+
+app.get('/api/public/products/:slug', (req, res) => {
+  const product = findSeoProductBySlug(req.params.slug)
+  if (!product || product.status !== 'active') return res.status(404).json({ error: 'Product not found' })
+  res.json(product)
+})
+
+app.get('/san-pham-chi-tiet', (req, res, next) => {
+  const id = String(req.query.id || '').trim()
+  const product = id ? findSeoProductByLegacyId(id) : null
+  if (product) return res.redirect(301, product.canonicalPath)
+  return next()
+})
+
 app.get('/api/categories', (_req, res) => {
   res.json(readCategories())
 })
@@ -1196,6 +1308,9 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     specs,
     pdfUrl,
     youtubeUrl,
+    slug,
+    seoTitle,
+    seoDescription,
     status,
     featured,
     sortOrder,
@@ -1211,6 +1326,11 @@ app.post('/api/products', requireAdminApi, (req, res) => {
   const normalizedConsumableGroup = typeof consumableGroup === 'string' ? consumableGroup.trim() : undefined
   const normalizedChemicalGroup = typeof chemicalGroup === 'string' ? chemicalGroup.trim() : undefined
   const normalizedStatus = status === 'draft' || status === 'hidden' ? status : 'active'
+  const requestedSlug = String(slug || '').trim()
+  const generatedSlug = makeSeoSlug(title) || String(id)
+  const resolvedSlug = requestedSlug || (listSlugForId(readProducts(), id) || generatedSlug)
+  const slugConflict = allSeoProducts().some((item) => item.id !== id && item.slug === resolvedSlug)
+  if (slugConflict) return res.status(409).json({ error: 'Slug sản phẩm đã tồn tại' })
   const categoryPayload = normalizeProductCategoryFields({
     category: normalizedParentCategorySlug,
     parentCategorySlug: normalizedParentCategorySlug,
@@ -1239,6 +1359,9 @@ app.post('/api/products', requireAdminApi, (req, res) => {
       specs,
       pdfUrl,
       youtubeUrl,
+      slug: resolvedSlug,
+      seoTitle: String(seoTitle || '').trim() || undefined,
+      seoDescription: String(seoDescription || '').trim() || undefined,
       status: normalizedStatus,
       featured: Boolean(featured),
       sortOrder: normalizeDisplayOrder(sortOrder),
@@ -1264,6 +1387,9 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     specs,
     pdfUrl,
     youtubeUrl,
+    slug: resolvedSlug,
+    seoTitle: String(seoTitle || '').trim() || undefined,
+    seoDescription: String(seoDescription || '').trim() || undefined,
     status: normalizedStatus,
     featured: Boolean(featured),
     sortOrder: normalizeDisplayOrder(sortOrder),
@@ -1395,6 +1521,9 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
     categorySlug,
     imageUrl,
     shortDescription,
+    slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
+    seoTitle: String(req.body?.seoTitle || '').trim() || undefined,
+    seoDescription: String(req.body?.seoDescription || '').trim() || undefined,
     status,
     sortOrder,
     updatedAt: now,
@@ -1448,6 +1577,9 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
     categorySlug,
     imageUrl,
     shortDescription,
+    slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
+    seoTitle: String(req.body?.seoTitle || '').trim() || undefined,
+    seoDescription: String(req.body?.seoDescription || '').trim() || undefined,
     specs,
     status,
     sortOrder,
@@ -1502,6 +1634,9 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
     categorySlug,
     imageUrl,
     shortDescription,
+    slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
+    seoTitle: String(req.body?.seoTitle || '').trim() || undefined,
+    seoDescription: String(req.body?.seoDescription || '').trim() || undefined,
     specs,
     status,
     sortOrder,
@@ -1594,7 +1729,24 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
   app.use((req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next()
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next()
-    res.sendFile(path.join(distDir, 'index.html'))
+    const match = req.originalUrl.split('?')[0].match(/^\/san-pham\/([^/]+)$/)
+    const product = match ? findSeoProductBySlug(decodeURIComponent(match[1])) : null
+    if (!product && match) return res.status(404).sendFile(path.join(distDir, 'index.html'))
+    let html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8')
+    if (product) {
+      const canonical = `${SITE_URL}${product.canonicalPath}`
+      const image = product.imageUrl ? new URL(product.imageUrl, SITE_URL).href : ''
+      const schema = {
+        '@context': 'https://schema.org', '@type': 'Product', name: product.name,
+        description: product.seoDescription, url: canonical,
+        ...(image ? { image } : {}),
+        ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
+        ...(product.sku || product.model ? { sku: product.sku || product.model } : {}),
+      }
+      const head = `<title>${escapeHtml(product.seoTitle)}</title><meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
+      html = html.replace('</head>', `${head}</head>`)
+    }
+    res.type('html').send(html)
   })
 }
 

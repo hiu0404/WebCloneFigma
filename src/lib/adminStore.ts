@@ -18,6 +18,10 @@ export type Product = {
   specs?: string
   pdfUrl?: string
   youtubeUrl?: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   status?: 'active' | 'draft' | 'hidden'
   featured?: boolean
   sortOrder?: number

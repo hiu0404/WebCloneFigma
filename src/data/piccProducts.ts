@@ -7,6 +7,10 @@ export type PiccProduct = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   specs?: string
   status: PiccProductStatus
   sortOrder?: number
@@ -21,6 +25,10 @@ export type PiccProductInput = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   specs?: string
   sortOrder?: number
   status?: PiccProductStatus

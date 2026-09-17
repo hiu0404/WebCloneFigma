@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa'
 import { FigmaImage } from '../FigmaImage'
 import { apiGetProducts } from '../../services/productService'
+import { productUrl } from '../../lib/seo'
 import { apiGetMicroscopes } from '../../services/microscopeService'
 import { apiGetForensicProducts } from '../../services/forensicProductService'
 import { apiGetPiccProducts } from '../../services/piccProductService'
@@ -67,7 +68,7 @@ export function Header() {
               title: item.title,
               imageUrl: productMainImageUrl(item),
               updatedAt: item.updatedAt,
-              target: `/san-pham-chi-tiet?id=${encodeURIComponent(item.id)}`,
+              target: productUrl(item),
             })),
           ...microscopes
             .filter((item) => (item.status ?? 'active') === 'active')

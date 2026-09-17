@@ -15,6 +15,10 @@ export type Microscope = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   status: MicroscopeCategoryStatus
   sortOrder?: number
   createdAt: number
@@ -36,6 +40,10 @@ export type MicroscopeInput = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   sortOrder?: number
   status?: MicroscopeCategoryStatus
 }

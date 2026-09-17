@@ -7,6 +7,10 @@ export type ForensicProduct = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   specs?: string
   status: ForensicProductStatus
   sortOrder?: number
@@ -21,6 +25,10 @@ export type ForensicProductInput = {
   categorySlug: string
   imageUrl?: string
   shortDescription: string
+  slug?: string
+  seoTitle?: string
+  seoDescription?: string
+  legacySlugs?: string[]
   specs?: string
   sortOrder?: number
   status?: ForensicProductStatus

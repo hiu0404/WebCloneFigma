@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ProductDetailPage.module.css'
@@ -14,6 +14,9 @@ import {
   normalizeProductCategoryFields,
   type AdminCategory,
 } from '../data/categories'
+import { SeoHead } from '../components/SeoHead'
+import { productSeoDescription, productSeoTitle } from '../lib/seo'
+import { apiUrl } from '../lib/apiClient'
 
 const homepageProducts: Product[] = [
   {
@@ -86,6 +89,7 @@ function youtubeEmbedUrl(url?: string) {
 
 export function ProductDetailPage() {
   const [search] = useSearchParams()
+  const { slug } = useParams()
   const navigate = useNavigate()
   const id = useMemo(() => search.get('id'), [search])
   const [catalog, setCatalog] = useState<Product[]>([])
@@ -96,6 +100,18 @@ export function ProductDetailPage() {
   useEffect(() => {
     let alive = true
     setLoading(true)
+    if (slug) {
+      fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' })
+        .then((response) => response.ok ? response.json() : Promise.reject(new Error('Not found')))
+        .then((item) => {
+          if (!alive) return
+          setCatalog([{ ...item, title: item.name, sku: item.sku || item.model }])
+          setCategories([])
+        })
+        .catch(() => alive && (setCatalog([]), setCategories([])))
+        .finally(() => alive && setLoading(false))
+      return () => { alive = false }
+    }
     Promise.all([apiGetProducts(), apiGetCategories()])
       .then(([products, categoryList]) => {
         if (!alive) return
@@ -113,11 +129,11 @@ export function ProductDetailPage() {
     return () => {
       alive = false
     }
-  }, [])
+  }, [slug])
 
   const product = useMemo(
-    () => (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
-    [catalog, id],
+    () => slug ? catalog[0] : (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
+    [catalog, id, slug],
   )
   const images = useMemo(() => galleryImages(product), [product])
   const mainImage = selectedImage || images[0] || productMainImageUrl(product) || ''
@@ -140,6 +156,12 @@ export function ProductDetailPage() {
 
   return (
     <div className={styles.page}>
+      {product ? <SeoHead
+        title={productSeoTitle(product.title, product.seoTitle)}
+        description={productSeoDescription(product.title, product.description || product.shortDescription, product.seoDescription)}
+        canonical={`/san-pham/${product.slug || slug || ''}`}
+        image={product.imageUrl}
+      /> : null}
       <Header />
 
       <FigmaImage
