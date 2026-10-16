@@ -16,6 +16,8 @@ import { productMainImageUrl } from '../lib/productImages'
 import { apiGetCategories } from '../services/categoryService'
 import { apiGetProducts } from '../services/productService'
 import { productUrl } from '../lib/seo'
+import { CategorySeo } from '../components/CategorySeo'
+import { Breadcrumb } from '../components/Breadcrumb'
 import styles from './ConsumablesPage.module.css'
 
 export const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
@@ -77,24 +79,29 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
       .sort(compareByDisplayOrder),
     [products, selectedSlug],
   )
-  const title = selectedSlug === 'all' ? 'Tất cả sản phẩm thiết bị' : getChildCategoryLabel(categories, 'equipment', selectedSlug)
+  const title = selectedSlug === 'all' ? 'Sản phẩm thiết bị' : getChildCategoryLabel(categories, 'equipment', selectedSlug)
+
+  const selectedCategory = childCategories.find((item) => item.slug === selectedSlug)
+  const canonical = selectedSlug === 'all' ? '/EquipmentPage' : (EQUIPMENT_CATEGORY_ROUTES[selectedSlug] ?? '/EquipmentPage')
 
   return (
     <div className={styles.page}>
+      <CategorySeo title={title} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/EquipmentPage' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
       <Header />
       <div className={styles.heroWrapper}>
         <FigmaImage className={styles.hero} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden width={1920} height={461} />
         <div className={styles.heroOverlay} />
-        <div className={styles.heroTitle}><h1>Sản phẩm thiết bị</h1><p>Trang chủ / Sản phẩm thiết bị</p></div>
+        <div className={styles.heroTitle}><div>Sản phẩm thiết bị</div><p>Trang chủ / Sản phẩm thiết bị</p></div>
       </div>
       <main className={styles.container}>
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/EquipmentPage' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
         <section className={styles.benefitBar}>
           <div className={styles.benefitItem}><span>◎</span><div><strong>Chất lượng quốc tế</strong><small>Đạt tiêu chuẩn</small></div></div>
           <div className={styles.benefitItem}><span>◉</span><div><strong>Công nghệ tiên tiến</strong><small>Hiệu quả vượt trội</small></div></div>
           <div className={styles.benefitItem}><span>⚙</span><div><strong>Đa dạng sản phẩm</strong><small>Đáp ứng mọi nhu cầu</small></div></div>
           <div className={styles.benefitItem}><span>☎</span><div><strong>Hỗ trợ kỹ thuật 24/7</strong><small>Đồng hành cùng bạn</small></div></div>
         </section>
-        <h1 className={styles.title}>Sản phẩm thiết bị</h1>
+        <h1 className={styles.title}>{title}</h1>
         <div className={styles.categorypage}>
           <aside className={styles.sidebar}>
             <h2>DANH MỤC SẢN PHẨM</h2>
@@ -111,7 +118,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
               <div className={styles.productgrid}>{shownProducts.map((item) => {
                 const image = productMainImageUrl(item)
                 return <Link className={`${styles.productcard} ${styles.equipmentCard}`} to={productUrl(item)} key={item.id}>
-                  {image ? <img src={image} alt={item.title} /> : <div className={styles.imagePlaceholder} />}
+                  {image ? <img src={image} alt={item.title} loading="lazy" /> : <div className={styles.imagePlaceholder} />}
                   <div className={styles.productcardContent}>
                     <h3>{item.title}</h3>
                     <dl className={styles.equipmentMeta}>

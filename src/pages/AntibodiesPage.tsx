@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
@@ -8,6 +8,9 @@ import { apiGetProducts } from '../services/productService'
 import { apiGetCategories } from '../services/categoryService'
 import { productMainImageUrl } from '../lib/productImages'
 import { compareByDisplayOrder } from '../lib/adminStore'
+import { productUrl } from '../lib/seo'
+import { CategorySeo } from '../components/CategorySeo'
+import { Breadcrumb } from '../components/Breadcrumb'
 import {
   getChildCategoryLabel,
   getProductChildCategorySlug,
@@ -75,10 +78,13 @@ export function AntibodiesPage() {
   }, [products, selectedGroup])
 
   const selectedTitle =
-    selectedGroup === 'all' ? 'Tất cả kháng thể' : getChildCategoryLabel(categories, 'antibodies', selectedGroup)
+    selectedGroup === 'all' ? 'Kháng thể' : getChildCategoryLabel(categories, 'antibodies', selectedGroup)
+  const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
+  const canonical = selectedGroup === 'all' ? '/AntibodiesPage' : `/AntibodiesPage/${selectedGroup}`
 
   return (
     <div className={styles.page}>
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/AntibodiesPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -96,6 +102,7 @@ export function AntibodiesPage() {
       </div>
 
       <main className={styles.container}>
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/AntibodiesPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -114,7 +121,7 @@ export function AntibodiesPage() {
                         <div><strong>Hỗ trợ kỹ thuật 24/7</strong><small>Đồng hành cùng bạn</small></div>
                     </div>
                 </section>
-        <h1 className={styles.title}>Kháng thể</h1>
+        <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
           <aside className={styles.sidebar}>
@@ -156,9 +163,9 @@ export function AntibodiesPage() {
                 {shownProducts.map((item) => {
                   const src = productMainImageUrl(item)
                   return (
-                    <article className={styles.productcard} key={item.id}>
+                    <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
                       {src ? (
-                        <img src={src} alt={item.title} />
+                        <img src={src} alt={item.title} loading="lazy" />
                       ) : (
                         <div className={styles.imagePlaceholder} aria-hidden />
                       )}
@@ -170,7 +177,7 @@ export function AntibodiesPage() {
                         <p>{item.shortDescription || item.description || 'Chưa có mô tả ngắn.'}</p>
                         {item.specs ? <pre className={styles.specs}>{item.specs}</pre> : null}
                       </div>
-                    </article>
+                    </Link>
                   )
                 })}
               </div>

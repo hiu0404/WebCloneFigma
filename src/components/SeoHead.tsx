@@ -20,10 +20,12 @@ function setMeta(attribute: 'name' | 'property', key: string, content: string) {
 
 export function SeoHead({ title, description, canonical, image, jsonLd }: Props) {
   useEffect(() => {
+    const absoluteCanonical = canonical ? new URL(canonical, window.location.origin).href : window.location.href.split('?')[0]
     document.title = title
     setMeta('name', 'description', description)
     setMeta('property', 'og:title', title)
     setMeta('property', 'og:description', description)
+    setMeta('property', 'og:url', absoluteCanonical)
     if (image) setMeta('property', 'og:image', image)
     let canonicalNode = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
     if (!canonicalNode) {
@@ -31,7 +33,7 @@ export function SeoHead({ title, description, canonical, image, jsonLd }: Props)
       canonicalNode.rel = 'canonical'
       document.head.appendChild(canonicalNode)
     }
-    canonicalNode.href = canonical || window.location.href.split('?')[0]
+    canonicalNode.href = absoluteCanonical
     let jsonLdNode = document.head.querySelector('script[data-ecolink-seo]') as HTMLScriptElement | null
     if (jsonLd) {
       if (!jsonLdNode) {

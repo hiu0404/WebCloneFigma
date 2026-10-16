@@ -13,6 +13,8 @@ import {
 import { apiGetMicroscopeCategories } from '../services/microscopeCategoryService'
 import { apiGetMicroscopes } from '../services/microscopeService'
 import { compareByDisplayOrder } from '../lib/adminStore'
+import { CategorySeo } from '../components/CategorySeo'
+import { Breadcrumb } from '../components/Breadcrumb'
 import styles from './MicroscopePage.module.css'
 
 const PAGE_PATH = '/MicroscopePage'
@@ -73,10 +75,12 @@ const MicroscopePage = () => {
   }
 
   const selectedTitle =
-    selectedSlug === 'all' ? 'Tất cả kính hiển vi' : getMicroscopeCategoryLabel(categories, selectedSlug)
+    selectedSlug === 'all' ? 'Kính hiển vi' : getMicroscopeCategoryLabel(categories, selectedSlug)
+  const canonical = selectedSlug === 'all' ? '/MicroscopePage' : `/MicroscopePage/${selectedSlug}`
 
   return (
     <div className={styles.page}>
+      <CategorySeo title={selectedTitle} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kính hiển vi', to: '/MicroscopePage' }, ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -94,6 +98,7 @@ const MicroscopePage = () => {
       </div>
 
       <main className={styles.container}>
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kính hiển vi', to: '/MicroscopePage' }, ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -112,7 +117,7 @@ const MicroscopePage = () => {
                         <div><strong>Hỗ trợ kỹ thuật 24/7</strong><small>Đồng hành cùng bạn</small></div>
                     </div>
                 </section>
-        <h1 className={styles.title}>Kính hiển vi</h1>
+        <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
           <MicroscopeSidebar

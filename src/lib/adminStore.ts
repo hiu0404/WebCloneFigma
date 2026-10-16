@@ -22,6 +22,8 @@ export type Product = {
   seoTitle?: string
   seoDescription?: string
   legacySlugs?: string[]
+  categoryLabel?: string
+  parentCategoryLabel?: string
   status?: 'active' | 'draft' | 'hidden'
   featured?: boolean
   sortOrder?: number

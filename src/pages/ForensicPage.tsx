@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
@@ -7,6 +7,9 @@ import { apiGetCategories } from '../services/categoryService'
 import { apiGetForensicProducts } from '../services/forensicProductService'
 import type { ForensicProduct } from '../data/forensicProducts'
 import { compareByDisplayOrder } from '../lib/adminStore'
+import { productUrl } from '../lib/seo'
+import { CategorySeo } from '../components/CategorySeo'
+import { Breadcrumb } from '../components/Breadcrumb'
 import {
   getChildCategoryLabel,
   isCategoryVisible,
@@ -94,10 +97,13 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
 
   const pageTitle = 'Giám định, khoa học, kỹ thuật, hình sự'
   const selectedTitle =
-    selectedGroup === 'all' ? 'Tất cả sản phẩm giám định hình sự' : getChildCategoryLabel(categories, PARENT_SLUG, selectedGroup)
+    selectedGroup === 'all' ? pageTitle : getChildCategoryLabel(categories, PARENT_SLUG, selectedGroup)
+  const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
+  const canonical = selectedGroup === 'all' ? '/GiamDinhKhoaHocKyThuatHinhSu' : categoryPath(selectedGroup)
 
   return (
     <div className={styles.page}>
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/GiamDinhKhoaHocKyThuatHinhSu' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -115,6 +121,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
       </div>
 
       <main className={styles.container}>
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/GiamDinhKhoaHocKyThuatHinhSu' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -133,7 +140,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
                         <div><strong>Hỗ trợ kỹ thuật 24/7</strong><small>Đồng hành cùng bạn</small></div>
                     </div>
                 </section>
-        <h1 className={styles.title}>{pageTitle}</h1>
+        <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
           <aside className={styles.sidebar}>
@@ -174,9 +181,9 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
               <div className={styles.productgrid}>
                 {shownProducts.map((item) => {
                   return (
-                    <article className={styles.productcard} key={item.id}>
+                    <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
                       {item.imageUrl ? (
-                        <img src={item.imageUrl} alt={item.name} />
+                        <img src={item.imageUrl} alt={item.name} loading="lazy" />
                       ) : (
                         <div className={styles.imagePlaceholder} aria-hidden />
                       )}
@@ -189,7 +196,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
                         <p>{item.shortDescription || 'Chưa có mô tả ngắn.'}</p>
                         {item.specs ? <pre className={styles.specs}>{item.specs}</pre> : null}
                       </div>
-                    </article>
+                    </Link>
                   )
                 })}
               </div>

@@ -17,6 +17,20 @@ import {
 import { SeoHead } from '../components/SeoHead'
 import { productSeoDescription, productSeoTitle } from '../lib/seo'
 import { apiUrl } from '../lib/apiClient'
+import { Breadcrumb, type BreadcrumbItem } from '../components/Breadcrumb'
+import { productUrl } from '../lib/seo'
+
+function categoryPageUrl(parentSlug: string) {
+  return ({ equipment: '/EquipmentPage', consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC', microscopes: '/MicroscopePage' } as Record<string, string>)[parentSlug] || '/san-pham'
+}
+
+function subcategoryPageUrl(parentSlug: string, childSlug: string) {
+  if (!childSlug) return categoryPageUrl(parentSlug)
+  const equipment = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' } as Record<string, string>
+  if (parentSlug === 'equipment') return equipment[childSlug] || categoryPageUrl(parentSlug)
+  if (parentSlug === 'forensic-science') return `/GiamDinhKhoaHocKyThuatHinhSu/${childSlug}`
+  return `${categoryPageUrl(parentSlug)}/${childSlug}`
+}
 
 const homepageProducts: Product[] = [
   {
@@ -101,12 +115,13 @@ export function ProductDetailPage() {
     let alive = true
     setLoading(true)
     if (slug) {
-      fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' })
-        .then((response) => response.ok ? response.json() : Promise.reject(new Error('Not found')))
-        .then((item) => {
+      Promise.all([fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' }), apiGetCategories(), apiGetProducts()])
+        .then(async ([response, categoryList, productList]) => response.ok ? [await response.json(), categoryList, productList] : Promise.reject(new Error('Not found')))
+        .then(([item, categoryList, productList]) => {
           if (!alive) return
-          setCatalog([{ ...item, title: item.name, sku: item.sku || item.model }])
-          setCategories([])
+          const current = { ...item, title: item.name, sku: item.sku || item.model } as Product
+          setCatalog([current, ...(productList as Product[]).filter((product: Product) => product.id !== current.id).map(normalizeProductCategoryFields)])
+          setCategories(categoryList)
         })
         .catch(() => alive && (setCatalog([]), setCategories([])))
         .finally(() => alive && setLoading(false))
@@ -132,7 +147,7 @@ export function ProductDetailPage() {
   }, [slug])
 
   const product = useMemo(
-    () => slug ? catalog[0] : (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
+    () => slug ? catalog.find((item) => item.slug === slug) : (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
     [catalog, id, slug],
   )
   const images = useMemo(() => galleryImages(product), [product])
@@ -141,6 +156,13 @@ export function ProductDetailPage() {
   const childSlug = product ? getProductChildCategorySlug(product) : ''
   const childLabel = product ? getChildCategoryLabel(categories, parentSlug, childSlug) : ''
   const youtube = youtubeEmbedUrl(product?.youtubeUrl)
+  const breadcrumbs = useMemo<BreadcrumbItem[]>(() => {
+    if (!product) return []
+    const parentLabel = categories.find((item) => item.slug === parentSlug)?.label || product.parentCategoryLabel || (parentSlug === 'microscopes' ? 'Kính hiển vi' : 'Sản phẩm')
+    const parentUrl = categoryPageUrl(parentSlug)
+    const resolvedChildLabel = childLabel || product.categoryLabel || ''
+    return [{ label: 'Trang chủ', to: '/' }, { label: parentLabel, to: parentUrl }, ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug) }] : []), { label: product.title }]
+  }, [product, categories, parentSlug, childSlug, childLabel])
 
   useEffect(() => {
     setSelectedImage('')
@@ -161,6 +183,12 @@ export function ProductDetailPage() {
         description={productSeoDescription(product.title, product.description || product.shortDescription, product.seoDescription)}
         canonical={`/san-pham/${product.slug || slug || ''}`}
         image={product.imageUrl}
+        jsonLd={{
+          '@context': 'https://schema.org', '@graph': [
+            { '@type': 'Product', name: product.title, description: productSeoDescription(product.title, product.description || product.shortDescription, product.seoDescription), url: `${window.location.origin}/san-pham/${product.slug || slug}`, ...(mainImage ? { image: new URL(mainImage, window.location.origin).href } : {}), ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}), ...(product.sku ? { sku: product.sku } : {}) },
+            { '@type': 'BreadcrumbList', itemListElement: breadcrumbs.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.label, item: `${window.location.origin}${item.to || `/san-pham/${product.slug || slug}`}` })) },
+          ],
+        }}
       /> : null}
       <Header />
 
@@ -178,6 +206,7 @@ export function ProductDetailPage() {
       </div>
 
       <main className={styles.container}>
+        {breadcrumbs.length ? <Breadcrumb items={breadcrumbs} /> : null}
         {loading ? (
           <div className={styles.emptyState}>Đang tải sản phẩm...</div>
         ) : !product ? (
@@ -270,9 +299,9 @@ export function ProductDetailPage() {
                           className={styles.relatedCard}
                           key={item.id}
                           type="button"
-                          onClick={() => navigate(`/san-pham-chi-tiet?id=${encodeURIComponent(item.id)}`)}
+                          onClick={() => navigate(productUrl(item))}
                         >
-                          {src ? <img src={src} alt="" /> : <div className={styles.relatedPlaceholder} />}
+                          {src ? <img src={src} alt={item.title} loading="lazy" /> : <div className={styles.relatedPlaceholder} />}
                           <span>{item.title}</span>
                         </button>
                       )

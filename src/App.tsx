@@ -36,9 +36,11 @@ import ForensicPage from './pages/ForensicPage'
 import { ScrollToTop } from './components/ScrollToTop'
 import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
 import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
+import { OrganizationJsonLd } from './components/OrganizationJsonLd'
 export default function App() {
   return (
     <BrowserRouter>
+      <OrganizationJsonLd />
       <ScrollToTop />
       <Routes>
         <Route element={<FigmaScaledLayout />}>
