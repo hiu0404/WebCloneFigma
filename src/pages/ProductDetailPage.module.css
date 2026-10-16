@@ -315,6 +315,7 @@
   background: transparent;
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .relatedCard img,

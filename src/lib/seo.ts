@@ -20,6 +20,10 @@ export function productSeoDescription(name: string, description?: string, value?
   return raw.slice(0, 160)
 }
 
-export function productUrl(product: { id: string; slug?: string }): string {
-  return product.slug ? `/san-pham/${encodeURIComponent(product.slug)}` : `/san-pham-chi-tiet?id=${encodeURIComponent(product.id)}`
+export type ProductKind = 'product' | 'microscope' | 'forensic' | 'picc'
+
+export function productUrl(product: { id: string; slug?: string; title?: string; name?: string; type?: ProductKind }, kind: ProductKind = 'product'): string {
+  const resolvedKind = product.type || kind
+  const fallback = `${makeSeoSlug(product.title || product.name || '') || 'san-pham'}-${resolvedKind}-${makeSeoSlug(product.id) || 'item'}`
+  return `/san-pham/${encodeURIComponent(product.slug?.trim() || fallback)}`
 }

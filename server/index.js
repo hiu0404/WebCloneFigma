@@ -891,9 +891,15 @@ function seoDescription(item) {
   return text.slice(0, 160)
 }
 
+function fallbackSeoSlug(type, item) {
+  return `${makeSeoSlug(item.title || item.name) || 'san-pham'}-${type}-${makeSeoSlug(item.id) || 'item'}`
+}
+
 function seoProduct(type, item, categories = []) {
   const name = String(item.title || item.name || '').trim()
-  const slug = String(item.slug || makeSeoSlug(name) || item.id).trim()
+  // Legacy records without a saved slug get a deterministic, collision-resistant URL.
+  // This does not write to runtime product data.
+  const slug = String(item.slug || fallbackSeoSlug(type, item)).trim()
   const parentSlug = item.parentCategorySlug || item.category || (type === 'microscope' ? 'microscopes' : type === 'picc' ? 'intensive-care' : type === 'forensic' ? 'forensic-science' : 'equipment')
   const childSlug = item.categorySlug || ''
   const parent = categories.find((category) => category.slug === parentSlug)
@@ -923,7 +929,16 @@ function allSeoProducts({ activeOnly = false } = {}) {
 }
 
 function findSeoProductBySlug(slug) {
-  return allSeoProducts().find((item) => item.slug === slug || item.legacySlugs?.includes(slug))
+  const products = allSeoProducts()
+  const exact = products.find((item) => item.slug === slug || item.legacySlugs?.includes(slug))
+  if (exact) return exact
+  // Keep fallback links valid if a stored slug is added later.
+  const fallbackMatches = products.filter((item) => fallbackSeoSlug(item.type, item) === slug)
+  if (fallbackMatches.length === 1) return fallbackMatches[0]
+  // Earlier releases generated a title-only slug for unsaved legacy products.
+  // Redirect it only when it identifies exactly one product.
+  const legacyMatches = products.filter((item) => makeSeoSlug(item.name) === slug)
+  return legacyMatches.length === 1 ? legacyMatches[0] : null
 }
 
 function findSeoProductByLegacyId(id) {
@@ -1195,6 +1210,12 @@ app.get('/san-pham-chi-tiet', (req, res, next) => {
   const id = String(req.query.id || '').trim()
   const product = id ? findSeoProductByLegacyId(id) : null
   if (product) return res.redirect(301, product.canonicalPath)
+  return next()
+})
+
+app.get('/san-pham/:slug', (req, res, next) => {
+  const product = findSeoProductBySlug(req.params.slug)
+  if (product && req.params.slug !== product.slug) return res.redirect(301, product.canonicalPath)
   return next()
 })
 

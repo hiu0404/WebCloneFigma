@@ -181,7 +181,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
               <div className={styles.productgrid}>
                 {shownProducts.map((item) => {
                   return (
-                    <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
+                    <Link className={styles.productcard} key={item.id} to={productUrl(item, 'forensic')}>
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} loading="lazy" />
                       ) : (

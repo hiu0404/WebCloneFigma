@@ -10,7 +10,7 @@ type Props = {
 
 export function MicroscopeCard({ microscope, categoryLabel }: Props) {
   return (
-    <Link className={styles.productcard} to={productUrl(microscope)}>
+    <Link className={styles.productcard} to={productUrl(microscope, 'microscope')}>
       {microscope.imageUrl ? (
         <img src={microscope.imageUrl} alt={microscope.name} loading="lazy" />
       ) : (

@@ -77,7 +77,7 @@ export function Header() {
               title: item.name,
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
-              target: `/MicroscopePage/${item.categorySlug}`,
+              target: productUrl(item, 'microscope'),
             })),
           ...forensicProducts
             .filter((item) => (item.status ?? 'active') === 'active')
@@ -86,7 +86,7 @@ export function Header() {
               title: item.name,
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
-              target: `/GiamDinhKhoaHocKyThuatHinhSu/${item.categorySlug}`,
+              target: productUrl(item, 'forensic'),
             })),
           ...piccProducts
             .filter((item) => (item.status ?? 'active') === 'active')
@@ -95,7 +95,7 @@ export function Header() {
               title: item.name,
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
-              target: `/PICC/${item.categorySlug}`,
+              target: productUrl(item, 'picc'),
             })),
         ])
       })

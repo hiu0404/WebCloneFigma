@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ProductDetailPage.module.css'
@@ -104,7 +104,6 @@ function youtubeEmbedUrl(url?: string) {
 export function ProductDetailPage() {
   const [search] = useSearchParams()
   const { slug } = useParams()
-  const navigate = useNavigate()
   const id = useMemo(() => search.get('id'), [search])
   const [catalog, setCatalog] = useState<Product[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
@@ -175,6 +174,11 @@ export function ProductDetailPage() {
       .filter((item) => getProductParentCategorySlug(item) === parentSlug)
       .slice(0, 4)
   }, [catalog, parentSlug, product])
+
+  // The server redirects full page requests. Client-side visits to old links
+  // need the same redirect because React Router does not request the server.
+  const legacyProduct = !slug && id ? catalog.find((item) => item.id === id) : undefined
+  if (legacyProduct) return <Navigate to={productUrl(legacyProduct)} replace />
 
   return (
     <div className={styles.page}>
@@ -295,15 +299,14 @@ export function ProductDetailPage() {
                     {relatedProducts.map((item) => {
                       const src = productMainImageUrl(item)
                       return (
-                        <button
+                        <Link
                           className={styles.relatedCard}
                           key={item.id}
-                          type="button"
-                          onClick={() => navigate(productUrl(item))}
+                          to={productUrl(item)}
                         >
                           {src ? <img src={src} alt={item.title} loading="lazy" /> : <div className={styles.relatedPlaceholder} />}
                           <span>{item.title}</span>
-                        </button>
+                        </Link>
                       )
                     })}
                   </div>

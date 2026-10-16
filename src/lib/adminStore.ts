@@ -22,6 +22,7 @@ export type Product = {
   seoTitle?: string
   seoDescription?: string
   legacySlugs?: string[]
+  type?: 'product' | 'microscope' | 'forensic' | 'picc'
   categoryLabel?: string
   parentCategoryLabel?: string
   status?: 'active' | 'draft' | 'hidden'

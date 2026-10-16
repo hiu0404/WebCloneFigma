@@ -157,7 +157,7 @@ export default function PICC() {
             {shownProducts.length > 0 ? (
               <div className={styles.productgrid}>
                 {shownProducts.map((item) => (
-                  <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
+                  <Link className={styles.productcard} key={item.id} to={productUrl(item, 'picc')}>
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.name} loading="lazy" />
                     ) : (
