@@ -37,11 +37,13 @@ import { ScrollToTop } from './components/ScrollToTop'
 import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
 import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
 import { OrganizationJsonLd } from './components/OrganizationJsonLd'
+import { GoogleAnalytics } from './components/GoogleAnalytics'
 export default function App() {
   return (
     <BrowserRouter>
       <OrganizationJsonLd />
       <ScrollToTop />
+      <GoogleAnalytics />
       <Routes>
         <Route element={<FigmaScaledLayout />}>
           <Route path="/" element={<HomePage />} />
