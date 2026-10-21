@@ -8,10 +8,12 @@ const isConfigured = import.meta.env.PROD && /^G-[A-Z0-9]+$/i.test(measurementId
 let initialized = false
 let lastTrackedLocation = ''
 
-function gtag(...args: unknown[]) {
-  const analyticsWindow = window as Window & { dataLayer?: unknown[][] }
+const gtag: (...args: unknown[]) => void = function () {
+  const analyticsWindow = window as Window & { dataLayer?: unknown[] }
   analyticsWindow.dataLayer ??= []
-  analyticsWindow.dataLayer.push(args)
+  // gtag.js expects the function's Arguments object, not a plain array.
+  // eslint-disable-next-line prefer-rest-params
+  analyticsWindow.dataLayer.push(arguments)
 }
 
 function initializeAnalytics() {
