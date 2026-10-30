@@ -6,6 +6,7 @@ import styles from './AdminLayout.module.css'
 const pageTitles: Record<string, string> = {
   '/admin': 'Dashboard',
   '/admin/products': 'Quản lý sản phẩm',
+  '/admin/contact-messages': 'Yêu cầu liên hệ',
   '/admin/equipment-categories': 'Danh mục sản phẩm thiết bị',
   '/admin/categories': 'Quản lý danh mục',
   '/admin/consumables': 'Vật tư tiêu hao',

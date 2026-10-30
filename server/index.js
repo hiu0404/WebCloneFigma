@@ -5,6 +5,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import multer from 'multer'
+import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
 import {
   decryptString,
   encryptString,
@@ -33,6 +34,7 @@ const brandsFile = path.join(dataDir, 'brands.json')
 const adminAuthFile = path.join(dataDir, 'admin-auth.json')
 const adminRateLimitFile = path.join(dataDir, 'admin-rate-limit.json')
 const adminAuditLogFile = path.join(dataDir, 'admin-auth.log')
+const contactMessagesFile = path.join(dataDir, 'contact-messages.json')
 const distDir = path.join(root, 'dist')
 
 const runtimeJsonFiles = [
@@ -102,6 +104,21 @@ fs.mkdirSync(dataDir, { recursive: true })
 fs.mkdirSync(uploadsDir, { recursive: true })
 fs.mkdirSync(productUploadsDir, { recursive: true })
 for (const fileName of runtimeJsonFiles) ensureRuntimeJsonFile(fileName)
+
+const contactMessageStore = createContactMessageStore(contactMessagesFile)
+const contactSubmitTimes = new Map()
+const CONTACT_RATE_WINDOW_MS = 15 * 60 * 1000
+const CONTACT_RATE_LIMIT = 5
+
+function recentContactSubmissions(ip) {
+  const now = Date.now()
+  if (contactSubmitTimes.size > 1000) {
+    for (const [key, times] of contactSubmitTimes) {
+      if (times.every((time) => now - time >= CONTACT_RATE_WINDOW_MS)) contactSubmitTimes.delete(key)
+    }
+  }
+  return (contactSubmitTimes.get(ip) ?? []).filter((time) => now - time < CONTACT_RATE_WINDOW_MS)
+}
 
 const AUTH_COOKIE_NAME = 'admin_token'
 const ADMIN_SECRET_ENCRYPTION_KEY = String(process.env.ADMIN_SECRET_ENCRYPTION_KEY ?? '').trim()
@@ -1178,6 +1195,61 @@ app.post('/api/admin/totp/reset/cancel', requireAdminApi, (req, res) => {
 })
 
 app.use('/uploads', express.static(uploadsDir))
+
+app.post('/api/contact-messages', (req, res) => {
+  // Hidden form field: acknowledge automated submissions without storing them.
+  if (req.body?.website) return res.status(201).json({ ok: true })
+
+  const result = validateContactMessage(req.body)
+  if (result.error) return res.status(400).json({ error: result.error })
+
+  const ip = req.ip || req.socket.remoteAddress || 'unknown'
+  const recent = recentContactSubmissions(ip)
+  if (recent.length >= CONTACT_RATE_LIMIT) {
+    return res.status(429).json({ error: 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.' })
+  }
+
+  try {
+    contactMessageStore.add(result.value)
+    contactSubmitTimes.set(ip, [...recent, Date.now()])
+    return res.status(201).json({ ok: true })
+  } catch (error) {
+    console.error('Unable to save contact message:', error)
+    return res.status(500).json({ error: 'Không thể lưu yêu cầu lúc này. Vui lòng thử lại sau.' })
+  }
+})
+
+app.get('/api/admin/contact-messages/unread-count', requireAdminApi, (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    return res.json({ unread: contactMessageStore.unreadCount() })
+  } catch (error) {
+    console.error('Unable to count contact messages:', error)
+    return res.status(500).json({ error: 'Không thể tải thông báo liên hệ.' })
+  }
+})
+
+app.get('/api/admin/contact-messages', requireAdminApi, (_req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    return res.json(contactMessageStore.list())
+  } catch (error) {
+    console.error('Unable to read contact messages:', error)
+    return res.status(500).json({ error: 'Không thể tải yêu cầu liên hệ.' })
+  }
+})
+
+app.patch('/api/admin/contact-messages/:id/read', requireAdminApi, (req, res) => {
+  res.set('Cache-Control', 'no-store')
+  try {
+    const message = contactMessageStore.markRead(req.params.id)
+    if (!message) return res.status(404).json({ error: 'Không tìm thấy yêu cầu liên hệ.' })
+    return res.json(message)
+  } catch (error) {
+    console.error('Unable to update contact message:', error)
+    return res.status(500).json({ error: 'Không thể cập nhật yêu cầu liên hệ.' })
+  }
+})
 
 app.get('/robots.txt', (_req, res) => {
   res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api\nSitemap: ${SITE_URL}/sitemap.xml\n`)

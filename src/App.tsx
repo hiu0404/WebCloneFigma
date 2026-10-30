@@ -36,6 +36,7 @@ import ForensicPage from './pages/ForensicPage'
 import { ScrollToTop } from './components/ScrollToTop'
 import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
 import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
+import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage'
 import { OrganizationJsonLd } from './components/OrganizationJsonLd'
 import { GoogleAnalytics } from './components/GoogleAnalytics'
 export default function App() {
@@ -90,6 +91,7 @@ export default function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="products" element={<ProductManagePage />} />
+            <Route path="contact-messages" element={<AdminContactMessagesPage />} />
             <Route path="equipment-categories" element={<EquipmentCategoryManagePage />} />
             <Route path="products/PICC" element={<PiccProductManagePage />} />
             <Route path="categories" element={<CategoryManagePage />} />

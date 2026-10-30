@@ -130,6 +130,7 @@
 }
 
 .consultForm {
+  position: relative;
   padding: 52px 139px 47px;
   background: #187093;
   border-radius: 10px;
@@ -195,6 +196,33 @@
 .submitBtn:focus {
   background: #11536d;
   transform: translateY(-3px);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.formFeedback {
+  margin: 18px 0 0;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.formFeedbackError {
+  color: #ffe7e7;
 }
 
 .map {

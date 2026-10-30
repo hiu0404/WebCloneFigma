@@ -1,5 +1,7 @@
+import { useState, type FormEvent } from 'react'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
+import { sendContactMessage } from '../services/contactService'
 import styles from './ContactPage.module.css'
 
 function PhoneIcon() {
@@ -78,6 +80,33 @@ const contactItems = [
 ]
 
 export function ContactPage() {
+  const [submitting, setSubmitting] = useState(false)
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (submitting) return
+    const form = event.currentTarget
+    const values = new FormData(form)
+    setSubmitting(true)
+    setFeedback(null)
+    try {
+      await sendContactMessage({
+        name: String(values.get('name') ?? '').trim(),
+        phone: String(values.get('phone') ?? '').trim(),
+        subject: String(values.get('subject') ?? '').trim(),
+        message: String(values.get('message') ?? '').trim(),
+        website: String(values.get('website') ?? ''),
+      })
+      form.reset()
+      setFeedback({ type: 'success', text: 'Yêu cầu của bạn đã được gửi. Ecolink sẽ liên hệ lại sớm.' })
+    } catch (error) {
+      setFeedback({ type: 'error', text: error instanceof Error ? error.message : 'Không thể gửi yêu cầu. Vui lòng thử lại.' })
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <div className={styles.page}>
       <Header />
@@ -115,14 +144,23 @@ export function ContactPage() {
           <p>Bạn hãy nhập thông tin và gửi tin nhắn cho chúng tôi để được tư vấn miễn phí</p>
         </div>
 
-        <form className={styles.consultForm}>
+        <form className={styles.consultForm} onSubmit={(event) => void handleSubmit(event)}>
           <div className={styles.inputRow}>
-            <input className={styles.input} placeholder="Họ và tên" />
-            <input className={styles.input} placeholder="Số điện thoại" />
-            <input className={styles.input} placeholder="Tiêu đề" />
+            <input className={styles.input} name="name" aria-label="Họ và tên" placeholder="Họ và tên" autoComplete="name" required minLength={2} maxLength={120} />
+            <input className={styles.input} name="phone" type="tel" aria-label="Số điện thoại" placeholder="Số điện thoại" autoComplete="tel" required maxLength={24} />
+            <input className={styles.input} name="subject" aria-label="Tiêu đề" placeholder="Tiêu đề" required minLength={2} maxLength={160} />
           </div>
-          <textarea className={styles.textarea} placeholder="Nội dung cần tư vấn" />
-          <button className={styles.submitBtn} type="submit">Gửi yêu cầu</button>
+          <textarea className={styles.textarea} name="message" aria-label="Nội dung cần tư vấn" placeholder="Nội dung cần tư vấn" required minLength={10} maxLength={5000} />
+          <div className={styles.honeypot} aria-hidden="true">
+            <label htmlFor="contact-website">Website</label>
+            <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" />
+          </div>
+          <button className={styles.submitBtn} type="submit" disabled={submitting}>{submitting ? 'Đang gửi...' : 'Gửi yêu cầu'}</button>
+          {feedback && (
+            <p className={`${styles.formFeedback} ${feedback.type === 'error' ? styles.formFeedbackError : ''}`} role={feedback.type === 'error' ? 'alert' : 'status'}>
+              {feedback.text}
+            </p>
+          )}
         </form>
       </section>
 

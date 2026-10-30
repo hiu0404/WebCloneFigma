@@ -1,0 +1,75 @@
+.list {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.message {
+  border: 1px solid #dfe8eb;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+}
+
+.unread {
+  border-color: #8bc9c0;
+  background: #f7fcfb;
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.subject {
+  font-weight: 800;
+  color: #14262c;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #66777d;
+  overflow-wrap: anywhere;
+}
+
+.meta a {
+  color: #176d86;
+}
+
+.badge {
+  flex: 0 0 auto;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #d6f4ec;
+  color: #0d6756;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.badgeRead {
+  background: #edf1f2;
+  color: #66777d;
+}
+
+.body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  margin: 16px 0;
+  color: #263942;
+}
+
+.empty,
+.error {
+  margin: 0;
+  padding: 24px 16px;
+  color: #66777d;
+}
+
+.error {
+  color: #b42318;
+}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   FiBox,
@@ -5,6 +6,7 @@ import {
   FiGrid,
   FiLayers,
   FiLogOut,
+  FiMail,
   FiPackage,
   FiSearch,
   FiSettings,
@@ -12,11 +14,13 @@ import {
   FiTag,
 } from 'react-icons/fi'
 import { logoutAdminSession } from '../../lib/adminAuthApi'
+import { getUnreadContactCount } from '../../services/contactService'
 import styles from './AdminLayout.module.css'
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: FiGrid, end: true },
   { to: '/admin/products', label: 'Quản lý sản phẩm', icon: FiPackage },
+  { to: '/admin/contact-messages', label: 'Yêu cầu liên hệ', icon: FiMail },
   { to: '/admin/equipment-categories', label: 'Danh mục sản phẩm thiết bị', icon: FiBox },
   { to: '/admin/categories', label: 'Quản lý danh mục', icon: FiLayers },
   { to: '/admin/consumables', label: 'Danh mục vật tư tiêu hao', icon: FiBox },
@@ -36,6 +40,31 @@ const navItems = [
 
 export function AdminSidebar() {
   const navigate = useNavigate()
+  const [unreadContacts, setUnreadContacts] = useState(0)
+
+  useEffect(() => {
+    let active = true
+    async function refreshCount() {
+      try {
+        const count = await getUnreadContactCount()
+        if (active) setUnreadContacts(count)
+      } catch {
+        // Keep the admin navigation usable if the contact API is unavailable.
+      }
+    }
+
+    void refreshCount()
+    const interval = window.setInterval(() => void refreshCount(), 30_000)
+    const onUpdate = () => void refreshCount()
+    window.addEventListener('focus', onUpdate)
+    window.addEventListener('admin-contact-updated', onUpdate)
+    return () => {
+      active = false
+      window.clearInterval(interval)
+      window.removeEventListener('focus', onUpdate)
+      window.removeEventListener('admin-contact-updated', onUpdate)
+    }
+  }, [])
 
   async function handleLogout() {
     await logoutAdminSession()
@@ -64,6 +93,11 @@ export function AdminSidebar() {
             >
               <Icon aria-hidden />
               <span>{item.label}</span>
+              {item.to === '/admin/contact-messages' && unreadContacts > 0 && (
+                <span className={styles.navCount} aria-label={`${unreadContacts} yêu cầu chưa đọc`}>
+                  {unreadContacts > 99 ? '99+' : unreadContacts}
+                </span>
+              )}
             </NavLink>
           )
         })}
