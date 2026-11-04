@@ -12,6 +12,7 @@ export type Product = {
   shortDescription?: string
   price?: string
   sku?: string
+  model?: string
   brand?: string
   origin?: string
   description?: string

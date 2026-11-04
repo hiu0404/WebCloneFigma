@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import { MicroscopeCard } from '../components/microscope/MicroscopeCard'
@@ -15,12 +15,9 @@ import { apiGetMicroscopes } from '../services/microscopeService'
 import { compareByDisplayOrder } from '../lib/adminStore'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
-import styles from './MicroscopePage.module.css'
-
-const PAGE_PATH = '/MicroscopePage'
+import styles from './ConsumablesPage.module.css'
 
 const MicroscopePage = () => {
-  const navigate = useNavigate()
   const { categorySlug } = useParams()
   const [categories, setCategories] = useState<MicroscopeCategory[]>([])
   const [microscopes, setMicroscopes] = useState<Microscope[]>([])
@@ -28,7 +25,6 @@ const MicroscopePage = () => {
 
   useEffect(() => {
     let alive = true
-    setLoading(true)
     Promise.all([apiGetMicroscopeCategories(), apiGetMicroscopes()])
       .then(([categoryList, microscopeList]) => {
         if (!alive) return
@@ -70,10 +66,6 @@ const MicroscopePage = () => {
     return [...list].sort(compareByDisplayOrder)
   }, [microscopes, selectedSlug])
 
-  function selectCategory(slug: string) {
-    navigate(slug === 'all' ? PAGE_PATH : `${PAGE_PATH}/${slug}`)
-  }
-
   const selectedTitle =
     selectedSlug === 'all' ? 'Kính hiển vi' : getMicroscopeCategoryLabel(categories, selectedSlug)
   const canonical = selectedSlug === 'all' ? '/MicroscopePage' : `/MicroscopePage/${selectedSlug}`
@@ -83,18 +75,10 @@ const MicroscopePage = () => {
       <CategorySeo title={selectedTitle} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kính hiển vi', to: '/MicroscopePage' }, ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
-      <FigmaImage
-        className={styles.hero}
-        src="/assetsFull/page-banner-dna.png"
-        alt=""
-        ariaHidden
-        width={1920}
-        height={461}
-      />
-
-      <div className={styles.heroTitle}>
-        <div>Kính hiển vi</div>
-        <div className={styles.heroTitleSmall}>Trang chủ / Kính hiển vi</div>
+      <div className={styles.heroWrapper}>
+        <FigmaImage className={styles.hero} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden width={1920} height={461} />
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroTitle}><div>Kính hiển vi</div><p>Trang chủ / Kính hiển vi</p></div>
       </div>
 
       <main className={styles.container}>
@@ -125,7 +109,6 @@ const MicroscopePage = () => {
             selectedSlug={selectedSlug}
             counts={counts}
             total={microscopes.length}
-            onSelect={selectCategory}
           />
 
           <section className={styles.content}>
@@ -142,7 +125,6 @@ const MicroscopePage = () => {
                   <MicroscopeCard
                     key={microscope.id}
                     microscope={microscope}
-                    categoryLabel={getMicroscopeCategoryLabel(categories, microscope.categorySlug)}
                   />
                 ))}
               </div>

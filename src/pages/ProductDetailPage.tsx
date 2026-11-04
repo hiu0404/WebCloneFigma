@@ -118,7 +118,7 @@ export function ProductDetailPage() {
         .then(async ([response, categoryList, productList]) => response.ok ? [await response.json(), categoryList, productList] : Promise.reject(new Error('Not found')))
         .then(([item, categoryList, productList]) => {
           if (!alive) return
-          const current = { ...item, title: item.name, sku: item.sku || item.model } as Product
+          const current = { ...item, title: item.name } as Product
           setCatalog([current, ...(productList as Product[]).filter((product: Product) => product.id !== current.id).map(normalizeProductCategoryFields)])
           setCategories(categoryList)
         })
@@ -252,6 +252,7 @@ export function ProductDetailPage() {
                     <dl className={styles.metaGrid}>
                       {product.price ? <><dt>Giá</dt><dd>{product.price}</dd></> : null}
                       {product.sku ? <><dt>Mã sản phẩm</dt><dd>{product.sku}</dd></> : null}
+                      {product.model ? <><dt>Model</dt><dd>{product.model}</dd></> : null}
                       {product.brand ? <><dt>Hãng sản xuất</dt><dd>{product.brand}</dd></> : null}
                       {product.origin ? <><dt>Xuất xứ</dt><dd>{product.origin}</dd></> : null}
                       {childSlug ? <><dt>Danh mục</dt><dd>{childLabel}</dd></> : null}

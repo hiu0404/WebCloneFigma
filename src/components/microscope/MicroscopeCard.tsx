@@ -1,16 +1,15 @@
 import type { Microscope } from '../../data/microscopes'
-import styles from '../../pages/MicroscopePage.module.css'
+import styles from '../../pages/ConsumablesPage.module.css'
 import { Link } from 'react-router-dom'
 import { productUrl } from '../../lib/seo'
 
 type Props = {
   microscope: Microscope
-  categoryLabel: string
 }
 
-export function MicroscopeCard({ microscope, categoryLabel }: Props) {
+export function MicroscopeCard({ microscope }: Props) {
   return (
-    <Link className={styles.productcard} to={productUrl(microscope, 'microscope')}>
+    <Link className={`${styles.productcard} ${styles.equipmentCard}`} to={productUrl(microscope, 'microscope')}>
       {microscope.imageUrl ? (
         <img src={microscope.imageUrl} alt={microscope.name} loading="lazy" />
       ) : (
@@ -19,10 +18,12 @@ export function MicroscopeCard({ microscope, categoryLabel }: Props) {
         </div>
       )}
       <div className={styles.productcardContent}>
-        <span className={styles.categoryPill}>{categoryLabel}</span>
         <h3>{microscope.name}</h3>
-        {microscope.model ? <p className={styles.modelText}>Model: {microscope.model}</p> : null}
-        <p>{microscope.shortDescription || 'Chưa có mô tả ngắn.'}</p>
+        <dl className={styles.equipmentMeta}>
+          <div><dt>Model</dt><dd>{microscope.model || 'Đang cập nhật'}</dd></div>
+          <div><dt>Hãng sản xuất</dt><dd>{microscope.brand || 'Đang cập nhật'}</dd></div>
+        </dl>
+        <span className={styles.detailButton}>Xem chi tiết <b>→</b></span>
       </div>
     </Link>
   )

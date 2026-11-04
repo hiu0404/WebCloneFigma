@@ -527,12 +527,19 @@ function writeMicroscopes(list) {
 function normalizeMicroscope(item) {
   const now = Date.now()
   return {
+    ...item,
     id: String(item?.id || '').trim(),
     name: String(item?.name || '').trim(),
     model: String(item?.model || '').trim(),
+    brand: String(item?.brand || '').trim() || undefined,
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
+    imageUrls: Array.isArray(item?.imageUrls) ? item.imageUrls.map((url) => normalizeUploadRef(String(url || '').trim())).filter(Boolean) : undefined,
     shortDescription: String(item?.shortDescription || '').trim(),
+    description: String(item?.description || '').trim() || undefined,
+    specs: String(item?.specs || '').trim() || undefined,
+    pdfUrl: normalizeUploadRef(String(item?.pdfUrl || '').trim()) || undefined,
+    youtubeUrl: String(item?.youtubeUrl || '').trim() || undefined,
     slug: String(item?.slug || '').trim() || undefined,
     seoTitle: String(item?.seoTitle || '').trim() || undefined,
     seoDescription: String(item?.seoDescription || '').trim() || undefined,
@@ -912,7 +919,7 @@ function fallbackSeoSlug(type, item) {
   return `${makeSeoSlug(item.title || item.name) || 'san-pham'}-${type}-${makeSeoSlug(item.id) || 'item'}`
 }
 
-function seoProduct(type, item, categories = []) {
+function seoProduct(type, item, categories = [], microscopeCategories = []) {
   const name = String(item.title || item.name || '').trim()
   // Legacy records without a saved slug get a deterministic, collision-resistant URL.
   // This does not write to runtime product data.
@@ -921,6 +928,7 @@ function seoProduct(type, item, categories = []) {
   const childSlug = item.categorySlug || ''
   const parent = categories.find((category) => category.slug === parentSlug)
   const child = parent?.children?.find((category) => category.slug === childSlug)
+  const microscopeCategory = type === 'microscope' ? microscopeCategories.find((category) => category.slug === childSlug) : null
   return {
     ...item,
     type,
@@ -929,16 +937,17 @@ function seoProduct(type, item, categories = []) {
     seoTitle: String(item.seoTitle || `${name} | Ecolink`).trim(),
     seoDescription: seoDescription(item),
     canonicalPath: `/san-pham/${encodeURIComponent(slug)}`,
-    categoryLabel: child?.label || parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
+    categoryLabel: microscopeCategory?.label || child?.label || parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
     parentCategoryLabel: parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
   }
 }
 
 function allSeoProducts({ activeOnly = false } = {}) {
   const categories = readCategories()
+  const microscopeCategories = normalizeMicroscopeCategories(readJsonFile(microscopeCategoriesFile, []))
   const records = [
     ...readProducts().map((item) => seoProduct('product', normalizeProductCategoryFields(item), categories)),
-    ...readMicroscopes().map((item) => seoProduct('microscope', item, categories)),
+    ...readMicroscopes().map((item) => seoProduct('microscope', item, categories, microscopeCategories)),
     ...readForensicProducts().map((item) => seoProduct('forensic', item, categories)),
     ...readPiccProducts().map((item) => seoProduct('picc', item, categories)),
   ]
@@ -1594,9 +1603,15 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
   const id = String(req.body?.id || '').trim()
   const name = String(req.body?.name || '').trim()
   const model = String(req.body?.model || '').trim()
+  const brand = String(req.body?.brand || '').trim() || undefined
   const categorySlug = String(req.body?.categorySlug || '').trim()
   const imageUrl = normalizeUploadRef(String(req.body?.imageUrl || '').trim()) || undefined
+  const imageUrls = Array.isArray(req.body?.imageUrls) ? req.body.imageUrls.map((url) => normalizeUploadRef(String(url || '').trim())).filter(Boolean) : undefined
   const shortDescription = String(req.body?.shortDescription || '').trim()
+  const description = String(req.body?.description || '').trim() || undefined
+  const specs = String(req.body?.specs || '').trim() || undefined
+  const pdfUrl = normalizeUploadRef(String(req.body?.pdfUrl || '').trim()) || undefined
+  const youtubeUrl = String(req.body?.youtubeUrl || '').trim() || undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
   const sortOrder = normalizeDisplayOrder(req.body?.sortOrder)
   if (!id || !name) return res.status(400).json({ error: 'Missing microscope id/name' })
@@ -1607,14 +1622,31 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
 
   const list = readMicroscopes()
   const index = list.findIndex((item) => item.id === id)
+  const previous = index >= 0 ? list[index] : null
+  const requestedSlug = String(req.body?.slug || '').trim()
+  const slug = requestedSlug === previous?.slug ? requestedSlug : (makeSeoSlug(requestedSlug) || previous?.slug || makeSeoSlug(name) || id)
+  const slugConflict = allSeoProducts().some((item) =>
+    !(item.type === 'microscope' && item.id === id) && (item.slug === slug || item.legacySlugs?.includes(slug)),
+  )
+  if (slugConflict) return res.status(409).json({ error: 'Slug kính hiển vi đã tồn tại' })
+  const legacySlugs = previous?.slug && previous.slug !== slug
+    ? [...new Set([...(previous.legacySlugs || []), previous.slug])].filter((value) => value !== slug)
+    : previous?.legacySlugs?.filter((value) => value !== slug)
   const base = {
     id,
     name,
     model,
+    brand: req.body?.brand === undefined ? previous?.brand : brand,
     categorySlug,
     imageUrl,
+    imageUrls: req.body?.imageUrls === undefined ? previous?.imageUrls : imageUrls,
     shortDescription,
-    slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
+    description: req.body?.description === undefined ? previous?.description : description,
+    specs: req.body?.specs === undefined ? previous?.specs : specs,
+    pdfUrl: req.body?.pdfUrl === undefined ? previous?.pdfUrl : pdfUrl,
+    youtubeUrl: req.body?.youtubeUrl === undefined ? previous?.youtubeUrl : youtubeUrl,
+    slug,
+    legacySlugs,
     seoTitle: String(req.body?.seoTitle || '').trim() || undefined,
     seoDescription: String(req.body?.seoDescription || '').trim() || undefined,
     status,
@@ -1842,7 +1874,7 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
         description: product.seoDescription, url: canonical,
         ...(image ? { image } : {}),
         ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
-        ...(product.sku || product.model ? { sku: product.sku || product.model } : {}),
+        ...(product.sku ? { sku: product.sku } : {}),
       }
       const head = `<meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}"><meta property="og:url" content="${escapeHtml(canonical)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
       html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(product.seoTitle)}</title>`)

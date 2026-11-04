@@ -74,7 +74,7 @@ export function Header() {
             .map((item) => ({
               id: `microscope:${item.id}`,
               title: item.name,
-              searchText: item.name.toLowerCase(),
+              searchText: [item.name, item.model, item.brand].filter(Boolean).join(' ').toLowerCase(),
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
               target: productUrl(item, 'microscope'),

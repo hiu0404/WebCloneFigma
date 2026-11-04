@@ -12,9 +12,15 @@ export type Microscope = {
   id: string
   name: string
   model: string
+  brand?: string
   categorySlug: string
   imageUrl?: string
+  imageUrls?: string[]
   shortDescription: string
+  description?: string
+  specs?: string
+  pdfUrl?: string
+  youtubeUrl?: string
   slug?: string
   seoTitle?: string
   seoDescription?: string
@@ -37,9 +43,15 @@ export type MicroscopeInput = {
   id: string
   name: string
   model: string
+  brand?: string
   categorySlug: string
   imageUrl?: string
+  imageUrls?: string[]
   shortDescription: string
+  description?: string
+  specs?: string
+  pdfUrl?: string
+  youtubeUrl?: string
   slug?: string
   seoTitle?: string
   seoDescription?: string

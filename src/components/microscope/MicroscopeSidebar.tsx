@@ -1,39 +1,37 @@
 import type { MicroscopeCategory } from '../../data/microscopes'
-import styles from '../../pages/MicroscopePage.module.css'
+import { Link } from 'react-router-dom'
+import styles from '../../pages/ConsumablesPage.module.css'
 
 type Props = {
   categories: MicroscopeCategory[]
   selectedSlug: string
   counts: Map<string, number>
   total: number
-  onSelect: (slug: string) => void
 }
 
-export function MicroscopeSidebar({ categories, selectedSlug, counts, total, onSelect }: Props) {
+export function MicroscopeSidebar({ categories, selectedSlug, counts, total }: Props) {
   return (
     <aside className={styles.sidebar}>
       <h2>DANH MỤC KÍNH HIỂN VI</h2>
       <ul>
         <li>
-          <button
+          <Link
             className={`${styles.categoryLink} ${selectedSlug === 'all' ? styles.active : ''}`}
-            type="button"
-            onClick={() => onSelect('all')}
+            to="/MicroscopePage"
           >
             <span>›</span>
             Tất cả kính hiển vi ({total})
-          </button>
+          </Link>
         </li>
         {categories.map((category) => (
           <li key={category.slug}>
-            <button
+            <Link
               className={`${styles.categoryLink} ${selectedSlug === category.slug ? styles.active : ''}`}
-              type="button"
-              onClick={() => onSelect(category.slug)}
+              to={`/MicroscopePage/${category.slug}`}
             >
               <span>›</span>
               {category.label} ({counts.get(category.slug) ?? 0})
-            </button>
+            </Link>
           </li>
         ))}
       </ul>
