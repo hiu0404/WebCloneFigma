@@ -4,11 +4,8 @@ import { useForm } from 'react-hook-form'
 import {
   FaChevronDown,
   FaEnvelope,
-  FaFacebookF,
-  FaLinkedinIn,
   FaPhoneAlt,
   FaSearch,
-  FaYoutube,
 } from 'react-icons/fa'
 import { FigmaImage } from '../FigmaImage'
 import { apiGetProducts } from '../../services/productService'
@@ -24,6 +21,7 @@ type SearchForm = { query: string }
 type SearchItem = {
   id: string
   title: string
+  searchText: string
   imageUrl?: string
   updatedAt: number
   target: string
@@ -66,6 +64,7 @@ export function Header() {
             .map((item) => ({
               id: `product:${item.id}`,
               title: item.title,
+              searchText: [item.title, item.brand, item.sku, item.categoryLabel].filter(Boolean).join(' ').toLowerCase(),
               imageUrl: productMainImageUrl(item),
               updatedAt: item.updatedAt,
               target: productUrl(item),
@@ -75,6 +74,7 @@ export function Header() {
             .map((item) => ({
               id: `microscope:${item.id}`,
               title: item.name,
+              searchText: item.name.toLowerCase(),
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
               target: productUrl(item, 'microscope'),
@@ -84,6 +84,7 @@ export function Header() {
             .map((item) => ({
               id: `forensic:${item.id}`,
               title: item.name,
+              searchText: item.name.toLowerCase(),
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
               target: productUrl(item, 'forensic'),
@@ -93,6 +94,7 @@ export function Header() {
             .map((item) => ({
               id: `picc:${item.id}`,
               title: item.name,
+              searchText: item.name.toLowerCase(),
               imageUrl: item.imageUrl,
               updatedAt: item.updatedAt,
               target: productUrl(item, 'picc'),
@@ -111,7 +113,7 @@ export function Header() {
   const matched = useMemo(() => {
     if (!trimmed) return []
     return allProducts
-      .filter((p) => p.title.toLowerCase().includes(trimmed))
+      .filter((p) => p.searchText.includes(trimmed))
       .sort((a, b) => b.updatedAt - a.updatedAt)
       .slice(0, 6)
   }, [allProducts, trimmed])
@@ -139,7 +141,7 @@ export function Header() {
             <input
               {...register('query', { onChange: () => setOpen(true) })}
               onFocus={() => setOpen(true)}
-              placeholder="Tìm kiếm sản phẩm, giải pháp..."
+              placeholder="Tìm kiếm sản phẩm, model, hãng..."
               aria-label="Tìm kiếm sản phẩm"
             />
             <button type="submit" aria-label="Tìm kiếm">
@@ -205,7 +207,7 @@ export function Header() {
           </div>
         </div>
         <div className={styles.dropdown}>
-          <NavLink to="/EquipmentPage">Giải pháp <FaChevronDown /></NavLink>
+          <NavLink to="/#giai-phap">Giải pháp <FaChevronDown /></NavLink>
           <div className={styles.dropdownMenu}>
             <NavLink to="/EquipmentPage">Giải phẫu bệnh</NavLink>
             <NavLink to="/GiamDinhADN">ADN</NavLink>
@@ -217,12 +219,6 @@ export function Header() {
         <NavLink to="/tin-tuc">Tin tức</NavLink>
         <NavLink to="/ContactPage">Liên hệ</NavLink>
 
-        <div className={styles.socials}>
-          <a href="/" aria-label="Facebook"><FaFacebookF /></a>
-          <a href="/" aria-label="LinkedIn"><FaLinkedinIn /></a>
-          <a href="/" aria-label="YouTube"><FaYoutube /></a>
-          <button type="button">VI <FaChevronDown /></button>
-        </div>
       </nav>
     </header>
   )

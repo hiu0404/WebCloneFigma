@@ -252,6 +252,11 @@
   cursor: pointer;
 }
 
+.categoryList button[aria-pressed="true"] {
+  background: #187093;
+  color: #ffffff;
+}
+
 .contactButton {
   min-height: 46px;
   padding: 0 18px;

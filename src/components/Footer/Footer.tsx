@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FaEnvelope, FaFacebookF, FaLinkedinIn, FaMapMarkerAlt, FaPhoneAlt, FaYoutube } from 'react-icons/fa'
+import { FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa'
 import styles from './Footer.module.css'
 
 type FooterProps = {
@@ -11,7 +11,7 @@ const quickLinks = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Giới thiệu', to: '/gioi-thieu' },
   { label: 'Sản phẩm', to: '/EquipmentPage' },
-  { label: 'Giải pháp', to: '/EquipmentPage' },
+  { label: 'Giải pháp', to: '/#giai-phap' },
   { label: 'Dịch vụ hỗ trợ', to: '/SupportService' },
   { label: 'Tin tức', to: '/tin-tuc' },
   { label: 'Liên hệ', to: '/ContactPage' },
@@ -43,11 +43,6 @@ export function Footer({ top }: FooterProps) {
             <p>CUNG CẤP GIẢI PHÁP CÔNG NGHỆ TIÊN TIẾN CHO KHOA HỌC, Y TẾ VÀ AN NINH</p>
             <a href="mailto:info.ecolinkvn@gmail.com"><FaEnvelope />info.ecolinkvn@gmail.com</a>
             <a href="tel:+84812119668"><FaPhoneAlt /> +84 812 119 668</a>
-            <div className={styles.socials}>
-              <a href="/" aria-label="Facebook"><FaFacebookF /></a>
-              <a href="/" aria-label="LinkedIn"><FaLinkedinIn /></a>
-              <a href="/" aria-label="YouTube"><FaYoutube /></a>
-            </div>
           </div>
 
           <nav className={styles.column} aria-label="Liên kết nhanh">
@@ -78,10 +73,6 @@ export function Footer({ top }: FooterProps) {
 
         <div className={styles.bottom}>
           <span>© 2026 Ecolink. All rights reserved.</span>
-          <div>
-            <NavLink to="/">Chính sách bảo mật</NavLink>
-            <NavLink to="/">Điều khoản sử dụng</NavLink>
-          </div>
         </div>
       </div>
     </footer>

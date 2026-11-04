@@ -41,6 +41,8 @@
   margin-top: -20px;
 }
 
+.heroTitle h1 { margin: 0; font: inherit; }
+
 /* INTRO */
 
 .introSection {
@@ -244,6 +246,10 @@
 }
 
 .contactBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   width: 240px;
   height: 65px;
 

@@ -26,7 +26,11 @@ export function SeoHead({ title, description, canonical, image, jsonLd }: Props)
     setMeta('property', 'og:title', title)
     setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', absoluteCanonical)
-    if (image) setMeta('property', 'og:image', image)
+    if (image) {
+      setMeta('property', 'og:image', new URL(image, window.location.origin).href)
+    } else {
+      document.head.querySelector('meta[property="og:image"]')?.remove()
+    }
     let canonicalNode = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
     if (!canonicalNode) {
       canonicalNode = document.createElement('link')

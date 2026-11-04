@@ -11,6 +11,7 @@ type Props = {
   ariaHidden?: boolean
   width?: number
   height?: number
+  loading?: 'eager' | 'lazy'
 }
 
 function toSvgFallback(pngPath: string) {
@@ -18,7 +19,7 @@ function toSvgFallback(pngPath: string) {
   return pngPath.replace(/\.png$/i, '.svg')
 }
 
-export function FigmaImage({
+function ImageWithFallback({
   src,
   fallbackSrc,
   className,
@@ -27,6 +28,7 @@ export function FigmaImage({
   ariaHidden,
   width,
   height,
+  loading = 'eager',
 }: Props) {
   const fallbacks = useMemo(() => {
     const autoSvg = toSvgFallback(src)
@@ -45,7 +47,7 @@ export function FigmaImage({
       aria-hidden={ariaHidden || undefined}
       width={width}
       height={height}
-      loading="eager"
+      loading={loading}
       onError={() => {
         const nextAttempt = attempt + 1
         setAttempt(nextAttempt)
@@ -54,5 +56,9 @@ export function FigmaImage({
       }}
     />
   )
+}
+
+export function FigmaImage(props: Props) {
+  return <ImageWithFallback key={props.src} {...props} />
 }
 

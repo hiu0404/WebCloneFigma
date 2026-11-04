@@ -18,6 +18,7 @@ import {
 import { GiScales } from 'react-icons/gi'
 import { FigmaImage } from '../components/FigmaImage'
 import { Header } from '../components/Header/Header'
+import { SeoHead } from '../components/SeoHead'
 import styles from './HomePage.module.css'
 import { apiGetBrands } from '../services/brandService'
 import type { Product } from '../lib/adminStore'
@@ -101,17 +102,18 @@ const partners = [
 
 const heroSlides = [
   {
-    label: 'Huron VXS04 Digital Slide Scanner',
+    label: 'Huron VX504 Digital Slide Scanner',
     image: '/assetsFull/VX504.webp',
   },
   {
-    label: 'Thermo Scientific Lab Vision 360',
+    label: 'Huron HT540',
     image: '/assetsFull/HT540.webp',
   },
 ]
 
 export function HomePage() {
   const [activeHero, setActiveHero] = useState(0)
+  const [featuredOffset, setFeaturedOffset] = useState(0)
   const [homepagePartners, setHomepagePartners] = useState(partners)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
 
@@ -150,6 +152,7 @@ export function HomePage() {
 
   return (
     <div className={styles.page}>
+      <SeoHead title="Ecolink | Thiết bị khoa học, y tế và an ninh" description="Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn." canonical="/" />
       <Header />
 
       <main>
@@ -224,14 +227,14 @@ export function HomePage() {
           <div className={styles.categoryGrid}>
             {categories.map((item) => (
               <Link key={item.title} to={item.to} className={styles.categoryCard}>
-                <FigmaImage src={item.image} alt="" ariaHidden />
+                <FigmaImage src={item.image} alt="" ariaHidden loading="lazy" />
                 <strong>{item.title}</strong>
               </Link>
             ))}
           </div>
         </section>
 
-        <section className={styles.section}>
+        <section className={styles.section} id="giai-phap">
           <div className={styles.blockHeader}>
             <h2>Giải pháp cho từng lĩnh vực</h2>
           </div>
@@ -258,16 +261,16 @@ export function HomePage() {
             <Link to="/EquipmentPage">Xem tất cả <FaArrowRight /></Link>
           </div>
           <div className={styles.productShell}>
-            <button className={`${styles.sliderButton} ${styles.sliderPrev}`} type="button" aria-label="Trước">
+            <button className={`${styles.sliderButton} ${styles.sliderPrev}`} type="button" aria-label="Sản phẩm trước" onClick={() => setFeaturedOffset((value) => (value - 1 + featuredProducts.length) % (featuredProducts.length || 1))} disabled={featuredProducts.length < 2}>
               <FaChevronLeft />
             </button>
             <div className={styles.productGrid}>
-              {featuredProducts.map((item) => {
+              {[...featuredProducts.slice(featuredOffset), ...featuredProducts.slice(0, featuredOffset)].map((item) => {
                 const image = productMainImageUrl(item)
                 return (
                 <article className={styles.productCard} key={item.id}>
                   <div className={styles.productImage}>
-                    {image ? <FigmaImage src={image} alt={item.title} /> : null}
+                    {image ? <FigmaImage src={image} alt={item.title} loading="lazy" /> : null}
                   </div>
                   <div className={styles.productInfo}>
                     <h3>{item.title}</h3>
@@ -286,7 +289,7 @@ export function HomePage() {
                 )
               })}
             </div>
-            <button className={`${styles.sliderButton} ${styles.sliderNext}`} type="button" aria-label="Sau">
+            <button className={`${styles.sliderButton} ${styles.sliderNext}`} type="button" aria-label="Sản phẩm tiếp theo" onClick={() => setFeaturedOffset((value) => (value + 1) % (featuredProducts.length || 1))} disabled={featuredProducts.length < 2}>
               <FaChevronRight />
             </button>
           </div>
@@ -314,7 +317,7 @@ export function HomePage() {
             <div className={styles.newsGrid}>
               {news.map((item) => (
                 <article className={styles.newsCard} key={item.title}>
-                  <FigmaImage src={item.image} alt="" ariaHidden />
+                  <FigmaImage src={item.image} alt="" ariaHidden loading="lazy" />
                   <div>
                     <span>{item.category}</span>
                     <h3>{item.title}</h3>
@@ -339,7 +342,7 @@ export function HomePage() {
                   rel="noreferrer"
                   aria-label={partner.name}
                 >
-                  <FigmaImage src={partner.image} alt={partner.name} />
+                  <FigmaImage src={partner.image} alt={partner.name} loading="lazy" />
                 </a>
               ))}
               <Link to="/BrandPage" className={styles.morePartner}>Xem thêm <FaArrowRight /></Link>

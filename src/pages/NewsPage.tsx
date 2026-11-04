@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { FaArrowRight, FaCalendarAlt, FaTags } from 'react-icons/fa'
 import { FigmaImage } from '../components/FigmaImage'
 import { Header } from '../components/Header/Header'
+import { SeoHead } from '../components/SeoHead'
 import styles from './NewsPage.module.css'
 
 const newsItems = [
@@ -67,11 +69,14 @@ function isExternalUrl(url: string) {
 }
 
 export default function NewsPage() {
-  const featured = newsItems[0]
-  const latest = newsItems.slice(1)
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả')
+  const visibleNews = selectedCategory === 'Tất cả' ? newsItems : newsItems.filter((item) => item.category === selectedCategory)
+  const featured = visibleNews[0]
+  const latest = visibleNews.slice(1)
 
   return (
     <div className={styles.page}>
+      <SeoHead title="Tin tức và cập nhật | Ecolink" description="Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế." canonical="/tin-tuc" />
       <Header />
 
       <section className={styles.hero}>
@@ -116,7 +121,7 @@ export default function NewsPage() {
             <div className={styles.newsGrid}>
               {latest.map((item) => (
                 <article className={styles.newsCard} key={item.title}>
-                  <FigmaImage className={styles.newsImage} src={item.image} alt={item.title} />
+                  <FigmaImage className={styles.newsImage} src={item.image} alt={item.title} loading="lazy" />
                   <div className={styles.newsBody}>
                     <div className={styles.meta}>
                       <span><FaTags />{item.category}</span>
@@ -142,7 +147,7 @@ export default function NewsPage() {
               <h2>Danh mục</h2>
               <div className={styles.categoryList}>
                 {categories.map((item) => (
-                  <button type="button" key={item}>{item}</button>
+                  <button type="button" key={item} aria-pressed={selectedCategory === item} onClick={() => setSelectedCategory(item)}>{item}</button>
                 ))}
               </div>
             </section>

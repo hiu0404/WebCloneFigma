@@ -2,11 +2,15 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 export function ScrollToTop() {
-  const { pathname, search } = useLocation()
+  const { pathname, search, hash } = useLocation()
 
   useEffect(() => {
+    if (hash) {
+      const frame = window.requestAnimationFrame(() => document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView({ behavior: 'auto' }))
+      return () => window.cancelAnimationFrame(frame)
+    }
     window.scrollTo({ top: 100, left: 0, behavior: 'auto' })
-  }, [pathname, search])
+  }, [pathname, search, hash])
 
   useEffect(() => {
     const scrollAfterInternalLink = (event: MouseEvent) => {

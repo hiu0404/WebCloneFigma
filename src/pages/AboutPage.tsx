@@ -10,6 +10,7 @@ import {
   FaUsers,
 } from 'react-icons/fa'
 import { Header } from '../components/Header/Header'
+import { SeoHead } from '../components/SeoHead'
 import styles from './AboutPage.module.css'
 
 const sectors = [
@@ -63,6 +64,7 @@ const partners = [
 export function AboutPage() {
   return (
     <div className={styles.page}>
+      <SeoHead title="Giới thiệu Ecolink | Thiết bị và giải pháp khoa học" description="Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học." canonical="/gioi-thieu" />
       <Header />
 
       <section className={styles.hero}>
@@ -79,7 +81,7 @@ export function AboutPage() {
             <div className={styles.eyebrow}>VỀ CHÚNG TÔI</div>
             <h2>Chúng tôi tập trung nguồn lực để cung ứng các giải pháp thiết bị toàn diện, đáp ứng tiêu chuẩn khắt khe trong 3 khối ngành mũi nhọn:</h2>
           </div>
-          <img className={styles.building} src="/assetsFull/ecolink-building.png" alt="Trụ sở Ecolink" />
+          <img className={styles.building} src="/assetsFull/ecolink-building.png" alt="Trụ sở Ecolink" loading="lazy" />
         </section>
 
         <section className={styles.sectors}>
@@ -116,7 +118,7 @@ export function AboutPage() {
           <div className={styles.partnerGrid}>
             {partners.map((partner) => (
               <a href={partner.url} target="_blank" rel="noopener noreferrer" key={partner.name} title={partner.name}>
-                <img src={partner.image} alt={partner.name} />
+                <img src={partner.image} alt={partner.name} loading="lazy" />
               </a>
             ))}
           </div>

@@ -40,6 +40,8 @@
   margin-top: -20px;
 }
 
+.heroTitle h1 { margin: 0; font: inherit; }
+
 .infoSection {
   width: 1630px;
   max-width: calc(100% - 290px);

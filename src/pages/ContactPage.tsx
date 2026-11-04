@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
+import { SeoHead } from '../components/SeoHead'
 import { sendContactMessage } from '../services/contactService'
 import styles from './ContactPage.module.css'
 
@@ -68,14 +69,14 @@ const contactItems = [
     title: 'Trụ sở Hà Nội',
     text: 'Số 67, Ngõ 281, Phố Đội Cấn, P. Liễu Giai, Q. Ba Đình, TP. Hà Nội',
     linkText: 'Xem trên Google Maps',
-    href: '#',
+    href: '',
   },
   {
     icon: <LocationIcon />,
     title: 'Chi nhánh HCM',
     text: 'Số 2, đường S3, P. Tây Thạnh, Q. Tân Phú, TP. Hồ Chí Minh',
     linkText: 'Xem trên Google Maps',
-    href: '#',
+    href: '',
   },
 ]
 
@@ -109,6 +110,7 @@ export function ContactPage() {
 
   return (
     <div className={styles.page}>
+      <SeoHead title="Liên hệ Ecolink | Tư vấn thiết bị" description="Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ." canonical="/ContactPage" />
       <Header />
 
       <FigmaImage
@@ -121,7 +123,7 @@ export function ContactPage() {
       />
 
       <div className={styles.heroTitle}>
-        <div>Liên hệ</div>
+        <h1>Liên hệ</h1>
         <div className={styles.heroTitleSmall}>Trang chủ / Liên hệ</div>
       </div>
 
@@ -132,7 +134,7 @@ export function ContactPage() {
               <div className={styles.infoIcon}>{item.icon}</div>
               <h2>{item.title}</h2>
               <p>{item.text}</p>
-              <a href={item.href}>{item.linkText}</a>
+              {item.href ? <a href={item.href}>{item.linkText}</a> : null}
             </article>
           ))}
         </div>

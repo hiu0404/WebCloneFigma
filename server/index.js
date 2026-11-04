@@ -1258,7 +1258,7 @@ app.get('/robots.txt', (_req, res) => {
 app.get('/sitemap.xml', (_req, res) => {
   const urls = new Map()
   const add = (pathName, lastmod) => urls.set(pathName, lastmod ? new Date(lastmod).toISOString().slice(0, 10) : null)
-  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage'].forEach((pathName) => add(pathName))
+  ;['/', '/gioi-thieu', '/tin-tuc', '/EquipmentPage', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage', '/BrandPage', '/SupportService'].forEach((pathName) => add(pathName))
   const categoryBases = { consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC' }
   const equipmentLegacy = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' }
   for (const category of readCategories().filter((item) => item.status === 'active')) {
@@ -1817,6 +1817,14 @@ app.post('/api/upload', requireAdminApi, (req, res, next) => {
 })
 
 const isProd = process.env.NODE_ENV === 'production'
+const staticSeo = {
+  '/': ['Ecolink | Thiết bị khoa học, y tế và an ninh', 'Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn.'],
+  '/gioi-thieu': ['Giới thiệu Ecolink | Thiết bị và giải pháp khoa học', 'Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học.'],
+  '/ContactPage': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
+  '/SupportService': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],
+  '/BrandPage': ['Hãng đại diện | Ecolink', 'Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng.'],
+  '/tin-tuc': ['Tin tức và cập nhật | Ecolink', 'Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế.'],
+}
 if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
   app.use(express.static(distDir, { index: false }))
   app.use((req, res, next) => {
@@ -1836,7 +1844,14 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
         ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
         ...(product.sku || product.model ? { sku: product.sku || product.model } : {}),
       }
-      const head = `<title>${escapeHtml(product.seoTitle)}</title><meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
+      const head = `<meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}"><meta property="og:url" content="${escapeHtml(canonical)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
+      html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(product.seoTitle)}</title>`)
+      html = html.replace('</head>', `${head}</head>`)
+    } else if (staticSeo[req.path]) {
+      const [title, description] = staticSeo[req.path]
+      const canonical = `${SITE_URL}${req.path}`
+      const head = `<meta name="description" content="${escapeHtml(description)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}">`
+      html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(title)}</title>`)
       html = html.replace('</head>', `${head}</head>`)
     }
     res.type('html').send(html)

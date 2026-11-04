@@ -232,6 +232,9 @@
 }
 
 .tabActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-right: 1px solid #c7cdd1;
   background: #ffffff;
@@ -488,4 +491,11 @@
   .relatedPlaceholder {
     height: calc(190px / var(--figma-scale, 1));
   }
+}
+
+@media (min-width: 1025px) and (max-width: 1600px) {
+  .summary h1 { font-size: calc(21px / var(--figma-scale, 1)); }
+  .short, .metaGrid dt, .metaGrid dd { font-size: calc(14px / var(--figma-scale, 1)); }
+  .richText, .specs, .relatedCard span, .relatedEmpty { font-size: calc(13px / var(--figma-scale, 1)); }
+  .primaryButton, .secondaryButton, .tabActive { font-size: calc(13px / var(--figma-scale, 1)); }
 }

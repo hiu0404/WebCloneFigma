@@ -172,8 +172,9 @@ export function ProductDetailPage() {
     return catalog
       .filter((item) => item.id !== product.id)
       .filter((item) => getProductParentCategorySlug(item) === parentSlug)
+      .filter((item) => !childSlug || getProductChildCategorySlug(item) === childSlug)
       .slice(0, 4)
-  }, [catalog, parentSlug, product])
+  }, [catalog, parentSlug, childSlug, product])
 
   // The server redirects full page requests. Client-side visits to old links
   // need the same redirect because React Router does not request the server.
@@ -206,7 +207,6 @@ export function ProductDetailPage() {
       />
       <div className={styles.heroTitle}>
         <div>Sản phẩm chi tiết</div>
-        <div className={styles.heroTitleSmall}>Trang chủ / Sản phẩm chi tiết</div>
       </div>
 
       <main className={styles.container}>
@@ -269,7 +269,7 @@ export function ProductDetailPage() {
 
                 <section className={styles.tabsPanel}>
                   <div className={styles.tabs}>
-                    <button type="button" className={styles.tabActive}>Product Description</button>
+                    <div className={styles.tabActive}>Mô tả sản phẩm</div>
                     <span />
                   </div>
                   <div className={styles.tabBody}>
@@ -293,7 +293,7 @@ export function ProductDetailPage() {
               </div>
 
               <aside className={styles.relatedSidebar}>
-                <h2>RELATED PRODUCTS</h2>
+                <h2>Sản phẩm liên quan</h2>
                 {relatedProducts.length > 0 ? (
                   <div className={styles.relatedList}>
                     {relatedProducts.map((item) => {

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
+import { SeoHead } from '../components/SeoHead';
 import { apiGetBrands } from "../services/brandService";
 import styles from "./BrandPage.module.css";
 
@@ -76,6 +78,7 @@ export default function BrandPage() {
 
   return (
     <div className={styles.page}>
+      <SeoHead title="Hãng đại diện | Ecolink" description="Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng." canonical="/BrandPage" />
       <Header />
 
       <FigmaImage
@@ -88,7 +91,7 @@ export default function BrandPage() {
       />
 
       <div className={styles.heroTitle}>
-        <div>Hãng đại diện</div>
+        <h1>Hãng đại diện</h1>
         <div className={styles.heroTitleSmall}>Trang chủ / Hãng đại diện</div>
       </div>
 
@@ -109,7 +112,7 @@ export default function BrandPage() {
           {displayBrands.map((brand) => (
             <div className={styles.brandCard} key={brand.name}>
               <div className={styles.brandImageWrapper}>
-                <img src={brand.image} alt={brand.name} className={styles.brandImage} />
+                <img src={brand.image} alt={brand.name} className={styles.brandImage} loading="lazy" />
               </div>
 
               <div className={styles.brandContent}>
@@ -131,7 +134,7 @@ export default function BrandPage() {
         <div className={styles.partnerContent}>
           <h2>Hợp tác cùng những thương hiệu toàn cầu</h2>
           <p>Cam kết mang đến công nghệ tiên tiến và giải pháp tối ưu cho khách hàng.</p>
-          <button className={styles.contactBtn}>Liên hệ hợp tác</button>
+          <Link className={styles.contactBtn} to="/ContactPage">Liên hệ hợp tác</Link>
         </div>
       </section>
     </div>
