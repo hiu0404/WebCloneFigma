@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { FigmaScaledLayout } from './layouts/FigmaScaledLayout'
 import { HomePage } from './pages/HomePage'
 import { ContactPage } from './pages/ContactPage'
@@ -43,56 +43,79 @@ import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
 import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage'
 import { OrganizationJsonLd } from './components/OrganizationJsonLd'
 import { GoogleAnalytics } from './components/GoogleAnalytics'
+import { FloatingHotline } from './components/FloatingHotline'
+
+const legacyCategoryPaths = [
+  ['/EquipmentPage', '/giai-phau-benh'],
+  ['/GiamDinhKhoaHocKyThuatHinhSu', '/giam-dinh-hinh-su'],
+  ['/MicroscopePage', '/kinh-hien-vi'],
+  ['/ChemicalsPage', '/hoa-chat'],
+  ['/AntibodiesPage', '/khang-the'],
+  ['/PICC', '/hoi-suc-tich-cuc'],
+  ['/SupportService', '/dich-vu-ho-tro'],
+  ['/ContactPage', '/lien-he'],
+] as const
+
+function LegacyCategoryRedirect({ from, to }: { from: string; to: string }) {
+  const { pathname } = useLocation()
+  return <Navigate to={`${to}${pathname.slice(from.length)}`} replace />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <OrganizationJsonLd />
       <ScrollToTop />
       <GoogleAnalytics />
+      <FloatingHotline />
       <Routes>
         <Route element={<FigmaScaledLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/gioi-thieu" element={<AboutPage />} />
-          <Route path="/SupportService" element={<SupportService />} />
+          <Route path="/dich-vu-ho-tro" element={<SupportService />} />
           <Route path="/BrandPage" element={<BrandPage />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
           <Route path="/san-pham" element={<ProductsOverviewPage />} />
           <Route path="/thiet-bi-da-trien-khai" element={<InstallationsPage />} />
           <Route path="/thiet-bi-da-trien-khai/:slug" element={<InstallationDetailPage />} />
-          <Route path="/EquipmentPage" element={<EquipmentCatalogPage />} />
-          <Route path="/EquipmentPage/:categorySlug" element={<EquipmentCatalogPage />} />
+          <Route path="/giai-phau-benh" element={<EquipmentCatalogPage />} />
+          <Route path="/giai-phau-benh/:categorySlug" element={<EquipmentCatalogPage />} />
           <Route path="/san-pham-chi-tiet" element={<ProductDetailPage />} />
           <Route path="/san-pham/:slug" element={<ProductDetailPage />} />
           <Route path="/vat-tu-tieu-hao" element={<VatTuTieuHaoPage />} />
           <Route path="/vat-tu-tieu-hao/:categorySlug" element={<VatTuTieuHaoPage />} />
-          <Route path="/ChemicalsPage" element={<ChemicalsPage />} />
-          <Route path="/ChemicalsPage/:categorySlug" element={<ChemicalsPage />} />
-          <Route path="/AntibodiesPage" element={<AntibodiesPage />} />
-          <Route path="/AntibodiesPage/:categorySlug" element={<AntibodiesPage />} />
-          <Route path="/ContactPage" element={<ContactPage />} />
-          <Route path="/MicroscopePage" element={<MicroscopePage />} />
-          <Route path="/MicroscopePage/:categorySlug" element={<MicroscopePage />} />
-          <Route path="/MicroscopePage/:categorySlug/:subcategorySlug" element={<MicroscopePage />} />
-          <Route path="/Trimmingtech" element={<EquipmentCatalogPage categorySlug="trimmingtech" />} />
-          <Route path="/TissueProcessing" element={<EquipmentCatalogPage categorySlug="tissue-processing" />} />
-          <Route path="/Scaning" element={<EquipmentCatalogPage categorySlug="scaning" />} />
-          <Route path="/LaserCassette" element={<EquipmentCatalogPage categorySlug="laser-cassette" />} />
+          <Route path="/hoa-chat" element={<ChemicalsPage />} />
+          <Route path="/hoa-chat/:categorySlug" element={<ChemicalsPage />} />
+          <Route path="/khang-the" element={<AntibodiesPage />} />
+          <Route path="/khang-the/:categorySlug" element={<AntibodiesPage />} />
+          <Route path="/lien-he" element={<ContactPage />} />
+          <Route path="/kinh-hien-vi" element={<MicroscopePage />} />
+          <Route path="/kinh-hien-vi/:categorySlug" element={<MicroscopePage />} />
+          <Route path="/kinh-hien-vi/:categorySlug/:subcategorySlug" element={<MicroscopePage />} />
           <Route path="/LaserSlide" element={<LaserSlide />} />
-          <Route path="/Immunohistochemistry" element={<EquipmentCatalogPage categorySlug="immunohistochemistry" />} />
-          <Route path="/DyeingMachine" element={<EquipmentCatalogPage categorySlug="dyeing-machine" />} />
-          <Route path="/CuttingMachine" element={<EquipmentCatalogPage categorySlug="cutting-machine" />} />
-          <Route path="/Casting" element={<EquipmentCatalogPage categorySlug="casting" />} />
-          <Route path="/DryingTable" element={<EquipmentCatalogPage categorySlug="drying-table" />} />
-          <Route path="/TissueTension" element={<EquipmentCatalogPage categorySlug="tissue-tension" />} />
-          <Route path="/LaminatingMachine" element={<EquipmentCatalogPage categorySlug="laminating-machine" />} />
-          <Route path="/PICC" element={<PICC />} />
-          <Route path="/PICC/:categorySlug" element={<PICC />} />
-          <Route path="/GiamDinhKhoaHocKyThuatHinhSu" element={<ForensicPage />} />
-          <Route path="/GiamDinhKhoaHocKyThuatHinhSu/:categorySlug" element={<ForensicPage />} />
-          <Route path="/GiamDinhTruyenThongCoHocSungDan" element={<ForensicPage categoryKey="traditional" />} />
-          <Route path="/GiamDinhTaiLieuChuVietTienTem" element={<ForensicPage categoryKey="documents" />} />
-          <Route path="/GiamDinhSinhHoc" element={<ForensicPage categoryKey="biology" />} />
-          <Route path="/GiamDinhADN" element={<ForensicPage categoryKey="dna" />} />
+          <Route path="/hoi-suc-tich-cuc" element={<PICC />} />
+          <Route path="/hoi-suc-tich-cuc/:categorySlug" element={<PICC />} />
+          <Route path="/giam-dinh-hinh-su" element={<ForensicPage />} />
+          <Route path="/giam-dinh-hinh-su/:categorySlug" element={<ForensicPage />} />
+          {legacyCategoryPaths.flatMap(([from, to]) => [
+            <Route key={from} path={from} element={<Navigate to={to} replace />} />,
+            <Route key={`${from}/*`} path={`${from}/*`} element={<LegacyCategoryRedirect from={from} to={to} />} />,
+          ])}
+          <Route path="/Trimmingtech" element={<Navigate to="/giai-phau-benh/trimmingtech" replace />} />
+          <Route path="/TissueProcessing" element={<Navigate to="/giai-phau-benh/tissue-processing" replace />} />
+          <Route path="/Scaning" element={<Navigate to="/giai-phau-benh/scaning" replace />} />
+          <Route path="/LaserCassette" element={<Navigate to="/giai-phau-benh/laser-cassette" replace />} />
+          <Route path="/Immunohistochemistry" element={<Navigate to="/giai-phau-benh/immunohistochemistry" replace />} />
+          <Route path="/DyeingMachine" element={<Navigate to="/giai-phau-benh/dyeing-machine" replace />} />
+          <Route path="/CuttingMachine" element={<Navigate to="/giai-phau-benh/cutting-machine" replace />} />
+          <Route path="/Casting" element={<Navigate to="/giai-phau-benh/casting" replace />} />
+          <Route path="/DryingTable" element={<Navigate to="/giai-phau-benh/drying-table" replace />} />
+          <Route path="/TissueTension" element={<Navigate to="/giai-phau-benh/tissue-tension" replace />} />
+          <Route path="/LaminatingMachine" element={<Navigate to="/giai-phau-benh/laminating-machine" replace />} />
+          <Route path="/GiamDinhTruyenThongCoHocSungDan" element={<Navigate to="/giam-dinh-hinh-su/giam-dinh-truyen-thong-co-hoc-sung-dan" replace />} />
+          <Route path="/GiamDinhTaiLieuChuVietTienTem" element={<Navigate to="/giam-dinh-hinh-su/giam-dinh-tai-lieu-chu-viet-tien-tem" replace />} />
+          <Route path="/GiamDinhSinhHoc" element={<Navigate to="/giam-dinh-hinh-su/giam-dinh-sinh-hoc" replace />} />
+          <Route path="/GiamDinhADN" element={<Navigate to="/giam-dinh-hinh-su/giam-dinh-adn" replace />} />
         </Route>
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route element={<RequireAdmin />}>

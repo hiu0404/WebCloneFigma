@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -80,11 +80,11 @@ export function AntibodiesPage() {
   const selectedTitle =
     selectedGroup === 'all' ? 'Kháng thể' : getChildCategoryLabel(categories, 'antibodies', selectedGroup)
   const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
-  const canonical = selectedGroup === 'all' ? '/AntibodiesPage' : `/AntibodiesPage/${selectedGroup}`
+  const canonical = selectedGroup === 'all' ? '/khang-the' : `/khang-the/${selectedGroup}`
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/AntibodiesPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/khang-the' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -102,7 +102,7 @@ export function AntibodiesPage() {
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/AntibodiesPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/khang-the' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -124,7 +124,7 @@ export function AntibodiesPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="antibodies" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/AntibodiesPage/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="antibodies" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/khang-the/${slug}`} counts={groupCounts} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

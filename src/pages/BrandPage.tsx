@@ -134,7 +134,7 @@ export default function BrandPage() {
         <div className={styles.partnerContent}>
           <h2>Hợp tác cùng những thương hiệu toàn cầu</h2>
           <p>Cam kết mang đến công nghệ tiên tiến và giải pháp tối ưu cho khách hàng.</p>
-          <Link className={styles.contactBtn} to="/ContactPage">Liên hệ hợp tác</Link>
+          <Link className={styles.contactBtn} to="/lien-he">Liên hệ hợp tác</Link>
         </div>
       </section>
     </div>

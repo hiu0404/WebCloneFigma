@@ -71,8 +71,8 @@ export const LIGHT_MICROSCOPE_SLUG = 'light-microscopes'
 
 export function microscopeCategoryUrl(category: Pick<MicroscopeCategory, 'slug' | 'parentSlug'>) {
   return category.parentSlug
-    ? `/MicroscopePage/${encodeURIComponent(category.parentSlug)}/${encodeURIComponent(category.slug)}`
-    : `/MicroscopePage/${encodeURIComponent(category.slug)}`
+    ? `/kinh-hien-vi/${encodeURIComponent(category.parentSlug)}/${encodeURIComponent(category.slug)}`
+    : `/kinh-hien-vi/${encodeURIComponent(category.slug)}`
 }
 
 export function normalizeMicroscopeCategoryStatus(status?: string): MicroscopeCategoryStatus {

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -82,11 +82,11 @@ export function ChemicalsPage() {
       ? 'Hóa chất'
       : getChildCategoryLabel(categories, 'chemicals', selectedGroup)
   const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
-  const canonical = selectedGroup === 'all' ? '/ChemicalsPage' : `/ChemicalsPage/${selectedGroup}`
+  const canonical = selectedGroup === 'all' ? '/hoa-chat' : `/hoa-chat/${selectedGroup}`
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Hóa chất', to: '/ChemicalsPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Hóa chất', to: '/hoa-chat' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -104,7 +104,7 @@ export function ChemicalsPage() {
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Hóa chất', to: '/ChemicalsPage' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Hóa chất', to: '/hoa-chat' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -126,7 +126,7 @@ export function ChemicalsPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="chemicals" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/ChemicalsPage/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="chemicals" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/hoa-chat/${slug}`} counts={groupCounts} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

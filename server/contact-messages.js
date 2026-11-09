@@ -5,6 +5,7 @@ const MAX_NAME = 120
 const MAX_PHONE = 24
 const MAX_SUBJECT = 160
 const MAX_MESSAGE = 5000
+const MAX_EMAIL = 254
 
 export function validateContactMessage(body) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -20,6 +21,7 @@ export function validateContactMessage(body) {
   const phone = body.phone.trim()
   const subject = body.subject.trim()
   const message = body.message.trim()
+  const email = typeof body.email === 'string' ? body.email.trim() : ''
 
   if (name.length < 2 || name.length > MAX_NAME) return { error: 'Họ và tên phải từ 2 đến 120 ký tự.' }
   if (subject.length < 2 || subject.length > MAX_SUBJECT) return { error: 'Tiêu đề phải từ 2 đến 160 ký tự.' }
@@ -27,8 +29,11 @@ export function validateContactMessage(body) {
   if (phone.length > MAX_PHONE || !/^[+()\d.\s-]+$/.test(phone)) return { error: 'Số điện thoại không hợp lệ.' }
   const digits = phone.replace(/\D/g, '')
   if (digits.length < 9 || digits.length > 15) return { error: 'Số điện thoại không hợp lệ.' }
+  if (body.email !== undefined && (typeof body.email !== 'string' || email.length > MAX_EMAIL || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))) {
+    return { error: 'Email không hợp lệ.' }
+  }
 
-  return { value: { name, phone, subject, message } }
+  return { value: { name, phone, subject, message, ...(email ? { email } : {}) } }
 }
 
 export function createContactMessageStore(filePath) {

@@ -1,4 +1,4 @@
-﻿
+
 
 import { NavLink } from 'react-router-dom';
 import styles from './TissueProcessing.module.css'
@@ -67,7 +67,7 @@ const TissueProcessing = () => {
                     {/* SIDEBAR */}
 
                     <div className={styles.sidebar}>
-                        <NavLink to="/EquipmentPage" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
+                        <NavLink to="/giai-phau-benh" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
 
                         <ul>
                             <li>

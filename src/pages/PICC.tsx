@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -76,11 +76,11 @@ export default function PICC() {
   const selectedTitle =
     selectedGroup === 'all' ? 'Hồi sức tích cực' : getChildCategoryLabel(categories, PARENT_SLUG, selectedGroup)
   const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
-  const canonical = selectedGroup === 'all' ? '/PICC' : `/PICC/${selectedGroup}`
+  const canonical = selectedGroup === 'all' ? '/hoi-suc-tich-cuc' : `/hoi-suc-tich-cuc/${selectedGroup}`
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/PICC' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/hoi-suc-tich-cuc' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -98,7 +98,7 @@ export default function PICC() {
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/PICC' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/hoi-suc-tich-cuc' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -120,7 +120,7 @@ export default function PICC() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="intensive-care" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/PICC/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="intensive-care" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/hoi-suc-tich-cuc/${slug}`} counts={groupCounts} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

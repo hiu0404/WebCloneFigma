@@ -1,5 +1,5 @@
 import type { MicroscopeCategory } from '../../data/microscopes'
-import styles from '../../pages/MicroscopePage.module.css'
+import styles from '../../pages/kinh-hien-vi.module.css'
 
 type Props = {
   categories: MicroscopeCategory[]

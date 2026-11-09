@@ -1,4 +1,4 @@
-﻿import { Header } from '../components/Header/Header'
+import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './EquipmentPage.module.css'
 import { NavLink } from 'react-router-dom';
@@ -108,7 +108,7 @@ export function EquipmentPage() {
                 <div className={styles.categorypage}>
                     {/* SIDEBAR */}
                     <div className={styles.sidebar}>
-                    <NavLink to="/EquipmentPage" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
+                    <NavLink to="/giai-phau-benh" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
                         <ul>
                             <li>
                                 <NavLink

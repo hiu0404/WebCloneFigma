@@ -205,11 +205,14 @@
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .primaryButton {
   background: #187093;
   color: #ffffff;
+  border: 1px solid #187093;
 }
 
 .secondaryButton {
@@ -223,23 +226,31 @@
 }
 
 .tabs {
-  display: grid;
-  grid-template-columns: 205px 1fr;
+  display: flex;
   border: 1px solid #c7cdd1;
   border-bottom: 0;
   min-height: 43px;
   background: #e9e9e9;
 }
 
-.tabActive {
+.tab {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 205px;
+  padding: 8px 16px;
   border: 0;
   border-right: 1px solid #c7cdd1;
+  background: transparent;
+  color: #344b57;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabActive {
   background: #ffffff;
   color: #1c7bb1;
-  font-size: 13px;
   font-weight: 500;
 }
 
@@ -247,6 +258,8 @@
   border-top: 1px solid #c7cdd1;
   padding: 22px 12px 10px;
 }
+
+.tabBody[hidden] { display: none; }
 
 .tabBody h2 {
   margin: 22px 0 10px;
@@ -264,6 +277,8 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+.noSpecs { color: #647580; font-size: 14px; line-height: 1.5; }
 
 .specs {
   margin: 0;
@@ -475,16 +490,17 @@
   }
 
   .tabs {
-    grid-template-columns: 1fr;
+    flex-wrap: wrap;
   }
 
   .tabs span {
     display: none;
   }
 
-  .tabActive {
+  .tab {
+    min-width: 0;
+    flex: 1 1 150px;
     min-height: calc(42px / var(--figma-scale, 1));
-    border-right: 0;
   }
 
   .relatedCard img,
@@ -497,7 +513,7 @@
   .summary h1 { font-size: calc(21px / var(--figma-scale, 1)); }
   .short, .metaGrid dt, .metaGrid dd { font-size: calc(14px / var(--figma-scale, 1)); }
   .richText, .specs, .relatedCard span, .relatedEmpty { font-size: calc(13px / var(--figma-scale, 1)); }
-  .primaryButton, .secondaryButton, .tabActive { font-size: calc(13px / var(--figma-scale, 1)); }
+  .primaryButton, .secondaryButton, .tab { font-size: calc(13px / var(--figma-scale, 1)); }
 }
 .installationsSection { margin:24px 0; padding:24px; border:1px solid #e4eaee; background:#fff; }
 .installationsSection h2 { margin:0 0 18px; color:#214158; font-size:23px; }

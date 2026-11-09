@@ -78,7 +78,7 @@ export function AdminContactMessagesPage() {
             <div className={styles.messageHeader}>
               <div>
                 <div className={styles.subject}>{item.subject}</div>
-                <div className={styles.meta}>{item.name} · <a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a> · <time dateTime={item.createdAt}>{displayDate(item.createdAt)}</time></div>
+                <div className={styles.meta}>{item.name} · <a href={`tel:${item.phone.replace(/[^\d+]/g, '')}`}>{item.phone}</a>{item.email ? <> · <a href={`mailto:${item.email}`}>{item.email}</a></> : null} · <time dateTime={item.createdAt}>{displayDate(item.createdAt)}</time></div>
               </div>
               <span className={`${styles.badge} ${item.readAt ? styles.badgeRead : ''}`}>{item.readAt ? 'Đã đọc' : 'Mới'}</span>
             </div>

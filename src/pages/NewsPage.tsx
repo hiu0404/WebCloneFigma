@@ -58,7 +58,7 @@ const newsItems = [
     excerpt:
       'Ecolink cung cấp hỗ trợ kỹ thuật, tư vấn vận hành và bảo trì nhằm bảo đảm hệ thống hoạt động ổn định trong dài hạn.',
     image: '/assetsFull/dichvuhotro.jpeg',
-    url: '/SupportService',
+    url: '/dich-vu-ho-tro',
   },
 ]
 
@@ -155,7 +155,7 @@ export default function NewsPage() {
             <section className={styles.sidePanel}>
               <h2>Theo dõi cập nhật</h2>
               <p>Nhận tư vấn nhanh về sản phẩm, giải pháp và thông tin kỹ thuật phù hợp với nhu cầu của đơn vị.</p>
-              <a className={styles.contactButton} href="/ContactPage">Liên hệ Ecolink</a>
+              <a className={styles.contactButton} href="/lien-he">Liên hệ Ecolink</a>
             </section>
           </aside>
         </section>

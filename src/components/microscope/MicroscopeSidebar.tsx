@@ -17,7 +17,7 @@ export function MicroscopeSidebar({ categories, selectedSlug, counts, total }: P
         <li>
           <Link
             className={`${styles.categoryLink} ${selectedSlug === 'all' ? styles.active : ''}`}
-            to="/MicroscopePage"
+            to="/kinh-hien-vi"
           >
             <span>›</span>
             Tất cả kính hiển vi ({total})
@@ -27,7 +27,7 @@ export function MicroscopeSidebar({ categories, selectedSlug, counts, total }: P
           <li key={category.slug}>
             <Link
               className={`${styles.categoryLink} ${selectedSlug === category.slug ? styles.active : ''}`}
-              to={`/MicroscopePage/${category.slug}`}
+              to={`/kinh-hien-vi/${category.slug}`}
             >
               <span>›</span>
               {category.label} ({counts.get(category.slug) ?? 0})

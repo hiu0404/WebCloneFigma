@@ -1,4 +1,4 @@
-﻿import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './DryingTable.module.css'
 import { FigmaImage } from '../components/FigmaImage';
 import { Header } from '../components/Header/Header';
@@ -58,7 +58,7 @@ const DryingTable = () => {
                 <div className={styles.categorypage}>
                     {/* SIDEBAR */}
                     <div className={styles.sidebar}>
-                        <NavLink to="/EquipmentPage" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
+                        <NavLink to="/giai-phau-benh" className={styles.dmsp}><h2>DANH MỤC SẢN PHẨM</h2></NavLink>
 
                         <ul>
                             <li>

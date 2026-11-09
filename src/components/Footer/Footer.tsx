@@ -11,21 +11,20 @@ const quickLinks = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Giới thiệu', to: '/gioi-thieu' },
   { label: 'Sản phẩm', to: '/san-pham' },
-  { label: 'Giải pháp', to: '/#giai-phap' },
-  { label: 'Dịch vụ hỗ trợ', to: '/SupportService' },
+  { label: 'Dịch vụ hỗ trợ', to: '/dich-vu-ho-tro' },
   { label: 'Thiết bị đã triển khai', to: '/thiet-bi-da-trien-khai' },
   { label: 'Tin tức', to: '/tin-tuc' },
-  { label: 'Liên hệ', to: '/ContactPage' },
+  { label: 'Liên hệ', to: '/lien-he' },
 ]
 
 const productLinks = [
-  { label: 'Giải phẫu bệnh', to: '/EquipmentPage' },
-  { label: 'Giám định hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { label: 'Kính hiển vi', to: '/MicroscopePage' },
+  { label: 'Giải phẫu bệnh', to: '/giai-phau-benh' },
+  { label: 'Giám định hình sự', to: '/giam-dinh-hinh-su' },
+  { label: 'Kính hiển vi', to: '/kinh-hien-vi' },
   { label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
-  { label: 'Hóa chất', to: '/ChemicalsPage' },
-  { label: 'Kháng thể', to: '/AntibodiesPage' },
-  { label: 'Hồi sức tích cực', to: '/PICC' },
+  { label: 'Hóa chất', to: '/hoa-chat' },
+  { label: 'Kháng thể', to: '/khang-the' },
+  { label: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
 ]
 
 export function Footer({ top }: FooterProps) {

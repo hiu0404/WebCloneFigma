@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -27,19 +27,12 @@ const legacyCategorySlugs = {
   dna: 'giam-dinh-adn',
 } as const
 
-const legacyCategoryPaths: Record<string, string> = {
-  'giam-dinh-truyen-thong-co-hoc-sung-dan': '/GiamDinhTruyenThongCoHocSungDan',
-  'giam-dinh-tai-lieu-chu-viet-tien-tem': '/GiamDinhTaiLieuChuVietTienTem',
-  'giam-dinh-sinh-hoc': '/GiamDinhSinhHoc',
-  'giam-dinh-adn': '/GiamDinhADN',
-}
-
 type ForensicPageProps = {
   categoryKey?: keyof typeof legacyCategorySlugs
 }
 
 function categoryPath(slug: string) {
-  return legacyCategoryPaths[slug] ?? `/GiamDinhKhoaHocKyThuatHinhSu/${slug}`
+  return `/giam-dinh-hinh-su/${encodeURIComponent(slug)}`
 }
 
 export default function ForensicPage({ categoryKey }: ForensicPageProps) {
@@ -99,11 +92,11 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
   const selectedTitle =
     selectedGroup === 'all' ? pageTitle : getChildCategoryLabel(categories, PARENT_SLUG, selectedGroup)
   const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
-  const canonical = selectedGroup === 'all' ? '/GiamDinhKhoaHocKyThuatHinhSu' : categoryPath(selectedGroup)
+  const canonical = selectedGroup === 'all' ? '/giam-dinh-hinh-su' : categoryPath(selectedGroup)
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/GiamDinhKhoaHocKyThuatHinhSu' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/giam-dinh-hinh-su' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
       <Header />
 
       <FigmaImage
@@ -121,7 +114,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/GiamDinhKhoaHocKyThuatHinhSu' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/giam-dinh-hinh-su' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>

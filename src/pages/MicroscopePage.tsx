@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
@@ -87,10 +87,10 @@ const MicroscopePage = () => {
 
   const selectedTitle =
     selectedSlug === 'all' ? 'Kính hiển vi' : getMicroscopeCategoryLabel(categories, selectedSlug)
-  const canonical = requestedCategory ? microscopeCategoryUrl(requestedCategory) : '/MicroscopePage'
+  const canonical = requestedCategory ? microscopeCategoryUrl(requestedCategory) : '/kinh-hien-vi'
   const breadcrumbs = [
     { label: 'Trang chủ', to: '/' },
-    { label: 'Kính hiển vi', to: '/MicroscopePage' },
+    { label: 'Kính hiển vi', to: '/kinh-hien-vi' },
     ...(parentCategory ? [{ label: parentCategory.label, to: microscopeCategoryUrl(parentCategory) }] : []),
     ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }]),
   ]

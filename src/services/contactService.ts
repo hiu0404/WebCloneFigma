@@ -3,6 +3,7 @@ import { apiUrl } from '../lib/apiClient'
 export type ContactInput = {
   name: string
   phone: string
+  email?: string
   subject: string
   message: string
   website?: string

@@ -31,9 +31,9 @@ import { InstallationCard } from '../components/InstallationCard'
 import installationStyles from './InstallationsPage.module.css'
 
 const categories = [
-  { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/EquipmentPage' },
-  { title: 'Giám định vi thể / pháp y', image: '/assetsFull/BANERPHAPY.jpg', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { title: 'Khoa học hình sự', image: '/assetsFull/criminal.jpg', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
+  { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/giai-phau-benh' },
+  { title: 'Giám định vi thể / pháp y', image: '/assetsFull/BANERPHAPY.jpg', to: '/giam-dinh-hinh-su' },
+  { title: 'Khoa học hình sự', image: '/assetsFull/criminal.jpg', to: '/giam-dinh-hinh-su' },
   { title: 'Giám định sinh học', image: '/assetsFull/GDSHC.jpg', to: '/GiamDinhSinhHoc' },
   { title: 'Giám định ADN', image: '/assetsFull/ADNBANER.jpg', to: '/GiamDinhADN' },
 ]
@@ -43,13 +43,13 @@ const solutions = [
     icon: FaFlask,
     title: 'Giải pháp Giải phẫu bệnh',
     text: 'Hệ thống đồng bộ xử lý mô, nhuộm, kính hiển vi đến số hóa bệnh phẩm.',
-    to: '/EquipmentPage',
+    to: '/giai-phau-benh',
   },
   {
     icon: FaFingerprint,
     title: 'Giải pháp Pháp y',
     text: 'Trang thiết bị hiện đại phục vụ giám định vi thể, dấu vết và phân tích vật chứng.',
-    to: '/GiamDinhKhoaHocKyThuatHinhSu',
+    to: '/giam-dinh-hinh-su',
   },
   {
     icon: FaDna,
@@ -187,7 +187,7 @@ export function HomePage() {
                 <Link className={styles.primaryAction} to="/san-pham">
                   Khám phá sản phẩm <FaArrowRight />
                 </Link>
-                <Link className={styles.secondaryAction} to="/ContactPage">
+                <Link className={styles.secondaryAction} to="/lien-he">
                   Tư vấn giải pháp <FaArrowRight />
                 </Link>
               </div>
@@ -377,7 +377,7 @@ export function HomePage() {
             <span>Bạn cần tư vấn giải pháp phù hợp?</span>
             <small>Đội ngũ chuyên gia của Ecolink luôn sẵn sàng đồng hành cùng bạn.</small>
           </div>
-          <Link to="/ContactPage">Liên hệ ngay</Link>
+          <Link to="/lien-he">Liên hệ ngay</Link>
           <a href="tel:+84812119668">+84 812 119 668</a>
         </section>
       </main>

@@ -11,13 +11,13 @@ export type ProductGroupKey =
   | 'intensive-care'
 
 const groups: { key: ProductGroupKey; label: string; to: string }[] = [
-  { key: 'equipment', label: 'Giải phẫu bệnh', to: '/EquipmentPage' },
-  { key: 'forensic-science', label: 'Giám định hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { key: 'microscopes', label: 'Kính hiển vi', to: '/MicroscopePage' },
+  { key: 'equipment', label: 'Giải phẫu bệnh', to: '/giai-phau-benh' },
+  { key: 'forensic-science', label: 'Giám định hình sự', to: '/giam-dinh-hinh-su' },
+  { key: 'microscopes', label: 'Kính hiển vi', to: '/kinh-hien-vi' },
   { key: 'consumables', label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
-  { key: 'chemicals', label: 'Hóa chất', to: '/ChemicalsPage' },
-  { key: 'antibodies', label: 'Kháng thể', to: '/AntibodiesPage' },
-  { key: 'intensive-care', label: 'Hồi sức tích cực', to: '/PICC' },
+  { key: 'chemicals', label: 'Hóa chất', to: '/hoa-chat' },
+  { key: 'antibodies', label: 'Kháng thể', to: '/khang-the' },
+  { key: 'intensive-care', label: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
 ]
 
 type Props = {

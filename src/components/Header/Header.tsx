@@ -28,13 +28,13 @@ type SearchItem = {
 }
 
 const productMenu = [
-  { label: 'Giải phẫu bệnh', to: '/EquipmentPage' },
-  { label: 'Giám định hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { label: 'Kính hiển vi', to: '/MicroscopePage' },
+  { label: 'Giải phẫu bệnh', to: '/giai-phau-benh' },
+  { label: 'Giám định hình sự', to: '/giam-dinh-hinh-su' },
+  { label: 'Kính hiển vi', to: '/kinh-hien-vi' },
   { label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
-  { label: 'Hóa chất', to: '/ChemicalsPage' },
-  { label: 'Kháng thể', to: '/AntibodiesPage' },
-  { label: 'Hồi sức tích cực', to: '/PICC' },
+  { label: 'Hóa chất', to: '/hoa-chat' },
+  { label: 'Kháng thể', to: '/khang-the' },
+  { label: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
 ]
 
 export function Header() {
@@ -173,7 +173,7 @@ export function Header() {
         <div className={styles.contactItem}>
           <FaEnvelope />
           <span>Email</span>
-          <strong>info.ecolink@gmail.com</strong>
+          <strong>info.ecolinkvn@gmail.com</strong>
         </div>
 
         <button
@@ -207,23 +207,22 @@ export function Header() {
           </div>
         </div>
         <div className={styles.dropdown}>
-          <NavLink to="/#giai-phap">Giải pháp <FaChevronDown /></NavLink>
           <div className={styles.dropdownMenu}>
-            <NavLink to="/EquipmentPage">Giải phẫu bệnh</NavLink>
+            <NavLink to="/giai-phau-benh">Giải phẫu bệnh</NavLink>
             <NavLink to="/GiamDinhADN">ADN</NavLink>
             <NavLink to="/Immunohistochemistry">IHC & ISH</NavLink>
             <NavLink to="/GiamDinhSinhHoc">Sinh học</NavLink>
           </div>
         </div>
         <div className={styles.dropdown}>
-          <NavLink to="/SupportService">Dịch vụ hỗ trợ <FaChevronDown /></NavLink>
+          <NavLink to="/dich-vu-ho-tro">Dịch vụ hỗ trợ <FaChevronDown /></NavLink>
           <div className={styles.dropdownMenu}>
-            <NavLink to="/SupportService">Dịch vụ hỗ trợ</NavLink>
+            <NavLink to="/dich-vu-ho-tro">Dịch vụ hỗ trợ</NavLink>
             <NavLink to="/thiet-bi-da-trien-khai">Thiết bị đã triển khai</NavLink>
           </div>
         </div>
         <NavLink to="/tin-tuc">Tin tức</NavLink>
-        <NavLink to="/ContactPage">Liên hệ</NavLink>
+        <NavLink to="/lien-he">Liên hệ</NavLink>
 
       </nav>
     </header>

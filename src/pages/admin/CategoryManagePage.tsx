@@ -95,7 +95,7 @@ function productUsesRow(product: Product, row: CategoryRow) {
 function previewUrl(parentSlug: string, slug: string, parentId: string) {
   if (slug === 'consumables') return '/vat-tu-tieu-hao'
   if (parentSlug === 'consumables' || parentId) return `/vat-tu-tieu-hao/${slug || ':slug'}`
-  return '/EquipmentPage'
+  return '/giai-phau-benh'
 }
 
 export function CategoryManagePage() {

@@ -38,7 +38,7 @@
   flex: 0 0 auto;
   width: 26px;
   height: 26px;
-  color: #f66a19;
+  color: #187093;
 }
 
 .groupHeading h2 {
@@ -54,12 +54,16 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 38px;
+  align-items: stretch;
 }
 
 .productCard {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 215px minmax(48px, auto);
+  align-content: start;
+  gap: 14px;
   min-width: 0;
+  overflow: hidden;
   text-align: center;
   text-decoration: none;
   color: inherit;
@@ -71,7 +75,8 @@
   justify-content: center;
   flex: none;
   width: 100%;
-  height: 215px;
+  height: 100%;
+  min-height: 0;
   overflow: hidden;
   background: #fff;
 }
@@ -82,6 +87,7 @@
   height: 100%;
   min-width: 0;
   min-height: 0;
+  max-height: 100%;
   object-fit: contain;
   transition: transform 0.2s ease;
 }
@@ -100,7 +106,10 @@
 
 .productName {
   display: block;
-  margin-top: 14px;
+  position: relative;
+  align-self: start;
+  padding: 4px 8px;
+  background: #fff;
   font-size: 17px;
   line-height: 1.5;
   font-weight: 500;
@@ -109,7 +118,7 @@
 
 .productCard:hover .productName,
 .productCard:focus-visible .productName {
-  color: #e9560d;
+  color: #187093;
 }
 
 .empty {
@@ -126,19 +135,28 @@
   justify-content: center;
   width: 150px;
   min-height: 42px;
-  margin: 38px auto 0;
-  background: #f15b17;
+  margin: 46px auto 0;
+  border: 2px solid #187093;
+  background: #187093;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;
-  transition: background 0.2s ease;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .moreButton:hover,
 .moreButton:focus-visible {
-  background: #d8490d;
+  background: #fff;
+  color: #187093;
+  border-color: currentColor;
+}
+
+.moreButton:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 @media (max-width: 1024px) {
@@ -173,8 +191,8 @@
     gap: calc(28px / var(--figma-scale, 1)) calc(18px / var(--figma-scale, 1));
   }
 
-  .imageFrame {
-    height: calc(175px / var(--figma-scale, 1));
+  .productCard {
+    grid-template-rows: calc(175px / var(--figma-scale, 1)) minmax(calc(48px / var(--figma-scale, 1)), auto);
   }
 
   .productName,

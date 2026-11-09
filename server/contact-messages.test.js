@@ -23,6 +23,8 @@ test('validates required contact fields and phone number', () => {
   assert.ok(validateContactMessage({ ...validMessage, phone: 'abc' }).error)
   assert.ok(validateContactMessage({ ...validMessage, message: 'ngắn' }).error)
   assert.ok(validateContactMessage({ ...validMessage, subject: 'a'.repeat(161) }).error)
+  assert.equal(validateContactMessage({ ...validMessage, email: 'khach@example.com' }).value.email, 'khach@example.com')
+  assert.ok(validateContactMessage({ ...validMessage, email: 'khong-hop-le' }).error)
 })
 
 test('stores new requests and marks them read without changing other records', () => {

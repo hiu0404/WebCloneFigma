@@ -37,13 +37,13 @@ type Catalog = {
 }
 
 const groups: { key: GroupKey; title: string; to: string }[] = [
-  { key: 'equipment', title: 'Giải phẫu bệnh', to: '/EquipmentPage' },
-  { key: 'forensic-science', title: 'Giám định hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { key: 'microscopes', title: 'Kính hiển vi', to: '/MicroscopePage' },
+  { key: 'equipment', title: 'Giải phẫu bệnh', to: '/giai-phau-benh' },
+  { key: 'forensic-science', title: 'Giám định hình sự', to: '/giam-dinh-hinh-su' },
+  { key: 'microscopes', title: 'Kính hiển vi', to: '/kinh-hien-vi' },
   { key: 'consumables', title: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
-  { key: 'chemicals', title: 'Hóa chất', to: '/ChemicalsPage' },
-  { key: 'antibodies', title: 'Kháng thể', to: '/AntibodiesPage' },
-  { key: 'intensive-care', title: 'Hồi sức tích cực', to: '/PICC' },
+  { key: 'chemicals', title: 'Hóa chất', to: '/hoa-chat' },
+  { key: 'antibodies', title: 'Kháng thể', to: '/khang-the' },
+  { key: 'intensive-care', title: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
 ]
 
 const emptyCatalog: Catalog = {

@@ -21,17 +21,17 @@ import { Breadcrumb, type BreadcrumbItem } from '../components/Breadcrumb'
 import { productUrl } from '../lib/seo'
 import { apiGetInstallations } from '../services/installationService'
 import { installationUrl, type PublicInstallation } from '../data/installations'
+import { QuoteRequestModal } from '../components/QuoteRequestModal'
 
 function categoryPageUrl(parentSlug: string) {
-  return ({ equipment: '/EquipmentPage', consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC', microscopes: '/MicroscopePage' } as Record<string, string>)[parentSlug] || '/san-pham'
+  return ({ equipment: '/giai-phau-benh', consumables: '/vat-tu-tieu-hao', chemicals: '/hoa-chat', antibodies: '/khang-the', 'forensic-science': '/giam-dinh-hinh-su', 'intensive-care': '/hoi-suc-tich-cuc', microscopes: '/kinh-hien-vi' } as Record<string, string>)[parentSlug] || '/san-pham'
 }
 
 function subcategoryPageUrl(parentSlug: string, childSlug: string, categoryParentSlug?: string) {
   if (!childSlug) return categoryPageUrl(parentSlug)
-  const equipment = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' } as Record<string, string>
-  if (parentSlug === 'equipment') return equipment[childSlug] || categoryPageUrl(parentSlug)
-  if (parentSlug === 'forensic-science') return `/GiamDinhKhoaHocKyThuatHinhSu/${childSlug}`
-  if (parentSlug === 'microscopes' && categoryParentSlug) return `/MicroscopePage/${encodeURIComponent(categoryParentSlug)}/${encodeURIComponent(childSlug)}`
+  if (parentSlug === 'equipment') return `/giai-phau-benh/${encodeURIComponent(childSlug)}`
+  if (parentSlug === 'forensic-science') return `/giam-dinh-hinh-su/${childSlug}`
+  if (parentSlug === 'microscopes' && categoryParentSlug) return `/kinh-hien-vi/${encodeURIComponent(categoryParentSlug)}/${encodeURIComponent(childSlug)}`
   return `${categoryPageUrl(parentSlug)}/${childSlug}`
 }
 
@@ -113,8 +113,12 @@ export function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState<{ productId: string; url: string } | null>(null)
   const [installationResult, setInstallationResult] = useState<{ key: string; items: PublicInstallation[] }>({ key: '', items: [] })
   const [resolvedKey, setResolvedKey] = useState<string | null>(null)
+  const [tabSelection, setTabSelection] = useState<{ key: string; tab: 'description' | 'specs' }>({ key: '', tab: 'description' })
+  const [quoteFor, setQuoteFor] = useState<string | null>(null)
   const requestKey = slug ? `slug:${slug}` : `id:${id || ''}`
   const loading = resolvedKey !== requestKey
+  const activeTab = tabSelection.key === requestKey ? tabSelection.tab : 'description'
+  const quoteOpen = quoteFor === requestKey
 
   useEffect(() => {
     let alive = true
@@ -183,7 +187,7 @@ export function ProductDetailPage() {
       { label: 'Trang chủ', to: '/' },
       { label: parentLabel, to: parentUrl },
       ...(parentSlug === 'microscopes' && product.categoryParentSlug && product.categoryParentLabel
-        ? [{ label: product.categoryParentLabel, to: `/MicroscopePage/${encodeURIComponent(product.categoryParentSlug)}` }]
+        ? [{ label: product.categoryParentLabel, to: `/kinh-hien-vi/${encodeURIComponent(product.categoryParentSlug)}` }]
         : []),
       ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug, product.categoryParentSlug) }] : []),
       { label: product.title },
@@ -265,7 +269,7 @@ export function ProductDetailPage() {
                     ) : null}
                     <div className={styles.shareRow}>
                       <span>Share to:</span>
-                      <Link to="/ContactPage" aria-label="Liên hệ tư vấn">↗</Link>
+                      <Link to="/lien-he" aria-label="Liên hệ tư vấn">↗</Link>
                     </div>
                   </div>
 
@@ -281,7 +285,8 @@ export function ProductDetailPage() {
                       {childSlug ? <><dt>Danh mục</dt><dd>{childLabel}</dd></> : null}
                     </dl>
                     <div className={styles.actions}>
-                      <Link className={styles.primaryButton} to="/ContactPage">Liên hệ tư vấn</Link>
+                      <button className={styles.primaryButton} type="button" onClick={() => setQuoteFor(requestKey)}>Yêu cầu báo giá</button>
+                      <Link className={styles.primaryButton} to="/lien-he">Liên hệ tư vấn</Link>
                       {product.pdfUrl ? (
                         <a className={styles.secondaryButton} href={product.pdfUrl} target="_blank" rel="noreferrer">
                           Tải PDF
@@ -302,26 +307,23 @@ export function ProductDetailPage() {
                 </section>}
 
                 <section className={styles.tabsPanel}>
-                  <div className={styles.tabs}>
-                    <div className={styles.tabActive}>Mô tả sản phẩm</div>
-                    <span />
+                  <div className={styles.tabs} role="tablist" aria-label="Thông tin sản phẩm">
+                    <button className={`${styles.tab} ${activeTab === 'description' ? styles.tabActive : ''}`} type="button" role="tab" id="product-description-tab" aria-selected={activeTab === 'description'} aria-controls="product-description-panel" onClick={() => setTabSelection({ key: requestKey, tab: 'description' })}>Mô tả sản phẩm</button>
+                    <button className={`${styles.tab} ${activeTab === 'specs' ? styles.tabActive : ''}`} type="button" role="tab" id="product-specs-tab" aria-selected={activeTab === 'specs'} aria-controls="product-specs-panel" onClick={() => setTabSelection({ key: requestKey, tab: 'specs' })}>Thông số kỹ thuật</button>
                   </div>
-                  <div className={styles.tabBody}>
-                    <div className={styles.richText}>{product.description || product.shortDescription || 'Chưa có mô tả sản phẩm.'}</div>
-                    {product.specs ? (
-                      <>
-                        <h2>Thông số kỹ thuật</h2>
-                        <pre className={styles.specs}>{product.specs}</pre>
-                      </>
-                    ) : null}
-                    {youtube ? (
+                  <div className={styles.tabBody} role="tabpanel" id="product-description-panel" aria-labelledby="product-description-tab" hidden={activeTab !== 'description'}>
+                      <div className={styles.richText}>{product.description || product.shortDescription || 'Chưa có mô tả sản phẩm.'}</div>
+                      {youtube ? (
                       <>
                         <h2>Video sản phẩm</h2>
                         <div className={styles.videoWrap}>
                           <iframe src={youtube} title={product.title} allowFullScreen />
                         </div>
                       </>
-                    ) : null}
+                      ) : null}
+                  </div>
+                  <div className={styles.tabBody} role="tabpanel" id="product-specs-panel" aria-labelledby="product-specs-tab" hidden={activeTab !== 'specs'}>
+                    {product.specs?.trim() ? <pre className={styles.specs}>{product.specs}</pre> : <p className={styles.noSpecs}>Sản phẩm này chưa có thông số kỹ thuật được công bố.</p>}
                   </div>
                 </section>
               </div>
@@ -352,6 +354,7 @@ export function ProductDetailPage() {
           </>
         )}
       </main>
+      {product && quoteOpen ? <QuoteRequestModal product={product} onClose={() => setQuoteFor(null)} /> : null}
     </div>
   )
 }

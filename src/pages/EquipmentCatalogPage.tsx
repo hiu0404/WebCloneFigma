@@ -21,22 +21,8 @@ import { Breadcrumb } from '../components/Breadcrumb'
 import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import styles from './ConsumablesPage.module.css'
 
-const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
-  trimmingtech: '/Trimmingtech',
-  'tissue-processing': '/TissueProcessing',
-  casting: '/Casting',
-  'cutting-machine': '/CuttingMachine',
-  'tissue-tension': '/TissueTension',
-  'drying-table': '/DryingTable',
-  'dyeing-machine': '/DyeingMachine',
-  immunohistochemistry: '/Immunohistochemistry',
-  'laminating-machine': '/LaminatingMachine',
-  scaning: '/Scaning',
-  'laser-cassette': '/LaserCassette',
-}
-
 function equipmentCategoryUrl(slug: string) {
-  return EQUIPMENT_CATEGORY_ROUTES[slug] ?? `/EquipmentPage/${slug}`
+  return `/giai-phau-benh/${encodeURIComponent(slug)}`
 }
 
 type Props = { categorySlug?: string }
@@ -88,11 +74,11 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
   const title = selectedSlug === 'all' ? 'Sản phẩm thiết bị' : getChildCategoryLabel(categories, 'equipment', selectedSlug)
 
   const selectedCategory = childCategories.find((item) => item.slug === selectedSlug)
-  const canonical = selectedSlug === 'all' ? '/EquipmentPage' : equipmentCategoryUrl(selectedSlug)
+  const canonical = selectedSlug === 'all' ? '/giai-phau-benh' : equipmentCategoryUrl(selectedSlug)
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={title} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/EquipmentPage' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
+      <CategorySeo title={title} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/giai-phau-benh' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
       <Header />
       <div className={styles.heroWrapper}>
         <FigmaImage className={styles.hero} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden width={1920} height={461} />
@@ -100,7 +86,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
         <div className={styles.heroTitle}><div>Sản phẩm thiết bị</div><p>Trang chủ / Sản phẩm thiết bị</p></div>
       </div>
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/EquipmentPage' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
+        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/giai-phau-benh' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
         <section className={styles.benefitBar}>
           <div className={styles.benefitItem}><span>◎</span><div><strong>Chất lượng quốc tế</strong><small>Đạt tiêu chuẩn</small></div></div>
           <div className={styles.benefitItem}><span>◉</span><div><strong>Công nghệ tiên tiến</strong><small>Hiệu quả vượt trội</small></div></div>

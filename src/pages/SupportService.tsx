@@ -30,7 +30,7 @@ const services = [
 export default function Dichvuhotro() {
   return (
     <div className={styles.page}>
-      <SeoHead title="Dịch vụ hỗ trợ | Ecolink" description="Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ." canonical="/SupportService" />
+      <SeoHead title="Dịch vụ hỗ trợ | Ecolink" description="Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ." canonical="/dich-vu-ho-tro" />
       <Header />
 
       <FigmaImage
@@ -68,7 +68,7 @@ export default function Dichvuhotro() {
           <p className={styles.introClosing}>
             ECOLINK cam kết không ngừng đổi mới và đồng hành bền vững cùng sự phát triển khoa học, công nghệ và sức khỏe cộng đồng tại Việt Nam.
           </p>
-          <Link className={styles.contactBtn} to="/ContactPage">Liên hệ ngay</Link>
+          <Link className={styles.contactBtn} to="/lien-he">Liên hệ ngay</Link>
         </div>
 
         <div className={styles.introRight}>
@@ -96,7 +96,7 @@ export default function Dichvuhotro() {
         <div className={styles.bannerContent}>
           <h2>Hỗ trợ kỹ thuật chuyên sâu 24/7</h2>
           <p>Đội ngũ kỹ sư luôn sẵn sàng hỗ trợ nhanh chóng và hiệu quả.</p>
-          <Link className={styles.bannerBtn} to="/ContactPage">Yêu cầu hỗ trợ</Link>
+          <Link className={styles.bannerBtn} to="/lien-he">Yêu cầu hỗ trợ</Link>
         </div>
       </section>
     </div>

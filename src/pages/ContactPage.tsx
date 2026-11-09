@@ -110,7 +110,7 @@ export function ContactPage() {
 
   return (
     <div className={styles.page}>
-      <SeoHead title="Liên hệ Ecolink | Tư vấn thiết bị" description="Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ." canonical="/ContactPage" />
+      <SeoHead title="Liên hệ Ecolink | Tư vấn thiết bị" description="Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ." canonical="/lien-he" />
       <Header />
 
       <FigmaImage

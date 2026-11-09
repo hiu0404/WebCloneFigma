@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import multer from 'multer'
 import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
 import { isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
+import { legacyPublicRedirect } from './public-route-redirects.js'
 import {
   decryptString,
   encryptString,
@@ -1291,15 +1292,19 @@ app.get('/robots.txt', (_req, res) => {
   res.type('text/plain').send(`User-agent: *\nAllow: /\nAllow: /api/installation-images/\nDisallow: /admin\nDisallow: /api\nSitemap: ${SITE_URL}/sitemap.xml\n`)
 })
 
+const publicCategoryBases = {
+  equipment: '/giai-phau-benh', consumables: '/vat-tu-tieu-hao', chemicals: '/hoa-chat',
+  antibodies: '/khang-the', 'forensic-science': '/giam-dinh-hinh-su', 'intensive-care': '/hoi-suc-tich-cuc',
+}
+
 app.get('/sitemap.xml', (_req, res) => {
   const urls = new Map()
   const add = (pathName, lastmod) => urls.set(pathName, lastmod ? new Date(lastmod).toISOString().slice(0, 10) : null)
-  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/EquipmentPage', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage', '/BrandPage', '/SupportService'].forEach((pathName) => add(pathName))
-  const categoryBases = { consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC' }
-  const equipmentLegacy = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' }
+  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/giai-phau-benh', '/vat-tu-tieu-hao', '/hoa-chat', '/khang-the', '/kinh-hien-vi', '/hoi-suc-tich-cuc', '/giam-dinh-hinh-su', '/lien-he', '/BrandPage', '/dich-vu-ho-tro'].forEach((pathName) => add(pathName))
   for (const category of readCategories().filter((item) => item.status === 'active')) {
     for (const child of category.children.filter((item) => item.status === 'active')) {
-      const pathName = category.slug === 'equipment' ? equipmentLegacy[child.slug] : categoryBases[category.slug] ? `${categoryBases[category.slug]}/${encodeURIComponent(child.slug)}` : null
+      const base = publicCategoryBases[category.slug]
+      const pathName = base ? `${base}/${encodeURIComponent(child.slug)}` : null
       if (pathName) add(pathName)
     }
   }
@@ -1308,8 +1313,8 @@ app.get('/sitemap.xml', (_req, res) => {
     const parent = category.parentSlug ? microscopeCategories.find((item) => item.slug === category.parentSlug && item.status === 'active') : null
     if (category.parentSlug && !parent) continue
     add(parent
-      ? `/MicroscopePage/${encodeURIComponent(parent.slug)}/${encodeURIComponent(category.slug)}`
-      : `/MicroscopePage/${encodeURIComponent(category.slug)}`)
+      ? `/kinh-hien-vi/${encodeURIComponent(parent.slug)}/${encodeURIComponent(category.slug)}`
+      : `/kinh-hien-vi/${encodeURIComponent(category.slug)}`)
   }
   for (const product of allSeoProducts({ activeOnly: true })) add(product.canonicalPath, product.updatedAt)
   try {
@@ -1319,6 +1324,13 @@ app.get('/sitemap.xml', (_req, res) => {
   } catch { /* Keep the existing sitemap available if installations data needs repair. */ }
   const body = [...urls.entries()].map(([pathName, lastmod]) => `  <url><loc>${SITE_URL}${pathName}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`).join('\n')
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`)
+})
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next()
+  const target = legacyPublicRedirect(req.path)
+  if (target) return res.redirect(301, target)
+  return next()
 })
 
 app.get('/api/public/products/:slug', (req, res) => {
@@ -2032,8 +2044,15 @@ const staticSeo = {
   '/san-pham': ['Sản phẩm | Ecolink', 'Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và hồi sức tích cực.'],
   '/thiet-bi-da-trien-khai': ['Thiết bị đã triển khai | Ecolink', 'Xem hình ảnh lắp đặt thiết bị thực tế do Ecolink công bố, theo từng sản phẩm và nhóm thiết bị.'],
   '/gioi-thieu': ['Giới thiệu Ecolink | Thiết bị và giải pháp khoa học', 'Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học.'],
-  '/ContactPage': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
-  '/SupportService': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],
+  '/lien-he': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
+  '/dich-vu-ho-tro': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],
+  '/giai-phau-benh': ['Giải phẫu bệnh | Ecolink', 'Xem các sản phẩm giải phẫu bệnh đang được giới thiệu tại Ecolink.'],
+  '/giam-dinh-hinh-su': ['Giám định hình sự | Ecolink', 'Xem các sản phẩm giám định hình sự đang được giới thiệu tại Ecolink.'],
+  '/kinh-hien-vi': ['Kính hiển vi | Ecolink', 'Xem các sản phẩm kính hiển vi đang được giới thiệu tại Ecolink.'],
+  '/vat-tu-tieu-hao': ['Vật tư tiêu hao | Ecolink', 'Xem các sản phẩm vật tư tiêu hao đang được giới thiệu tại Ecolink.'],
+  '/hoa-chat': ['Hóa chất | Ecolink', 'Xem các sản phẩm hóa chất đang được giới thiệu tại Ecolink.'],
+  '/khang-the': ['Kháng thể | Ecolink', 'Xem các sản phẩm kháng thể đang được giới thiệu tại Ecolink.'],
+  '/hoi-suc-tich-cuc': ['Hồi sức tích cực | Ecolink', 'Xem các sản phẩm hồi sức tích cực đang được giới thiệu tại Ecolink.'],
   '/BrandPage': ['Hãng đại diện | Ecolink', 'Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng.'],
   '/tin-tuc': ['Tin tức và cập nhật | Ecolink', 'Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế.'],
 }
