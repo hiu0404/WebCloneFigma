@@ -1,5 +1,13 @@
 import type { ProductKind } from '../lib/seo'
 
+export const publicRegionLabels = {
+  north: 'Miền Bắc',
+  central: 'Miền Trung',
+  south: 'Miền Nam',
+} as const
+
+export type PublicRegion = keyof typeof publicRegionLabels
+
 export type InstallationRecord = {
   id: string
   slug: string
@@ -9,13 +17,15 @@ export type InstallationRecord = {
   productType: ProductKind
   productId: string
   imageUrls: string[]
+  imageCaptions?: Record<string, string>
+  publicRegion?: PublicRegion | ''
   status: 'draft' | 'published'
   sortOrder?: number
   createdAt: number
   updatedAt: number
 }
 
-export type PublicInstallation = Pick<InstallationRecord, 'id' | 'slug' | 'title' | 'summary' | 'productType' | 'productId' | 'imageUrls' | 'sortOrder' | 'updatedAt'> & {
+export type PublicInstallation = Pick<InstallationRecord, 'id' | 'slug' | 'title' | 'summary' | 'productType' | 'productId' | 'imageUrls' | 'imageCaptions' | 'publicRegion' | 'sortOrder' | 'updatedAt'> & {
   product: {
     name: string
     model: string

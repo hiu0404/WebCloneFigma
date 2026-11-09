@@ -26,7 +26,7 @@ export async function apiGetInstallation(slug: string): Promise<PublicInstallati
 
 export async function apiGetAdminInstallations(): Promise<InstallationRecord[]> {
   const response = await fetch(apiUrl('/api/admin/installations'), { credentials: 'include' })
-  if (response.status === 404) throw new Error('Server chưa có API công trình. Cần cập nhật backend Express để xem và lưu dữ liệu.')
+  if (response.status === 404) throw new Error('Không tải được danh sách công trình.')
   if (!response.ok) throw new Error(await responseError(response, 'Không tải được danh sách công trình'))
   return await response.json() as InstallationRecord[]
 }
@@ -38,7 +38,7 @@ export async function apiSaveInstallation(input: InstallationInput): Promise<Ins
     credentials: 'include',
     body: JSON.stringify(input),
   })
-  if (response.status === 404) throw new Error('Server chưa có API công trình. Cần cập nhật backend Express để lưu dữ liệu.')
+  if (response.status === 404) throw new Error('Không lưu được công trình. Hãy kiểm tra kết nối máy chủ rồi thử lại.')
   if (!response.ok) throw new Error(await responseError(response, 'Không lưu được công trình'))
   return await response.json() as InstallationRecord
 }
@@ -72,7 +72,7 @@ export async function apiUploadInstallationImage(file: File): Promise<string> {
   const response = await fetch(apiUrl('/api/admin/installations/upload-image'), {
     method: 'POST', credentials: 'include', body,
   })
-  if (response.status === 404) throw new Error('Server chưa có API ảnh công trình. Cần cập nhật backend Express để tải ảnh.')
+  if (response.status === 404) throw new Error('Không tải ảnh lên được. Hãy kiểm tra kết nối máy chủ rồi thử lại.')
   if (!response.ok) throw new Error(await responseError(response, 'Không tải ảnh lên được'))
   const result = await response.json() as { url: string }
   return result.url

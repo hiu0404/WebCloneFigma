@@ -5,7 +5,7 @@ import { apiGetMicroscopes } from '../../services/microscopeService'
 import { apiGetForensicProducts } from '../../services/forensicProductService'
 import { apiGetPiccProducts } from '../../services/piccProductService'
 import { apiGetAdminInstallations, apiSaveInstallation, apiUploadInstallationImage } from '../../services/installationService'
-import type { InstallationInput, InstallationRecord } from '../../data/installations'
+import { publicRegionLabels, type InstallationInput, type InstallationRecord, type PublicRegion } from '../../data/installations'
 import type { ProductKind } from '../../lib/seo'
 import pageStyles from './AdminPages.module.css'
 import styles from './AdminInstallationsPage.module.css'
@@ -17,7 +17,7 @@ const groupLabels: Record<ProductKind, string> = {
 }
 
 function emptyForm(): InstallationInput {
-  return { id: '', title: '', summary: '', productType: 'product', productId: '', imageUrls: [], status: 'draft', sortOrder: undefined, privacyReviewed: false }
+  return { id: '', title: '', summary: '', productType: 'product', productId: '', imageUrls: [], imageCaptions: {}, publicRegion: '', status: 'draft', sortOrder: undefined, privacyReviewed: false }
 }
 
 export function AdminInstallationsPage() {
@@ -124,7 +124,6 @@ export function AdminInstallationsPage() {
         </div>
         <div className={pageStyles.panelBody}>
           <form onSubmit={(event) => void save(event)}>
-            {listError && <p className={styles.error} role="alert">{listError}</p>}
             <div className={pageStyles.formGrid}>
               <label className={pageStyles.field}>
                 <span className={pageStyles.label}>Sản phẩm đã lắp đặt *</span>
@@ -161,6 +160,14 @@ export function AdminInstallationsPage() {
                 </select>
               </label>
               <label className={pageStyles.field}>
+                <span className={pageStyles.label}>Vùng công khai (tùy chọn)</span>
+                <select className={pageStyles.select} value={form.publicRegion || ''} onChange={(event) => setForm((current) => ({ ...current, publicRegion: event.target.value as PublicRegion | '' }))}>
+                  <option value="">Ẩn khu vực</option>
+                  {(Object.keys(publicRegionLabels) as PublicRegion[]).map((region) => <option value={region} key={region}>{publicRegionLabels[region]}</option>)}
+                </select>
+                <span className={styles.fieldHint}>Chỉ chọn vùng khi được phép công bố. Không nhập tên hoặc địa chỉ đơn vị.</span>
+              </label>
+              <label className={pageStyles.field}>
                 <span className={pageStyles.label}>Thứ tự hiển thị</span>
                 <input className={pageStyles.input} type="number" min="1" value={form.sortOrder ?? ''} onChange={(event) => setForm((current) => ({ ...current, sortOrder: Number(event.target.value) || undefined }))} />
               </label>
@@ -168,7 +175,7 @@ export function AdminInstallationsPage() {
 
             <label className={styles.privacyCheck}>
               <input type="checkbox" checked={form.privacyReviewed} onChange={(event) => setForm((current) => ({ ...current, privacyReviewed: event.target.checked }))} />
-              <span>Tôi xác nhận ảnh được phép công bố và đã kiểm tra biển tên, logo, người, màn hình, nhãn, mã QR và hình phản chiếu. Hệ thống chuyển ảnh sang WebP để bỏ metadata, nhưng không tự che chi tiết nhận diện trong ảnh.</span>
+              <span>Tôi xác nhận ảnh và vùng công khai (nếu có) được phép công bố. Tôi đã kiểm tra biển tên, logo, người, màn hình, nhãn, mã QR và hình phản chiếu. Hệ thống chuyển ảnh sang WebP để bỏ metadata, nhưng không tự che chi tiết nhận diện trong ảnh.</span>
             </label>
             <div className={styles.uploadRow}>
               <label className={pageStyles.field}>
@@ -180,7 +187,15 @@ export function AdminInstallationsPage() {
             {form.imageUrls.length > 0 && <div className={styles.imageList}>
               {form.imageUrls.map((url, index) => <div className={styles.imageItem} key={url}>
                 <img src={url} alt={`Ảnh công trình ${index + 1}`} />
-                <button type="button" onClick={() => setForm((current) => ({ ...current, imageUrls: current.imageUrls.filter((image) => image !== url) }))}>Bỏ khỏi bài đăng</button>
+                <label className={styles.captionField}>Chú thích ảnh {index + 1} (tùy chọn)
+                  <input value={form.imageCaptions?.[url] || ''} maxLength={160} onChange={(event) => setForm((current) => ({ ...current, imageCaptions: { ...current.imageCaptions, [url]: event.target.value } }))} placeholder="Chỉ mô tả điều đã xác nhận" />
+                </label>
+                {index === 0 ? <span className={styles.coverLabel}>Ảnh đại diện</span> : <button type="button" onClick={() => setForm((current) => ({ ...current, imageUrls: [url, ...current.imageUrls.filter((image) => image !== url)] }))}>Đặt làm ảnh đại diện</button>}
+                <button type="button" onClick={() => setForm((current) => {
+                  const imageCaptions = { ...current.imageCaptions }
+                  delete imageCaptions[url]
+                  return { ...current, imageUrls: current.imageUrls.filter((image) => image !== url), imageCaptions }
+                })}>Bỏ khỏi bài đăng</button>
               </div>)}
             </div>}
             {error && <p className={styles.error} role="alert">{error}</p>}
@@ -195,13 +210,13 @@ export function AdminInstallationsPage() {
           <div><h2 className={pageStyles.panelTitle}>Danh sách công trình</h2><p className={pageStyles.panelSub}>{items.length} công trình; bản nháp không hiện trên website.</p></div>
           <button className={pageStyles.secondaryButton} type="button" onClick={() => void reload()}><FiRefreshCw aria-hidden />Tải lại</button>
         </div>
-        {loading ? <p className={styles.empty}>Đang tải...</p> : items.length ? <div className={styles.records}>
+        {loading ? <p className={styles.empty}>Đang tải...</p> : listError ? <p className={styles.empty} role="status">{listError} Nhấn “Tải lại” để thử lại.</p> : items.length ? <div className={styles.records}>
           {items.map((item) => <article className={styles.record} key={item.id}>
             {item.imageUrls[0] && <img src={item.imageUrls[0]} alt="" loading="lazy" />}
             <div><strong>{item.title}</strong><p>{productNames.get(`${item.productType}:${item.productId}`) || 'Sản phẩm không còn trong hệ thống'}</p><span>{item.internalReference ? `${item.internalReference} · ` : ''}{item.status === 'published' ? 'Công khai' : 'Bản nháp'} · {item.imageUrls.length} ảnh</span></div>
             <button className={pageStyles.secondaryButton} type="button" onClick={() => edit(item)}><FiEdit2 aria-hidden />Sửa</button>
           </article>)}
-        </div> : !listError && <p className={styles.empty}>Chưa có công trình. Hãy thêm từ biểu mẫu phía trên.</p>}
+        </div> : <p className={styles.empty}>Chưa có công trình. Hãy thêm từ biểu mẫu phía trên.</p>}
       </section>
     </div>
   )

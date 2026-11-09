@@ -3,7 +3,7 @@
 export function toPublicInstallations(records, products) {
   const byProduct = new Map(products.map((item) => [`${item.type}:${item.id}`, item]))
   return records
-    .filter((item) => item.status === 'published')
+    .filter((item) => item.status === 'published' && Array.isArray(item.imageUrls) && item.imageUrls.length > 0)
     .map((item) => {
       const product = byProduct.get(`${item.productType}:${item.productId}`)
       if (!product || (product.status ?? 'active') !== 'active') return null
@@ -13,6 +13,10 @@ export function toPublicInstallations(records, products) {
         title: item.title,
         summary: item.summary || '',
         imageUrls: item.imageUrls,
+        imageCaptions: Object.fromEntries(item.imageUrls.map((url) => [url, item.imageCaptions?.[url]])
+          .filter(([, caption]) => typeof caption === 'string' && caption.trim())
+          .map(([url, caption]) => [url, caption.trim().slice(0, 160)])),
+        ...(['north', 'central', 'south'].includes(item.publicRegion) ? { publicRegion: item.publicRegion } : {}),
         productType: item.productType,
         productId: item.productId,
         product: {

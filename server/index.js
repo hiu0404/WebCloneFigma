@@ -1384,6 +1384,8 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
     const productId = String(req.body?.productId || '').trim()
     const product = installationProductMap().get(`${productType}:${productId}`)
     const imageUrls = req.body?.imageUrls
+    const region = String(req.body?.publicRegion || '')
+    const captionsInput = req.body?.imageCaptions ?? {}
     const status = req.body?.status === 'published' ? 'published' : 'draft'
     const requestedOrder = Number(req.body?.sortOrder)
     const sortOrder = Number.isInteger(requestedOrder) && requestedOrder > 0 ? requestedOrder : undefined
@@ -1394,6 +1396,15 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
       typeof url !== 'string' || !/^\/api\/installation-images\/[a-f0-9-]{36}\.webp$/.test(url))) {
       return res.status(400).json({ error: 'Ảnh công trình không hợp lệ (tối đa 8 ảnh)' })
     }
+    if (region && !['north', 'central', 'south'].includes(region)) {
+      return res.status(400).json({ error: 'Vùng công khai không hợp lệ' })
+    }
+    if (!captionsInput || typeof captionsInput !== 'object' || Array.isArray(captionsInput)) {
+      return res.status(400).json({ error: 'Chú thích ảnh không hợp lệ' })
+    }
+    const imageCaptions = Object.fromEntries(imageUrls.map((url) => [url, captionsInput[url]])
+      .filter(([, caption]) => typeof caption === 'string' && caption.trim())
+      .map(([url, caption]) => [url, caption.trim().slice(0, 160)]))
     if (status === 'published' && (!imageUrls.length || req.body?.privacyReviewed !== true)) {
       return res.status(400).json({ error: 'Cần có ảnh và xác nhận đã kiểm tra thông tin nhận diện trước khi xuất bản' })
     }
@@ -1408,7 +1419,7 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
     const now = Date.now()
     const item = {
       id, slug, title, summary, internalReference, productType, productId,
-      imageUrls: [...new Set(imageUrls)], status, sortOrder,
+      imageUrls: [...new Set(imageUrls)], imageCaptions, publicRegion: region, status, sortOrder,
       createdAt: previous?.createdAt || now, updatedAt: now,
       privacyReviewedAt: status === 'published' ? now : previous?.privacyReviewedAt,
     }

@@ -16,7 +16,13 @@ test('drafts, private references and hidden products never reach public output',
   assert.equal(published[0].product.url, '/san-pham/thiet-bi-a')
   assert.equal(JSON.stringify(published).includes('Tên đơn vị bí mật'), false)
   assert.equal(JSON.stringify(published).includes('privacyReviewedAt'), false)
+  assert.equal('publicRegion' in published[0], false)
+  const withRegion = toPublicInstallations([{ ...base, status: 'published', publicRegion: 'central', imageCaptions: { [base.imageUrls[0]]: 'Thiết bị sau khi lắp đặt', unused: 'Không công khai' } }], products)[0]
+  assert.equal(withRegion.publicRegion, 'central')
+  assert.deepEqual(withRegion.imageCaptions, { [base.imageUrls[0]]: 'Thiết bị sau khi lắp đặt' })
+  assert.equal(JSON.stringify(withRegion).includes('Không công khai'), false)
   assert.deepEqual(toPublicInstallations([{ ...base, status: 'published' }], [{ ...products[0], status: 'hidden' }]), [])
+  assert.deepEqual(toPublicInstallations([{ ...base, status: 'published', imageUrls: [] }], products), [])
   assert.equal(isPublishedInstallationImage([{ ...base, status: 'draft' }], base.imageUrls[0]), false)
   assert.equal(isPublishedInstallationImage([{ ...base, status: 'published' }], base.imageUrls[0]), true)
   assert.equal(isPublishedInstallationImage([{ ...base, status: 'published', imageUrls: [] }], base.imageUrls[0]), false)

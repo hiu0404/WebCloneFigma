@@ -4,13 +4,14 @@ import { Header } from '../components/Header/Header'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { CategorySeo } from '../components/CategorySeo'
 import { apiGetInstallation } from '../services/installationService'
-import type { PublicInstallation } from '../data/installations'
+import { publicRegionLabels, type PublicInstallation } from '../data/installations'
 import styles from './InstallationsPage.module.css'
 
 export function InstallationDetailPage() {
   const { slug = '' } = useParams()
   const [item, setItem] = useState<PublicInstallation | null>(null)
   const [resolvedSlug, setResolvedSlug] = useState('')
+  const [selectedImage, setSelectedImage] = useState('')
 
   useEffect(() => {
     let active = true
@@ -22,6 +23,8 @@ export function InstallationDetailPage() {
   }, [slug])
 
   const loading = resolvedSlug !== slug
+  const activeImage = item?.imageUrls.includes(selectedImage) ? selectedImage : item?.imageUrls[0]
+  const activeIndex = item && activeImage ? item.imageUrls.indexOf(activeImage) : -1
   const breadcrumbs = [{ label: 'Trang chủ', to: '/' }, { label: 'Thiết bị đã triển khai', to: '/thiet-bi-da-trien-khai' }, ...(item ? [{ label: item.title }] : [])]
 
   return <div className={styles.page}>
@@ -31,13 +34,18 @@ export function InstallationDetailPage() {
       <Breadcrumb items={breadcrumbs} />
       {loading ? <p className={styles.message}>Đang tải công trình...</p> : !item ? <div className={styles.message}>Không tìm thấy công trình. <Link to="/thiet-bi-da-trien-khai">Xem danh sách</Link></div> : <>
         <h1>{item.title}</h1>
-        <p className={styles.intro}>{item.summary || `Hình ảnh lắp đặt ${item.product.name}.`}</p>
+        {item.summary && <p className={styles.intro}>{item.summary}</p>}
         <div className={styles.detailLayout}>
           <div className={styles.gallery}>
-            {item.imageUrls.map((url, index) => <figure key={url}>
-              <img src={url} alt={`${item.product.name} — ảnh lắp đặt ${index + 1}`} loading={index === 0 ? 'eager' : 'lazy'} />
-              <figcaption>Hình ảnh lắp đặt {index + 1}</figcaption>
-            </figure>)}
+            {activeImage && <figure className={styles.mainPhoto}>
+              <img src={activeImage} alt={item.imageCaptions?.[activeImage] || `${item.product.name} — ảnh thực tế ${activeIndex + 1}`} loading="eager" />
+              <figcaption>{item.imageCaptions?.[activeImage] || `${item.product.name} — ảnh ${activeIndex + 1}`}</figcaption>
+            </figure>}
+            {item.imageUrls.length > 1 && <div className={styles.thumbnails} role="group" aria-label="Chọn ảnh">
+              {item.imageUrls.map((url, index) => <button type="button" key={url} className={url === activeImage ? styles.thumbnailActive : ''} aria-label={`Xem ảnh ${index + 1}`} aria-pressed={url === activeImage} onClick={() => setSelectedImage(url)}>
+                <img src={url} alt="" loading="lazy" />
+              </button>)}
+            </div>}
           </div>
           <aside className={styles.detailInfo}>
             <h2>Thiết bị</h2>
@@ -45,6 +53,7 @@ export function InstallationDetailPage() {
               <dt>Tên sản phẩm</dt><dd>{item.product.name}</dd>
               {item.product.model && <><dt>Model</dt><dd>{item.product.model}</dd></>}
               {item.product.brand && <><dt>Hãng sản xuất</dt><dd>{item.product.brand}</dd></>}
+              {item.publicRegion && <><dt>Khu vực</dt><dd>{publicRegionLabels[item.publicRegion]}</dd></>}
             </dl>
             <Link className={styles.productLink} to={item.product.url}>Xem thông tin sản phẩm →</Link>
           </aside>
