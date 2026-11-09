@@ -20,6 +20,7 @@ import styles from './AdminLayout.module.css'
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: FiGrid, end: true },
   { to: '/admin/products', label: 'Quản lý sản phẩm', icon: FiPackage },
+  { to: '/admin/installations', label: 'Thiết bị đã triển khai', icon: FiFileText },
   { to: '/admin/contact-messages', label: 'Yêu cầu liên hệ', icon: FiMail },
   { to: '/admin/equipment-categories', label: 'Danh mục sản phẩm thiết bị', icon: FiBox },
   { to: '/admin/categories', label: 'Quản lý danh mục', icon: FiLayers },

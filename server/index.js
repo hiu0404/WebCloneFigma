@@ -6,6 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import multer from 'multer'
 import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
+import { isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
 import {
   decryptString,
   encryptString,
@@ -35,6 +36,8 @@ const adminAuthFile = path.join(dataDir, 'admin-auth.json')
 const adminRateLimitFile = path.join(dataDir, 'admin-rate-limit.json')
 const adminAuditLogFile = path.join(dataDir, 'admin-auth.log')
 const contactMessagesFile = path.join(dataDir, 'contact-messages.json')
+const installationsFile = path.join(dataDir, 'installations.json')
+const installationMediaDir = path.join(dataDir, 'installation-media')
 const distDir = path.join(root, 'dist')
 
 const runtimeJsonFiles = [
@@ -959,6 +962,25 @@ function allSeoProducts({ activeOnly = false } = {}) {
   return activeOnly ? records.filter((item) => item.status === 'active') : records
 }
 
+function readInstallations() {
+  if (!fs.existsSync(installationsFile)) return []
+  const parsed = JSON.parse(fs.readFileSync(installationsFile, 'utf-8'))
+  if (!Array.isArray(parsed) || parsed.some((item) => !item || typeof item !== 'object' || !item.id || !item.slug || !Array.isArray(item.imageUrls))) {
+    throw new Error('Invalid installations data; refusing to overwrite it')
+  }
+  return parsed
+}
+
+function installationProductMap() {
+  return new Map(allSeoProducts().map((item) => [`${item.type}:${item.id}`, item]))
+}
+
+function publicInstallations() {
+  const records = readInstallations().filter((item) => item.status === 'published')
+  if (!records.length) return []
+  return toPublicInstallations(records, allSeoProducts())
+}
+
 function findSeoProductBySlug(slug) {
   const products = allSeoProducts()
   const exact = products.find((item) => item.slug === slug || item.legacySlugs?.includes(slug))
@@ -1266,7 +1288,7 @@ app.patch('/api/admin/contact-messages/:id/read', requireAdminApi, (req, res) =>
 })
 
 app.get('/robots.txt', (_req, res) => {
-  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api\nSitemap: ${SITE_URL}/sitemap.xml\n`)
+  res.type('text/plain').send(`User-agent: *\nAllow: /\nAllow: /api/installation-images/\nDisallow: /admin\nDisallow: /api\nSitemap: ${SITE_URL}/sitemap.xml\n`)
 })
 
 app.get('/sitemap.xml', (_req, res) => {
@@ -1290,6 +1312,11 @@ app.get('/sitemap.xml', (_req, res) => {
       : `/MicroscopePage/${encodeURIComponent(category.slug)}`)
   }
   for (const product of allSeoProducts({ activeOnly: true })) add(product.canonicalPath, product.updatedAt)
+  try {
+    const installations = publicInstallations()
+    if (installations.length) add('/thiet-bi-da-trien-khai')
+    for (const installation of installations) add(`/thiet-bi-da-trien-khai/${encodeURIComponent(installation.slug)}`, installation.updatedAt)
+  } catch { /* Keep the existing sitemap available if installations data needs repair. */ }
   const body = [...urls.entries()].map(([pathName, lastmod]) => `  <url><loc>${SITE_URL}${pathName}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`).join('\n')
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`)
 })
@@ -1298,6 +1325,100 @@ app.get('/api/public/products/:slug', (req, res) => {
   const product = findSeoProductBySlug(req.params.slug)
   if (!product || product.status !== 'active') return res.status(404).json({ error: 'Product not found' })
   res.json(product)
+})
+
+app.get('/api/installations', (req, res) => {
+  try {
+    const items = publicInstallations()
+    const productType = String(req.query.productType || '')
+    const productId = String(req.query.productId || '')
+    res.json(productType && productId ? items.filter((item) => item.productType === productType && item.productId === productId) : items)
+  } catch {
+    res.status(500).json({ error: 'Không tải được hình ảnh triển khai' })
+  }
+})
+
+app.get('/api/installations/:slug', (req, res) => {
+  try {
+    const item = publicInstallations().find((entry) => entry.slug === req.params.slug)
+    if (!item) return res.status(404).json({ error: 'Không tìm thấy công trình' })
+    res.json(item)
+  } catch {
+    res.status(500).json({ error: 'Không tải được công trình' })
+  }
+})
+
+app.get('/api/installation-images/:filename', (req, res) => {
+  const filename = String(req.params.filename || '')
+  if (!/^[a-f0-9-]{36}\.webp$/.test(filename)) return res.sendStatus(404)
+  try {
+    const url = `/api/installation-images/${filename}`
+    const inPublishedRecord = isPublishedInstallationImage(readInstallations(), url)
+    if (!inPublishedRecord && !readAdminSession(req)) return res.sendStatus(404)
+    const filePath = path.join(installationMediaDir, filename)
+    if (!fs.existsSync(filePath)) return res.sendStatus(404)
+    res.set('Cache-Control', 'no-store')
+    res.type('image/webp').sendFile(filePath)
+  } catch {
+    res.sendStatus(500)
+  }
+})
+
+app.get('/api/admin/installations', requireAdminApi, (_req, res) => {
+  try {
+    res.json(readInstallations())
+  } catch {
+    res.status(500).json({ error: 'Dữ liệu công trình bị lỗi; không ghi đè dữ liệu' })
+  }
+})
+
+app.post('/api/admin/installations', requireAdminApi, (req, res) => {
+  try {
+    const list = readInstallations()
+    const id = String(req.body?.id || crypto.randomUUID()).trim()
+    const previous = list.find((item) => item.id === id)
+    const title = String(req.body?.title || '').trim().slice(0, 180)
+    const summary = String(req.body?.summary || '').trim().slice(0, 1200)
+    const internalReference = String(req.body?.internalReference || '').trim().slice(0, 200)
+    const productType = String(req.body?.productType || '').trim()
+    const productId = String(req.body?.productId || '').trim()
+    const product = installationProductMap().get(`${productType}:${productId}`)
+    const imageUrls = req.body?.imageUrls
+    const status = req.body?.status === 'published' ? 'published' : 'draft'
+    const requestedOrder = Number(req.body?.sortOrder)
+    const sortOrder = Number.isInteger(requestedOrder) && requestedOrder > 0 ? requestedOrder : undefined
+    if (!title || !product || !['product', 'microscope', 'forensic', 'picc'].includes(productType)) {
+      return res.status(400).json({ error: 'Chọn sản phẩm có thật và nhập tiêu đề công trình' })
+    }
+    if (!Array.isArray(imageUrls) || imageUrls.length > 8 || imageUrls.some((url) =>
+      typeof url !== 'string' || !/^\/api\/installation-images\/[a-f0-9-]{36}\.webp$/.test(url))) {
+      return res.status(400).json({ error: 'Ảnh công trình không hợp lệ (tối đa 8 ảnh)' })
+    }
+    if (status === 'published' && (!imageUrls.length || req.body?.privacyReviewed !== true)) {
+      return res.status(400).json({ error: 'Cần có ảnh và xác nhận đã kiểm tra thông tin nhận diện trước khi xuất bản' })
+    }
+    if (status === 'published' && (product.status ?? 'active') !== 'active') {
+      return res.status(400).json({ error: 'Chỉ công bố công trình của sản phẩm đang hiển thị' })
+    }
+    if (status === 'published' && imageUrls.some((url) => !fs.existsSync(path.join(installationMediaDir, path.basename(url))))) {
+      return res.status(400).json({ error: 'Có ảnh chưa tồn tại trên server' })
+    }
+    const slug = previous?.slug || `${makeSeoSlug(title) || 'cong-trinh'}-${id.slice(0, 8)}`
+    if (list.some((entry) => entry.slug === slug && entry.id !== id)) return res.status(409).json({ error: 'Đường dẫn công trình đã tồn tại' })
+    const now = Date.now()
+    const item = {
+      id, slug, title, summary, internalReference, productType, productId,
+      imageUrls: [...new Set(imageUrls)], status, sortOrder,
+      createdAt: previous?.createdAt || now, updatedAt: now,
+      privacyReviewedAt: status === 'published' ? now : previous?.privacyReviewedAt,
+    }
+    if (previous) list[list.findIndex((entry) => entry.id === id)] = item
+    else list.push(item)
+    writeJsonFileAtomic(installationsFile, list)
+    res.json(item)
+  } catch {
+    res.status(500).json({ error: 'Không lưu được công trình; dữ liệu hiện có được giữ nguyên' })
+  }
 })
 
 app.get('/san-pham-chi-tiet', (req, res, next) => {
@@ -1835,6 +1956,33 @@ const productImageUpload = multer({
   },
 })
 
+const installationImageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => file.mimetype === 'image/webp'
+    ? cb(null, true)
+    : cb(new Error('Chỉ nhận ảnh WebP đã được kiểm tra và xử lý')),
+})
+
+app.post('/api/admin/installations/upload-image', requireAdminApi, (req, res) => {
+  installationImageUpload.single('file')(req, res, (err) => {
+    if (err) return res.status(err instanceof multer.MulterError ? 413 : 400).json({ error: err.message || 'Upload ảnh thất bại' })
+    if (req.body?.privacyReviewed !== 'true' || !req.file) return res.status(400).json({ error: 'Hãy xác nhận ảnh đã được kiểm tra trước khi upload' })
+    const buffer = req.file.buffer
+    if (buffer.length < 12 || buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WEBP') {
+      return res.status(400).json({ error: 'File WebP không hợp lệ' })
+    }
+    try {
+      fs.mkdirSync(installationMediaDir, { recursive: true })
+      const filename = `${crypto.randomUUID()}.webp`
+      fs.writeFileSync(path.join(installationMediaDir, filename), buffer, { flag: 'wx' })
+      res.json({ url: `/api/installation-images/${filename}` })
+    } catch {
+      res.status(500).json({ error: 'Không lưu được ảnh công trình' })
+    }
+  })
+})
+
 app.post('/api/products/upload-image', requireAdminApi, (req, res, next) => {
   productImageUpload.single('file')(req, res, (err) => {
     if (err) {
@@ -1871,6 +2019,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const staticSeo = {
   '/': ['Ecolink | Thiết bị khoa học, y tế và an ninh', 'Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn.'],
   '/san-pham': ['Sản phẩm | Ecolink', 'Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và hồi sức tích cực.'],
+  '/thiet-bi-da-trien-khai': ['Thiết bị đã triển khai | Ecolink', 'Xem hình ảnh lắp đặt thiết bị thực tế do Ecolink công bố, theo từng sản phẩm và nhóm thiết bị.'],
   '/gioi-thieu': ['Giới thiệu Ecolink | Thiết bị và giải pháp khoa học', 'Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học.'],
   '/ContactPage': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
   '/SupportService': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],
@@ -1885,6 +2034,12 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
     const match = req.originalUrl.split('?')[0].match(/^\/san-pham\/([^/]+)$/)
     const product = match ? findSeoProductBySlug(decodeURIComponent(match[1])) : null
     if (!product && match) return res.status(404).sendFile(path.join(distDir, 'index.html'))
+    const installationMatch = req.path.match(/^\/thiet-bi-da-trien-khai\/([^/]+)$/)
+    let installation = null
+    try {
+      if (installationMatch) installation = publicInstallations().find((item) => item.slug === decodeURIComponent(installationMatch[1]))
+    } catch { /* The public API reports the data error. */ }
+    if (installationMatch && !installation) return res.status(404).sendFile(path.join(distDir, 'index.html'))
     let html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8')
     if (product) {
       const canonical = `${SITE_URL}${product.canonicalPath}`
@@ -1898,6 +2053,14 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
       }
       const head = `<meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}"><meta property="og:url" content="${escapeHtml(canonical)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
       html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(product.seoTitle)}</title>`)
+      html = html.replace('</head>', `${head}</head>`)
+    } else if (installation) {
+      const title = `${installation.title} | Ecolink`
+      const description = (installation.summary || `Hình ảnh lắp đặt ${installation.product.name} do Ecolink công bố.`).slice(0, 160)
+      const canonical = `${SITE_URL}/thiet-bi-da-trien-khai/${encodeURIComponent(installation.slug)}`
+      const image = new URL(installation.imageUrls[0], SITE_URL).href
+      const head = `<meta name="description" content="${escapeHtml(description)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${escapeHtml(canonical)}"><meta property="og:image" content="${escapeHtml(image)}">`
+      html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(title)}</title>`)
       html = html.replace('</head>', `${head}</head>`)
     } else if (staticSeo[req.path]) {
       const [title, description] = staticSeo[req.path]

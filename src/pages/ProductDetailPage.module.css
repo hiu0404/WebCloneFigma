@@ -499,3 +499,10 @@
   .richText, .specs, .relatedCard span, .relatedEmpty { font-size: calc(13px / var(--figma-scale, 1)); }
   .primaryButton, .secondaryButton, .tabActive { font-size: calc(13px / var(--figma-scale, 1)); }
 }
+.installationsSection { margin:24px 0; padding:24px; border:1px solid #e4eaee; background:#fff; }
+.installationsSection h2 { margin:0 0 18px; color:#214158; font-size:23px; }
+.installationsGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.installationsGrid a { display:block; color:#244155; text-decoration:none; font-weight:700; }
+.installationsGrid a:hover { color:#de5e20; }
+.installationsGrid img { display:block; width:100%; height:150px; object-fit:cover; margin-bottom:8px; background:#f3f6f7; }
+@media (max-width:600px) { .installationsGrid { grid-template-columns:1fr; } }

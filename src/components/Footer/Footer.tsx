@@ -13,6 +13,7 @@ const quickLinks = [
   { label: 'Sản phẩm', to: '/san-pham' },
   { label: 'Giải pháp', to: '/#giai-phap' },
   { label: 'Dịch vụ hỗ trợ', to: '/SupportService' },
+  { label: 'Thiết bị đã triển khai', to: '/thiet-bi-da-trien-khai' },
   { label: 'Tin tức', to: '/tin-tuc' },
   { label: 'Liên hệ', to: '/ContactPage' },
 ]

@@ -25,6 +25,10 @@ import type { Product } from '../lib/adminStore'
 import { productMainImageUrl } from '../lib/productImages'
 import { apiGetProducts } from '../services/productService'
 import { productUrl } from '../lib/seo'
+import { apiGetInstallations } from '../services/installationService'
+import type { PublicInstallation } from '../data/installations'
+import { InstallationCard } from '../components/InstallationCard'
+import installationStyles from './InstallationsPage.module.css'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/EquipmentPage' },
@@ -116,6 +120,7 @@ export function HomePage() {
   const [featuredOffset, setFeaturedOffset] = useState(0)
   const [homepagePartners, setHomepagePartners] = useState(partners)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [installations, setInstallations] = useState<PublicInstallation[]>([])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -147,6 +152,12 @@ export function HomePage() {
           .slice(0, 5),
       )
     })
+    return () => { alive = false }
+  }, [])
+
+  useEffect(() => {
+    let alive = true
+    apiGetInstallations().then((items) => { if (alive) setInstallations(items.slice(0, 3)) }).catch(() => { /* Keep the home page available. */ })
     return () => { alive = false }
   }, [])
 
@@ -294,6 +305,16 @@ export function HomePage() {
             </button>
           </div>
         </section>
+
+        {installations.length > 0 && <section className={styles.section}>
+          <div className={styles.blockHeader}>
+            <h2>Thiết bị đã triển khai</h2>
+            <Link to="/thiet-bi-da-trien-khai">Xem tất cả <FaArrowRight /></Link>
+          </div>
+          <div className={installationStyles.grid}>
+            {installations.map((item) => <InstallationCard item={item} key={item.id} />)}
+          </div>
+        </section>}
 
         <section className={styles.statsBand}>
           {stats.map((item) => {

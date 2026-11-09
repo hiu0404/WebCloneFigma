@@ -230,7 +230,8 @@
   transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 }
 
-.dropdown:hover .dropdownMenu {
+.dropdown:hover .dropdownMenu,
+.dropdown:focus-within .dropdownMenu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

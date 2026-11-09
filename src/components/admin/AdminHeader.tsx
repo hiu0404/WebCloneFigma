@@ -13,6 +13,7 @@ const pageTitles: Record<string, string> = {
   '/admin/chemical-categories': 'Danh mục hóa chất',
   '/admin/antibody-categories': 'Danh mục kháng thể',
   '/admin/microscope-categories': 'Danh mục kính hiển vi',
+  '/admin/installations': 'Thiết bị đã triển khai',
   '/admin/microscopes': 'Quản lý kính hiển vi',
   '/admin/news': 'Tin tức',
   '/admin/brands': 'Quản lý hãng đại diện',

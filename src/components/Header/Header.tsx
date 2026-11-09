@@ -215,7 +215,13 @@ export function Header() {
             <NavLink to="/GiamDinhSinhHoc">Sinh học</NavLink>
           </div>
         </div>
-        <NavLink to="/SupportService">Dịch vụ hỗ trợ</NavLink>
+        <div className={styles.dropdown}>
+          <NavLink to="/SupportService">Dịch vụ hỗ trợ <FaChevronDown /></NavLink>
+          <div className={styles.dropdownMenu}>
+            <NavLink to="/SupportService">Dịch vụ hỗ trợ</NavLink>
+            <NavLink to="/thiet-bi-da-trien-khai">Thiết bị đã triển khai</NavLink>
+          </div>
+        </div>
         <NavLink to="/tin-tuc">Tin tức</NavLink>
         <NavLink to="/ContactPage">Liên hệ</NavLink>
 
