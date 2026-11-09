@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import { MicroscopeCard } from '../components/microscope/MicroscopeCard'
-import { MicroscopeSidebar } from '../components/microscope/MicroscopeSidebar'
+import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import {
   getMicroscopeCategoryLabel,
   isActiveMicroscopeCategory,
@@ -104,11 +104,12 @@ const MicroscopePage = () => {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <MicroscopeSidebar
-            categories={categories}
+          <ProductCategorySidebar
+            activeGroup="microscopes"
             selectedSlug={selectedSlug}
+            subcategories={categories}
+            subcategoryUrl={(slug) => `/MicroscopePage/${slug}`}
             counts={counts}
-            total={microscopes.length}
           />
 
           <section className={styles.content}>

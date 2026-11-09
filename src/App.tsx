@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage'
 import { ContactPage } from './pages/ContactPage'
 import { AboutPage } from './pages/AboutPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
+import { ProductsOverviewPage } from './pages/ProductsOverviewPage'
 import { EquipmentCatalogPage } from './pages/EquipmentCatalogPage'
 import { VatTuTieuHaoPage } from './pages/VatTuTieuHaoPage'
 import { ChemicalsPage } from './pages/ChemicalsPage'
@@ -52,8 +53,9 @@ export default function App() {
           <Route path="/SupportService" element={<SupportService />} />
           <Route path="/BrandPage" element={<BrandPage />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
-          <Route path="/san-pham" element={<Navigate to="/EquipmentPage" replace />} />
+          <Route path="/san-pham" element={<ProductsOverviewPage />} />
           <Route path="/EquipmentPage" element={<EquipmentCatalogPage />} />
+          <Route path="/EquipmentPage/:categorySlug" element={<EquipmentCatalogPage />} />
           <Route path="/san-pham-chi-tiet" element={<ProductDetailPage />} />
           <Route path="/san-pham/:slug" element={<ProductDetailPage />} />
           <Route path="/vat-tu-tieu-hao" element={<VatTuTieuHaoPage />} />

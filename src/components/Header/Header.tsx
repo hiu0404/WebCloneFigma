@@ -199,7 +199,7 @@ export function Header() {
         <NavLink to="/">Trang chủ</NavLink>
         <NavLink to="/gioi-thieu">Giới thiệu</NavLink>
         <div className={styles.dropdown}>
-          <NavLink to="/EquipmentPage">Sản phẩm <FaChevronDown /></NavLink>
+          <NavLink to="/san-pham">Sản phẩm <FaChevronDown /></NavLink>
           <div className={styles.dropdownMenu}>
             {productMenu.map((item) => (
               <NavLink key={item.to} to={item.to}>{item.label}</NavLink>

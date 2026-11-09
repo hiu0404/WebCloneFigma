@@ -10,7 +10,7 @@ type FooterProps = {
 const quickLinks = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Giới thiệu', to: '/gioi-thieu' },
-  { label: 'Sản phẩm', to: '/EquipmentPage' },
+  { label: 'Sản phẩm', to: '/san-pham' },
   { label: 'Giải pháp', to: '/#giai-phap' },
   { label: 'Dịch vụ hỗ trợ', to: '/SupportService' },
   { label: 'Tin tức', to: '/tin-tuc' },
@@ -19,11 +19,12 @@ const quickLinks = [
 
 const productLinks = [
   { label: 'Giải phẫu bệnh', to: '/EquipmentPage' },
-  { label: 'Giám định vi thể / Pháp y', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { label: 'Khoa học hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
-  { label: 'Giám định sinh học', to: '/GiamDinhSinhHoc' },
-  { label: 'Giám định ADN', to: '/GiamDinhADN' },
-  { label: 'Vật tư - Hóa chất - Kháng thể', to: '/vat-tu-tieu-hao' },
+  { label: 'Giám định hình sự', to: '/GiamDinhKhoaHocKyThuatHinhSu' },
+  { label: 'Kính hiển vi', to: '/MicroscopePage' },
+  { label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
+  { label: 'Hóa chất', to: '/ChemicalsPage' },
+  { label: 'Kháng thể', to: '/AntibodiesPage' },
+  { label: 'Hồi sức tích cực', to: '/PICC' },
 ]
 
 export function Footer({ top }: FooterProps) {

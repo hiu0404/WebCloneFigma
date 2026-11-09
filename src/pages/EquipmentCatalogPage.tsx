@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import type { Product } from '../lib/adminStore'
@@ -18,9 +18,10 @@ import { apiGetProducts } from '../services/productService'
 import { productUrl } from '../lib/seo'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
+import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import styles from './ConsumablesPage.module.css'
 
-export const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
+const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
   trimmingtech: '/Trimmingtech',
   'tissue-processing': '/TissueProcessing',
   casting: '/Casting',
@@ -34,10 +35,14 @@ export const EQUIPMENT_CATEGORY_ROUTES: Record<string, string> = {
   'laser-cassette': '/LaserCassette',
 }
 
+function equipmentCategoryUrl(slug: string) {
+  return EQUIPMENT_CATEGORY_ROUTES[slug] ?? `/EquipmentPage/${slug}`
+}
+
 type Props = { categorySlug?: string }
 
 export function EquipmentCatalogPage({ categorySlug }: Props) {
-  const navigate = useNavigate()
+  const { categorySlug: routeCategorySlug } = useParams()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
   const [loading, setLoading] = useState(true)
@@ -65,7 +70,8 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
   }, [])
 
   const childCategories = useMemo(() => visibleChildCategories(categories, 'equipment'), [categories])
-  const selectedSlug = categorySlug && childCategories.some((item) => item.slug === categorySlug) ? categorySlug : 'all'
+  const requestedSlug = categorySlug ?? routeCategorySlug
+  const selectedSlug = requestedSlug && childCategories.some((item) => item.slug === requestedSlug) ? requestedSlug : 'all'
   const counts = useMemo(() => {
     const result = new Map<string, number>()
     products.forEach((item) => {
@@ -82,7 +88,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
   const title = selectedSlug === 'all' ? 'Sản phẩm thiết bị' : getChildCategoryLabel(categories, 'equipment', selectedSlug)
 
   const selectedCategory = childCategories.find((item) => item.slug === selectedSlug)
-  const canonical = selectedSlug === 'all' ? '/EquipmentPage' : (EQUIPMENT_CATEGORY_ROUTES[selectedSlug] ?? '/EquipmentPage')
+  const canonical = selectedSlug === 'all' ? '/EquipmentPage' : equipmentCategoryUrl(selectedSlug)
 
   return (
     <div className={styles.page}>
@@ -103,15 +109,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
         </section>
         <h1 className={styles.title}>{title}</h1>
         <div className={styles.categorypage}>
-          <aside className={styles.sidebar}>
-            <h2>DANH MỤC SẢN PHẨM</h2>
-            <ul>
-              <li><button type="button" className={`${styles.categoryLink} ${selectedSlug === 'all' ? styles.active : ''}`} onClick={() => navigate('/EquipmentPage')}><span>›</span>Tất cả sản phẩm ({products.length})</button></li>
-              {childCategories.map((category) => (
-                <li key={category.slug}><button type="button" className={`${styles.categoryLink} ${selectedSlug === category.slug ? styles.active : ''}`} onClick={() => navigate(EQUIPMENT_CATEGORY_ROUTES[category.slug] ?? '/EquipmentPage')}><span>›</span>{category.label} ({counts.get(category.slug) ?? 0})</button></li>
-              ))}
-            </ul>
-          </aside>
+          <ProductCategorySidebar activeGroup="equipment" selectedSlug={selectedSlug} subcategories={childCategories} subcategoryUrl={equipmentCategoryUrl} counts={counts} />
           <section className={styles.content}>
             <div className={styles.groupHeader}><h2>{title}</h2><p>{shownProducts.length} sản phẩm</p></div>
             {loading ? <div className={styles.emptyState}>Đang tải sản phẩm...</div> : shownProducts.length ? (

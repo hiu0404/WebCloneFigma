@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
@@ -10,6 +10,7 @@ import { compareByDisplayOrder } from '../lib/adminStore'
 import { productUrl } from '../lib/seo'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
+import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import {
   getChildCategoryLabel,
   isCategoryVisible,
@@ -42,7 +43,6 @@ function categoryPath(slug: string) {
 }
 
 export default function ForensicPage({ categoryKey }: ForensicPageProps) {
-  const navigate = useNavigate()
   const { categorySlug } = useParams()
   const [products, setProducts] = useState<ForensicProduct[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
@@ -143,33 +143,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <aside className={styles.sidebar}>
-            <h2>DANH MỤC GIÁM ĐỊNH</h2>
-            <ul>
-              <li>
-                <button
-                  className={`${styles.categoryLink} ${selectedGroup === 'all' ? styles.active : ''}`}
-                  type="button"
-                  onClick={() => navigate('/GiamDinhKhoaHocKyThuatHinhSu')}
-                >
-                  <span>›</span>
-                  Tất cả sản phẩm ({products.length})
-                </button>
-              </li>
-              {childCategories.map((item) => (
-                <li key={item.slug}>
-                  <button
-                    className={`${styles.categoryLink} ${selectedGroup === item.slug ? styles.active : ''}`}
-                    type="button"
-                    onClick={() => navigate(categoryPath(item.slug))}
-                  >
-                    <span>›</span>
-                    {item.label} ({groupCounts.get(item.slug) ?? 0})
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </aside>
+          <ProductCategorySidebar activeGroup="forensic-science" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={categoryPath} counts={groupCounts} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

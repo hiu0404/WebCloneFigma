@@ -1267,7 +1267,7 @@ app.get('/robots.txt', (_req, res) => {
 app.get('/sitemap.xml', (_req, res) => {
   const urls = new Map()
   const add = (pathName, lastmod) => urls.set(pathName, lastmod ? new Date(lastmod).toISOString().slice(0, 10) : null)
-  ;['/', '/gioi-thieu', '/tin-tuc', '/EquipmentPage', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage', '/BrandPage', '/SupportService'].forEach((pathName) => add(pathName))
+  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/EquipmentPage', '/vat-tu-tieu-hao', '/ChemicalsPage', '/AntibodiesPage', '/MicroscopePage', '/PICC', '/GiamDinhKhoaHocKyThuatHinhSu', '/ContactPage', '/BrandPage', '/SupportService'].forEach((pathName) => add(pathName))
   const categoryBases = { consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC' }
   const equipmentLegacy = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' }
   for (const category of readCategories().filter((item) => item.status === 'active')) {
@@ -1851,6 +1851,7 @@ app.post('/api/upload', requireAdminApi, (req, res, next) => {
 const isProd = process.env.NODE_ENV === 'production'
 const staticSeo = {
   '/': ['Ecolink | Thiết bị khoa học, y tế và an ninh', 'Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn.'],
+  '/san-pham': ['Sản phẩm | Ecolink', 'Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và hồi sức tích cực.'],
   '/gioi-thieu': ['Giới thiệu Ecolink | Thiết bị và giải pháp khoa học', 'Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học.'],
   '/ContactPage': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
   '/SupportService': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],

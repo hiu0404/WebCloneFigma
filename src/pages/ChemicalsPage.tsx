@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
@@ -11,6 +11,7 @@ import { compareByDisplayOrder } from '../lib/adminStore'
 import { productUrl } from '../lib/seo'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
+import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import {
   getChildCategoryLabel,
   getProductChildCategorySlug,
@@ -21,7 +22,6 @@ import {
 } from '../data/categories'
 
 export function ChemicalsPage() {
-  const navigate = useNavigate()
   const { categorySlug } = useParams()
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
@@ -126,33 +126,7 @@ export function ChemicalsPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <aside className={styles.sidebar}>
-            <h2>DANH MỤC HÓA CHẤT</h2>
-            <ul>
-              <li>
-                <button
-                  className={`${styles.categoryLink} ${selectedGroup === 'all' ? styles.active : ''}`}
-                  type="button"
-                  onClick={() => navigate('/ChemicalsPage')}
-                >
-                  <span>›</span>
-                  Tất cả hóa chất ({products.length})
-                </button>
-              </li>
-              {childCategories.map((item) => (
-                <li key={item.slug}>
-                  <button
-                    className={`${styles.categoryLink} ${selectedGroup === item.slug ? styles.active : ''}`}
-                    type="button"
-                    onClick={() => navigate(`/ChemicalsPage/${item.slug}`)}
-                  >
-                    <span>›</span>
-                    {item.label} ({groupCounts.get(item.slug) ?? 0})
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </aside>
+          <ProductCategorySidebar activeGroup="chemicals" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/ChemicalsPage/${slug}`} counts={groupCounts} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

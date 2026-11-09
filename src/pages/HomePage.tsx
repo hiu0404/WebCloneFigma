@@ -173,7 +173,7 @@ export function HomePage() {
                 thị trường Việt Nam.
               </p>
               <div className={styles.heroActions}>
-                <Link className={styles.primaryAction} to="/EquipmentPage">
+                <Link className={styles.primaryAction} to="/san-pham">
                   Khám phá sản phẩm <FaArrowRight />
                 </Link>
                 <Link className={styles.secondaryAction} to="/ContactPage">
@@ -258,7 +258,7 @@ export function HomePage() {
         <section className={styles.section}>
           <div className={styles.blockHeader}>
             <h2>Sản phẩm nổi bật</h2>
-            <Link to="/EquipmentPage">Xem tất cả <FaArrowRight /></Link>
+            <Link to="/san-pham">Xem tất cả <FaArrowRight /></Link>
           </div>
           <div className={styles.productShell}>
             <button className={`${styles.sliderButton} ${styles.sliderPrev}`} type="button" aria-label="Sản phẩm trước" onClick={() => setFeaturedOffset((value) => (value - 1 + featuredProducts.length) % (featuredProducts.length || 1))} disabled={featuredProducts.length < 2}>
