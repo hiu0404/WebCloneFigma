@@ -67,6 +67,7 @@ export default function App() {
           <Route path="/ContactPage" element={<ContactPage />} />
           <Route path="/MicroscopePage" element={<MicroscopePage />} />
           <Route path="/MicroscopePage/:categorySlug" element={<MicroscopePage />} />
+          <Route path="/MicroscopePage/:categorySlug/:subcategorySlug" element={<MicroscopePage />} />
           <Route path="/Trimmingtech" element={<EquipmentCatalogPage categorySlug="trimmingtech" />} />
           <Route path="/TissueProcessing" element={<EquipmentCatalogPage categorySlug="tissue-processing" />} />
           <Route path="/Scaning" element={<EquipmentCatalogPage categorySlug="scaning" />} />

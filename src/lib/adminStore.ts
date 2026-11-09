@@ -26,6 +26,8 @@ export type Product = {
   type?: 'product' | 'microscope' | 'forensic' | 'picc'
   categoryLabel?: string
   parentCategoryLabel?: string
+  categoryParentSlug?: string
+  categoryParentLabel?: string
   status?: 'active' | 'draft' | 'hidden'
   featured?: boolean
   sortOrder?: number

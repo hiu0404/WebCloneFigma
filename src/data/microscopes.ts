@@ -4,6 +4,7 @@ export type MicroscopeCategory = {
   id: string
   label: string
   slug: string
+  parentSlug?: string
   sortOrder: number
   status: MicroscopeCategoryStatus
 }
@@ -35,6 +36,7 @@ export type MicroscopeCategoryInput = {
   id?: string
   label: string
   slug: string
+  parentSlug?: string
   sortOrder?: number
   status?: MicroscopeCategoryStatus
 }
@@ -65,6 +67,14 @@ export const DEFAULT_MICROSCOPE_CATEGORIES: MicroscopeCategory[] = [
   { id: 'digital-microscopes', label: 'Kính hiển vi kỹ thuật số', slug: 'digital-microscopes', sortOrder: 2, status: 'active' },
 ]
 
+export const LIGHT_MICROSCOPE_SLUG = 'light-microscopes'
+
+export function microscopeCategoryUrl(category: Pick<MicroscopeCategory, 'slug' | 'parentSlug'>) {
+  return category.parentSlug
+    ? `/MicroscopePage/${encodeURIComponent(category.parentSlug)}/${encodeURIComponent(category.slug)}`
+    : `/MicroscopePage/${encodeURIComponent(category.slug)}`
+}
+
 export function normalizeMicroscopeCategoryStatus(status?: string): MicroscopeCategoryStatus {
   return status === 'hidden' ? 'hidden' : 'active'
 }
@@ -78,6 +88,9 @@ export function normalizeMicroscopeCategories(categories: MicroscopeCategory[]) 
     .map((item, index) => ({
       ...item,
       id: item.id || item.slug,
+      parentSlug: item.parentSlug === LIGHT_MICROSCOPE_SLUG && item.slug !== LIGHT_MICROSCOPE_SLUG
+        ? LIGHT_MICROSCOPE_SLUG
+        : undefined,
       sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : index + 1,
       status: normalizeMicroscopeCategoryStatus(item.status),
     }))

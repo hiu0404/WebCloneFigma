@@ -23,7 +23,7 @@ const groups: { key: ProductGroupKey; label: string; to: string }[] = [
 type Props = {
   activeGroup: ProductGroupKey
   selectedSlug: string
-  subcategories: { slug: string; label: string }[]
+  subcategories: { slug: string; label: string; children?: { slug: string; label: string }[] }[]
   subcategoryUrl: (slug: string) => string
   counts?: Map<string, number>
 }
@@ -52,13 +52,29 @@ export function ProductCategorySidebar({ activeGroup, selectedSlug, subcategorie
                     {subcategories.map((category) => (
                       <li key={category.slug}>
                         <Link
-                          className={`${styles.childLink} ${selectedSlug === category.slug ? styles.activeChild : ''}`}
+                          className={`${styles.childLink} ${selectedSlug === category.slug || category.children?.some((child) => child.slug === selectedSlug) ? styles.activeChild : ''}`}
                           to={subcategoryUrl(category.slug)}
                           aria-current={selectedSlug === category.slug ? 'page' : undefined}
                         >
                           <span className={styles.circle} aria-hidden="true" />
                           <span>{category.label}{counts ? ` (${counts.get(category.slug) ?? 0})` : ''}</span>
                         </Link>
+                        {category.children?.length ? (
+                          <ul className={styles.grandchildren}>
+                            {category.children.map((child) => (
+                              <li key={child.slug}>
+                                <Link
+                                  className={`${styles.childLink} ${selectedSlug === child.slug ? styles.activeChild : ''}`}
+                                  to={subcategoryUrl(child.slug)}
+                                  aria-current={selectedSlug === child.slug ? 'page' : undefined}
+                                >
+                                  <span className={styles.circle} aria-hidden="true" />
+                                  <span>{child.label}{counts ? ` (${counts.get(child.slug) ?? 0})` : ''}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
                       </li>
                     ))}
                   </ul>

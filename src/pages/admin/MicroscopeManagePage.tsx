@@ -77,7 +77,10 @@ export function MicroscopeManagePage() {
   const [deleteTarget, setDeleteTarget] = useState<Microscope | null>(null)
   const [galleryUrlDraft, setGalleryUrlDraft] = useState('')
 
-  const activeCategories = useMemo(() => categories.filter(isActiveMicroscopeCategory), [categories])
+  const activeCategories = useMemo(() => categories.filter((category) =>
+    isActiveMicroscopeCategory(category) &&
+    (!category.parentSlug || categories.some((parent) => parent.slug === category.parentSlug && isActiveMicroscopeCategory(parent))),
+  ), [categories])
   const firstCategorySlug = activeCategories[0]?.slug ?? ''
   const form = useForm<FormValues>({ defaultValues: emptyForm(firstCategorySlug) })
   const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors } } = form
@@ -87,11 +90,11 @@ export function MicroscopeManagePage() {
   const filteredMicroscopes = useMemo(() => {
     const keyword = search.trim().toLowerCase()
     return microscopes.filter((item) =>
-      (categoryFilter === 'all' || item.categorySlug === categoryFilter) &&
+      (categoryFilter === 'all' || item.categorySlug === categoryFilter || categories.some((category) => category.slug === item.categorySlug && category.parentSlug === categoryFilter)) &&
       (statusFilter === 'all' || item.status === statusFilter) &&
       (!keyword || `${item.name} ${item.model} ${item.brand ?? ''}`.toLowerCase().includes(keyword)),
     )
-  }, [microscopes, categoryFilter, statusFilter, search])
+  }, [microscopes, categories, categoryFilter, statusFilter, search])
   const pageCount = Math.max(1, Math.ceil(filteredMicroscopes.length / PAGE_SIZE))
   const visiblePage = Math.min(page, pageCount)
   const visibleMicroscopes = filteredMicroscopes.slice((visiblePage - 1) * PAGE_SIZE, visiblePage * PAGE_SIZE)
@@ -108,7 +111,7 @@ export function MicroscopeManagePage() {
       const [categoryList, microscopeList] = await Promise.all([apiGetMicroscopeCategories(), apiGetMicroscopes()])
       setCategories(categoryList)
       setMicroscopes(microscopeList)
-      const firstActive = categoryList.find(isActiveMicroscopeCategory)?.slug ?? ''
+      const firstActive = categoryList.find((category) => isActiveMicroscopeCategory(category) && !category.parentSlug)?.slug ?? ''
       if (!editingId) reset(emptyForm(firstActive))
     } finally {
       setLoading(false)
@@ -261,10 +264,13 @@ export function MicroscopeManagePage() {
                 <span className={styles.label}>Danh mục *</span>
                 <select className={styles.select} {...register('categorySlug', { required: 'Vui lòng chọn danh mục' })}>
                   <option value="">Chọn danh mục</option>
-                  {activeCategories.map((category) => (
-                    <option value={category.slug} key={category.slug}>
-                      {category.label}
-                    </option>
+                  {activeCategories.filter((category) => !category.parentSlug).map((category) => (
+                    <optgroup label={category.label} key={category.slug}>
+                      <option value={category.slug}>{category.label} (chưa phân vào danh mục con)</option>
+                      {activeCategories.filter((child) => child.parentSlug === category.slug).map((child) => (
+                        <option value={child.slug} key={child.slug}>{child.label}</option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
                 {errors.categorySlug ? <span className={styles.error}>{errors.categorySlug.message}</span> : null}
@@ -389,7 +395,7 @@ export function MicroscopeManagePage() {
               <option value="all">Tất cả danh mục</option>
               {categories.map((category) => (
                 <option value={category.slug} key={category.slug}>
-                  {category.label}
+                  {category.parentSlug ? '↳ ' : ''}{category.label}
                 </option>
               ))}
             </select>

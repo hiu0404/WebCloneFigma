@@ -7,6 +7,7 @@ import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
 import {
   getMicroscopeCategoryLabel,
   isActiveMicroscopeCategory,
+  microscopeCategoryUrl,
   type Microscope,
   type MicroscopeCategory,
 } from '../data/microscopes'
@@ -18,7 +19,7 @@ import { Breadcrumb } from '../components/Breadcrumb'
 import styles from './ConsumablesPage.module.css'
 
 const MicroscopePage = () => {
-  const { categorySlug } = useParams()
+  const { categorySlug, subcategorySlug } = useParams()
   const [categories, setCategories] = useState<MicroscopeCategory[]>([])
   const [microscopes, setMicroscopes] = useState<Microscope[]>([])
   const [loading, setLoading] = useState(true)
@@ -28,7 +29,10 @@ const MicroscopePage = () => {
     Promise.all([apiGetMicroscopeCategories(), apiGetMicroscopes()])
       .then(([categoryList, microscopeList]) => {
         if (!alive) return
-        const activeCategories = categoryList.filter(isActiveMicroscopeCategory)
+        const activeCategories = categoryList.filter((category) =>
+          isActiveMicroscopeCategory(category) &&
+          (!category.parentSlug || categoryList.some((parent) => parent.slug === category.parentSlug && isActiveMicroscopeCategory(parent))),
+        )
         const activeSlugs = new Set(activeCategories.map((item) => item.slug))
         setCategories(activeCategories)
         setMicroscopes(
@@ -50,29 +54,50 @@ const MicroscopePage = () => {
     }
   }, [])
 
-  const selectedSlug =
-    categorySlug && categories.some((category) => category.slug === categorySlug) ? categorySlug : 'all'
+  const requestedCategory = subcategorySlug
+    ? categories.find((category) => category.slug === subcategorySlug && category.parentSlug === categorySlug)
+    : categories.find((category) => category.slug === categorySlug)
+  const selectedSlug = requestedCategory?.slug ?? 'all'
+  const parentCategory = requestedCategory?.parentSlug
+    ? categories.find((category) => category.slug === requestedCategory.parentSlug)
+    : undefined
+  const sidebarCategories = useMemo(() => categories
+    .filter((category) => !category.parentSlug)
+    .map((category) => ({
+      ...category,
+      children: categories.filter((child) => child.parentSlug === category.slug),
+    })), [categories])
 
   const counts = useMemo(() => {
     const map = new Map<string, number>()
     for (const microscope of microscopes) {
       map.set(microscope.categorySlug, (map.get(microscope.categorySlug) ?? 0) + 1)
     }
+    for (const category of categories.filter((item) => !item.parentSlug)) {
+      const childSlugs = categories.filter((child) => child.parentSlug === category.slug).map((child) => child.slug)
+      map.set(category.slug, (map.get(category.slug) ?? 0) + childSlugs.reduce((sum, slug) => sum + (map.get(slug) ?? 0), 0))
+    }
     return map
-  }, [microscopes])
+  }, [microscopes, categories])
 
-  const shownMicroscopes = useMemo(() => {
-    const list = selectedSlug === 'all' ? microscopes : microscopes.filter((item) => item.categorySlug === selectedSlug)
-    return [...list].sort(compareByDisplayOrder)
-  }, [microscopes, selectedSlug])
+  const childSlugs = categories.filter((category) => category.parentSlug === selectedSlug).map((category) => category.slug)
+  const shownMicroscopes = [...(selectedSlug === 'all'
+    ? microscopes
+    : microscopes.filter((item) => item.categorySlug === selectedSlug || childSlugs.includes(item.categorySlug)))].sort(compareByDisplayOrder)
 
   const selectedTitle =
     selectedSlug === 'all' ? 'Kính hiển vi' : getMicroscopeCategoryLabel(categories, selectedSlug)
-  const canonical = selectedSlug === 'all' ? '/MicroscopePage' : `/MicroscopePage/${selectedSlug}`
+  const canonical = requestedCategory ? microscopeCategoryUrl(requestedCategory) : '/MicroscopePage'
+  const breadcrumbs = [
+    { label: 'Trang chủ', to: '/' },
+    { label: 'Kính hiển vi', to: '/MicroscopePage' },
+    ...(parentCategory ? [{ label: parentCategory.label, to: microscopeCategoryUrl(parentCategory) }] : []),
+    ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }]),
+  ]
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kính hiển vi', to: '/MicroscopePage' }, ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} canonical={canonical} breadcrumbs={breadcrumbs} />
       <Header />
 
       <div className={styles.heroWrapper}>
@@ -82,7 +107,7 @@ const MicroscopePage = () => {
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kính hiển vi', to: '/MicroscopePage' }, ...(selectedSlug === 'all' ? [] : [{ label: selectedTitle }])]} />
+        <Breadcrumb items={breadcrumbs} />
                 <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
@@ -107,8 +132,8 @@ const MicroscopePage = () => {
           <ProductCategorySidebar
             activeGroup="microscopes"
             selectedSlug={selectedSlug}
-            subcategories={categories}
-            subcategoryUrl={(slug) => `/MicroscopePage/${slug}`}
+            subcategories={sidebarCategories}
+            subcategoryUrl={(slug) => microscopeCategoryUrl(categories.find((category) => category.slug === slug) ?? { slug })}
             counts={counts}
           />
 

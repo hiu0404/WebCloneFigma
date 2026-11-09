@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { FiEdit2, FiEye, FiEyeOff, FiPlus, FiRefreshCw, FiTrash2 } from 'react-icons/fi'
 import {
   makeMicroscopeSlug,
+  LIGHT_MICROSCOPE_SLUG,
   type Microscope,
   type MicroscopeCategory,
   type MicroscopeCategoryStatus,
@@ -19,12 +20,13 @@ type FormValues = {
   id: string
   label: string
   slug: string
+  parentSlug: string
   sortOrder: number
   status: MicroscopeCategoryStatus
 }
 
 function emptyForm(): FormValues {
-  return { id: '', label: '', slug: '', sortOrder: 0, status: 'active' }
+  return { id: '', label: '', slug: '', parentSlug: '', sortOrder: 0, status: 'active' }
 }
 
 export function MicroscopeCategoryManagePage() {
@@ -39,6 +41,14 @@ export function MicroscopeCategoryManagePage() {
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = form
   const labelWatch = watch('label')
   const slugWatch = watch('slug')
+  const opticalCategory = categories.find((category) => category.slug === LIGHT_MICROSCOPE_SLUG)
+  const orderedCategories = useMemo(() => [
+    ...categories.flatMap((category) => category.parentSlug ? [] : [
+      category,
+      ...categories.filter((child) => child.parentSlug === category.slug),
+    ]),
+    ...categories.filter((category) => category.parentSlug && !categories.some((parent) => parent.slug === category.parentSlug)),
+  ], [categories])
 
   const usedCounts = useMemo(() => {
     const map = new Map<string, number>()
@@ -72,12 +82,17 @@ export function MicroscopeCategoryManagePage() {
     const label = values.label.trim()
     const slug = values.slug.trim() || makeMicroscopeSlug(label)
     if (!label || !slug) return
+    if (values.parentSlug && (!opticalCategory || slug === LIGHT_MICROSCOPE_SLUG)) {
+      showToast('Chọn danh mục cha hợp lệ')
+      return
+    }
     setBusy(true)
     try {
       const next = await apiUpsertMicroscopeCategory({
         id: values.id || slug,
         label,
         slug,
+        parentSlug: values.parentSlug || undefined,
         sortOrder: Number(values.sortOrder) || 0,
         status: values.status,
       })
@@ -95,11 +110,15 @@ export function MicroscopeCategoryManagePage() {
 
   function editRow(category: MicroscopeCategory) {
     setEditing(category)
-    reset(category)
+    reset({ ...category, parentSlug: category.parentSlug ?? '' })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function deleteRow(category: MicroscopeCategory) {
+    if (categories.some((item) => item.parentSlug === category.slug)) {
+      showToast('Không thể xóa danh mục khi còn danh mục con')
+      return
+    }
     const used = usedCounts.get(category.slug) ?? 0
     if (used > 0) {
       showToast(`Không thể xóa vì còn ${used} kính hiển vi thuộc danh mục này`)
@@ -147,9 +166,16 @@ export function MicroscopeCategoryManagePage() {
                 {errors.label ? <span className={styles.error}>{errors.label.message}</span> : null}
               </label>
               <label className={styles.field}>
-                <span className={styles.label}>Slug *</span>
-                <input className={styles.input} {...register('slug', { required: 'Vui lòng nhập slug' })} />
-                {errors.slug ? <span className={styles.error}>{errors.slug.message}</span> : null}
+                <span className={styles.label}>Slug (tự tạo nếu để trống)</span>
+                <input className={styles.input} readOnly={editing?.slug === LIGHT_MICROSCOPE_SLUG} {...register('slug')} />
+              </label>
+              <label className={styles.field}>
+                <span className={styles.label}>Danh mục cha</span>
+                <select className={styles.select} {...register('parentSlug')}>
+                  <option value="">Danh mục chính</option>
+                  {opticalCategory && editing?.slug !== LIGHT_MICROSCOPE_SLUG ? <option value={LIGHT_MICROSCOPE_SLUG}>{opticalCategory.label}</option> : null}
+                </select>
+                <span className={styles.muted}>Chọn kính hiển vi quang học để tạo danh mục con.</span>
               </label>
               <label className={styles.field}>
                 <span className={styles.label}>Thứ tự hiển thị</span>
@@ -188,6 +214,7 @@ export function MicroscopeCategoryManagePage() {
               <thead>
                 <tr>
                   <th>Danh mục</th>
+                  <th>Thuộc danh mục</th>
                   <th>Slug</th>
                   <th>Thứ tự</th>
                   <th>Trạng thái</th>
@@ -196,9 +223,10 @@ export function MicroscopeCategoryManagePage() {
                 </tr>
               </thead>
               <tbody>
-                {categories.map((category) => (
+                {orderedCategories.map((category) => (
                   <tr key={category.id}>
-                    <td><div className={styles.productName}>{category.label}</div></td>
+                    <td><div className={styles.productName}>{category.parentSlug ? '↳ ' : ''}{category.label}</div></td>
+                    <td>{category.parentSlug ? opticalCategory?.label || category.parentSlug : 'Danh mục chính'}</td>
                     <td>{category.slug}</td>
                     <td>{category.sortOrder}</td>
                     <td>

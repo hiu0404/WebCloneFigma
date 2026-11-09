@@ -23,7 +23,8 @@
 }
 
 .groups,
-.children {
+.children,
+.grandchildren {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -41,6 +42,11 @@
   color: inherit;
   text-decoration: none;
   line-height: 1.55;
+}
+
+.grandchildren {
+  padding-left: 20px;
+  border-left: 1px solid #9b9b9b;
 }
 
 .groupLink {

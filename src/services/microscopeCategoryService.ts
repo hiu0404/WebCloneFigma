@@ -35,10 +35,18 @@ function upsertLocal(input: MicroscopeCategoryInput) {
   if (categories.some((item) => item.slug === input.slug && item.id !== id)) {
     throw new Error('Slug danh mục kính hiển vi đã tồn tại')
   }
+  const previous = categories.find((item) => item.id === id)
+  if (previous?.slug === 'light-microscopes' && input.slug !== previous.slug) {
+    throw new Error('Không thể đổi slug danh mục kính hiển vi quang học')
+  }
+  if (input.parentSlug && (input.parentSlug !== 'light-microscopes' || !categories.some((item) => item.slug === input.parentSlug))) {
+    throw new Error('Danh mục cha không hợp lệ')
+  }
   const next = {
     id,
     label: input.label,
     slug: input.slug,
+    parentSlug: input.parentSlug || undefined,
     sortOrder: Number(input.sortOrder) || categories.length + 1,
     status: input.status ?? 'active',
   }
@@ -50,7 +58,12 @@ function upsertLocal(input: MicroscopeCategoryInput) {
 }
 
 function deleteLocal(id: string) {
-  const next = readLocal().filter((item) => item.id !== id)
+  const categories = readLocal()
+  const category = categories.find((item) => item.id === id)
+  if (category && categories.some((item) => item.parentSlug === category.slug)) {
+    throw new Error('Không thể xóa danh mục còn danh mục con')
+  }
+  const next = categories.filter((item) => item.id !== id)
   writeLocal(next)
   return readLocal()
 }

@@ -24,11 +24,12 @@ function categoryPageUrl(parentSlug: string) {
   return ({ equipment: '/EquipmentPage', consumables: '/vat-tu-tieu-hao', chemicals: '/ChemicalsPage', antibodies: '/AntibodiesPage', 'forensic-science': '/GiamDinhKhoaHocKyThuatHinhSu', 'intensive-care': '/PICC', microscopes: '/MicroscopePage' } as Record<string, string>)[parentSlug] || '/san-pham'
 }
 
-function subcategoryPageUrl(parentSlug: string, childSlug: string) {
+function subcategoryPageUrl(parentSlug: string, childSlug: string, categoryParentSlug?: string) {
   if (!childSlug) return categoryPageUrl(parentSlug)
   const equipment = { trimmingtech: '/Trimmingtech', 'tissue-processing': '/TissueProcessing', casting: '/Casting', 'cutting-machine': '/CuttingMachine', 'tissue-tension': '/TissueTension', 'drying-table': '/DryingTable', 'dyeing-machine': '/DyeingMachine', immunohistochemistry: '/Immunohistochemistry', 'laminating-machine': '/LaminatingMachine', scaning: '/Scaning', 'laser-cassette': '/LaserCassette' } as Record<string, string>
   if (parentSlug === 'equipment') return equipment[childSlug] || categoryPageUrl(parentSlug)
   if (parentSlug === 'forensic-science') return `/GiamDinhKhoaHocKyThuatHinhSu/${childSlug}`
+  if (parentSlug === 'microscopes' && categoryParentSlug) return `/MicroscopePage/${encodeURIComponent(categoryParentSlug)}/${encodeURIComponent(childSlug)}`
   return `${categoryPageUrl(parentSlug)}/${childSlug}`
 }
 
@@ -107,12 +108,13 @@ export function ProductDetailPage() {
   const id = useMemo(() => search.get('id'), [search])
   const [catalog, setCatalog] = useState<Product[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
-  const [selectedImage, setSelectedImage] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [selectedImage, setSelectedImage] = useState<{ productId: string; url: string } | null>(null)
+  const [resolvedKey, setResolvedKey] = useState<string | null>(null)
+  const requestKey = slug ? `slug:${slug}` : `id:${id || ''}`
+  const loading = resolvedKey !== requestKey
 
   useEffect(() => {
     let alive = true
-    setLoading(true)
     if (slug) {
       Promise.all([fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' }), apiGetCategories(), apiGetProducts()])
         .then(async ([response, categoryList, productList]) => response.ok ? [await response.json(), categoryList, productList] : Promise.reject(new Error('Not found')))
@@ -123,7 +125,7 @@ export function ProductDetailPage() {
           setCategories(categoryList)
         })
         .catch(() => alive && (setCatalog([]), setCategories([])))
-        .finally(() => alive && setLoading(false))
+        .finally(() => alive && setResolvedKey(requestKey))
       return () => { alive = false }
     }
     Promise.all([apiGetProducts(), apiGetCategories()])
@@ -138,19 +140,19 @@ export function ProductDetailPage() {
         setCategories([])
       })
       .finally(() => {
-        if (alive) setLoading(false)
+        if (alive) setResolvedKey(requestKey)
       })
     return () => {
       alive = false
     }
-  }, [slug])
+  }, [slug, id, requestKey])
 
   const product = useMemo(
     () => slug ? catalog.find((item) => item.slug === slug) : (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
     [catalog, id, slug],
   )
   const images = useMemo(() => galleryImages(product), [product])
-  const mainImage = selectedImage || images[0] || productMainImageUrl(product) || ''
+  const mainImage = (selectedImage?.productId === product?.id ? selectedImage?.url : '') || images[0] || productMainImageUrl(product) || ''
   const parentSlug = product ? getProductParentCategorySlug(product) : ''
   const childSlug = product ? getProductChildCategorySlug(product) : ''
   const childLabel = product ? getChildCategoryLabel(categories, parentSlug, childSlug) : ''
@@ -160,12 +162,16 @@ export function ProductDetailPage() {
     const parentLabel = categories.find((item) => item.slug === parentSlug)?.label || product.parentCategoryLabel || (parentSlug === 'microscopes' ? 'Kính hiển vi' : 'Sản phẩm')
     const parentUrl = categoryPageUrl(parentSlug)
     const resolvedChildLabel = childLabel || product.categoryLabel || ''
-    return [{ label: 'Trang chủ', to: '/' }, { label: parentLabel, to: parentUrl }, ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug) }] : []), { label: product.title }]
+    return [
+      { label: 'Trang chủ', to: '/' },
+      { label: parentLabel, to: parentUrl },
+      ...(parentSlug === 'microscopes' && product.categoryParentSlug && product.categoryParentLabel
+        ? [{ label: product.categoryParentLabel, to: `/MicroscopePage/${encodeURIComponent(product.categoryParentSlug)}` }]
+        : []),
+      ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug, product.categoryParentSlug) }] : []),
+      { label: product.title },
+    ]
   }, [product, categories, parentSlug, childSlug, childLabel])
-
-  useEffect(() => {
-    setSelectedImage('')
-  }, [product?.id])
 
   const relatedProducts = useMemo(() => {
     if (!product) return []
@@ -233,7 +239,7 @@ export function ProductDetailPage() {
                             className={`${styles.thumb} ${src === mainImage ? styles.thumbActive : ''}`}
                             key={src}
                             type="button"
-                            onClick={() => setSelectedImage(src)}
+                            onClick={() => setSelectedImage({ productId: product.id, url: src })}
                           >
                             <img src={src} alt="" />
                           </button>

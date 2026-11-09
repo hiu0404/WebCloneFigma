@@ -488,6 +488,7 @@ function normalizeMicroscopeCategory(category, index = 0) {
     id: String(category?.id || slug).trim(),
     slug,
     label,
+    parentSlug: category?.parentSlug === 'light-microscopes' && slug !== 'light-microscopes' ? 'light-microscopes' : undefined,
     sortOrder: Number.isFinite(Number(category?.sortOrder)) ? Number(category.sortOrder) : index + 1,
     status: category?.status === 'hidden' ? 'hidden' : 'active',
   }
@@ -929,16 +930,20 @@ function seoProduct(type, item, categories = [], microscopeCategories = []) {
   const parent = categories.find((category) => category.slug === parentSlug)
   const child = parent?.children?.find((category) => category.slug === childSlug)
   const microscopeCategory = type === 'microscope' ? microscopeCategories.find((category) => category.slug === childSlug) : null
+  const microscopeParent = microscopeCategory?.parentSlug ? microscopeCategories.find((category) => category.slug === microscopeCategory.parentSlug) : null
   return {
     ...item,
     type,
     name,
+    parentCategorySlug: parentSlug,
     slug,
     seoTitle: String(item.seoTitle || `${name} | Ecolink`).trim(),
     seoDescription: seoDescription(item),
     canonicalPath: `/san-pham/${encodeURIComponent(slug)}`,
     categoryLabel: microscopeCategory?.label || child?.label || parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
     parentCategoryLabel: parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
+    categoryParentSlug: microscopeParent?.slug,
+    categoryParentLabel: microscopeParent?.label,
   }
 }
 
@@ -1276,6 +1281,14 @@ app.get('/sitemap.xml', (_req, res) => {
       if (pathName) add(pathName)
     }
   }
+  const microscopeCategories = readMicroscopeCategories()
+  for (const category of microscopeCategories.filter((item) => item.status === 'active')) {
+    const parent = category.parentSlug ? microscopeCategories.find((item) => item.slug === category.parentSlug && item.status === 'active') : null
+    if (category.parentSlug && !parent) continue
+    add(parent
+      ? `/MicroscopePage/${encodeURIComponent(parent.slug)}/${encodeURIComponent(category.slug)}`
+      : `/MicroscopePage/${encodeURIComponent(category.slug)}`)
+  }
   for (const product of allSeoProducts({ activeOnly: true })) add(product.canonicalPath, product.updatedAt)
   const body = [...urls.entries()].map(([pathName, lastmod]) => `  <url><loc>${SITE_URL}${pathName}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`).join('\n')
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`)
@@ -1559,6 +1572,7 @@ app.post('/api/microscope-categories', requireAdminApi, (req, res) => {
   const label = String(req.body?.label || '').trim()
   const sortOrder = Number.isFinite(Number(req.body?.sortOrder)) ? Number(req.body.sortOrder) : undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
+  const parentSlug = String(req.body?.parentSlug || '').trim()
   if (!slug || !label) return res.status(400).json({ error: 'Missing microscope category slug/label' })
 
   const categories = readMicroscopeCategories()
@@ -1567,7 +1581,11 @@ app.post('/api/microscope-categories', requireAdminApi, (req, res) => {
   if (duplicate) return res.status(409).json({ error: 'Slug danh mục kính hiển vi đã tồn tại' })
 
   const previous = categories.find((item) => item.id === categoryId)
-  const nextCategory = { id: categoryId, slug, label, sortOrder, status }
+  if (previous?.slug === 'light-microscopes' && slug !== previous.slug) return res.status(409).json({ error: 'Không thể đổi slug danh mục kính hiển vi quang học' })
+  if (parentSlug && (parentSlug !== 'light-microscopes' || !categories.some((item) => item.slug === parentSlug) || slug === parentSlug)) {
+    return res.status(400).json({ error: 'Danh mục cha không hợp lệ' })
+  }
+  const nextCategory = { id: categoryId, slug, label, parentSlug: parentSlug || undefined, sortOrder, status }
   const index = categories.findIndex((item) => item.id === categoryId)
   if (index >= 0) categories[index] = nextCategory
   else categories.push(nextCategory)
@@ -1590,6 +1608,7 @@ app.delete('/api/microscope-categories/:id', requireAdminApi, (req, res) => {
   if (!category) return res.status(404).json({ error: 'Không tìm thấy danh mục kính hiển vi' })
   const used = readMicroscopes().some((item) => item.categorySlug === category.slug)
   if (used) return res.status(409).json({ error: 'Không thể xóa danh mục khi vẫn còn kính hiển vi thuộc danh mục này' })
+  if (categories.some((item) => item.parentSlug === category.slug)) return res.status(409).json({ error: 'Không thể xóa danh mục khi còn danh mục con' })
   writeMicroscopeCategories(categories.filter((item) => item.id !== id))
   res.json(readMicroscopeCategories())
 })
