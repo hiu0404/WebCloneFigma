@@ -45,7 +45,7 @@
 .office p {
   margin: 16px 0;
   color: rgba(255,255,255,0.84);
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 500;
   line-height: 1.55;
 }
@@ -89,7 +89,7 @@
 .office a {
   margin-top: 8px;
   color: rgba(255,255,255,0.9);
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
 }
 
@@ -113,7 +113,7 @@
 .office h3 {
   margin: 0 0 16px;
   color: #ffffff;
-  font-size: 16px;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   line-height: 1.3;
   text-transform: uppercase;
@@ -127,7 +127,7 @@
 .column a {
   margin-bottom: 8px;
   color: rgba(255,255,255,0.86);
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 600;
 }
 
@@ -140,7 +140,7 @@
   padding-top: 16px;
   border-top: 1px solid rgba(255,255,255,0.22);
   color: rgba(255,255,255,0.82);
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
 }
 
 .bottom div {
@@ -236,13 +236,13 @@
   .brand > a,
   .office a,
   .column a {
-    font-size: 14px;
+    font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   }
 
   .column h3,
   .office h3 {
     margin-bottom: 12px;
-    font-size: 15px;
+    font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   }
 
   .bottom {
@@ -250,7 +250,7 @@
     flex-direction: column;
     gap: 12px;
     margin-top: 22px;
-    font-size: 12px;
+    font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   }
 
   .bottom div {
@@ -309,7 +309,7 @@
   .brand > a,
   .office a,
   .column a {
-    font-size: 13px;
+    font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   }
 
   .socials a {

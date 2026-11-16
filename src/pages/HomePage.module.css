@@ -49,7 +49,7 @@
   display: grid;
   grid-template-columns: 740px 1fr;
   align-items: center;
-  width: 1680px;
+  width: 1800px;
   min-height: 690px;
   margin: 0 auto;
   padding: 66px 0 118px;
@@ -59,7 +59,7 @@
   display: block;
   margin-bottom: 18px;
   color: #123d5b;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   letter-spacing: 0.2px;
   text-transform: uppercase;
@@ -84,13 +84,14 @@
   max-width: 600px;
   margin: 24px 0 0;
   color: #234e68;
-  font-size: 17px;
+  font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   font-weight: 500;
   line-height: 1.75;
 }
 
 .heroActions {
   display: flex;
+  flex-wrap: wrap;
   gap: 22px;
   margin-top: 28px;
 }
@@ -112,13 +113,21 @@
 
 .primaryAction,
 .secondaryAction {
+  flex: 0 0 auto;
   min-width: 206px;
   min-height: 54px;
+  padding: 12px 22px;
   border-radius: 5px;
-  font-size: 15px;
+  font-size: max(13px, calc(12px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
+  white-space: nowrap;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease, color 0.28s ease;
+}
+
+.primaryAction svg,
+.secondaryAction svg {
+  flex: 0 0 auto;
 }
 
 .primaryAction {
@@ -149,7 +158,7 @@
 
 .heroMachine {
   position: absolute;
-  left: 170px;
+  left: 230px;
   top: 24px;
   width: 660px;
   height: 410px;
@@ -174,7 +183,7 @@
 
 .devicePodium {
   position: absolute;
-  left: 84px;
+  left: 144px;
   right: 10px;
   bottom: 36px;
   z-index: 2;
@@ -265,7 +274,7 @@
   min-width: 0;
   padding: 26px 22px;
   color: #214e66;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
   border-radius: 9px;
   transition: transform 0.28s ease, background 0.28s ease, color 0.28s ease;
@@ -439,14 +448,14 @@
 .solutionCard h3 {
   margin: 0;
   color: #173f5f;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
 
 .solutionCard p {
   margin: 18px 0 18px;
   color: #31566d;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 500;
   line-height: 1.65;
 }
@@ -457,7 +466,7 @@
 .blockHeader a {
   width: fit-content;
   color: #0078a7;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   transition: color 0.28s ease, transform 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
 }
@@ -537,7 +546,7 @@
 .productCard h3 {
   margin: 0;
   color: #164569;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   line-height: 1.28;
   transition: color 0.28s ease;
@@ -566,7 +575,7 @@
 
 .productMeta dt {
   color: #6b8795;
-  font-size: 12px;
+  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   letter-spacing: 0.2px;
   text-transform: uppercase;
@@ -574,7 +583,7 @@
 
 .productMeta dd {
   color: #173f5f;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   line-height: 1.35;
 }
@@ -590,7 +599,7 @@
   border-radius: 0;
   background: transparent;
   color: #0078a7;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-decoration: none;
   text-transform: uppercase;
@@ -658,7 +667,7 @@
 }
 
 .statItem span {
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
 }
 
@@ -734,7 +743,7 @@
   border-radius: 4px;
   background: #f2f8fb;
   color: #096f98;
-  font-size: 11px;
+  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
   transition: background 0.28s ease, color 0.28s ease;
@@ -744,7 +753,7 @@
   min-height: 58px;
   margin: 12px 0;
   color: #153f60;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.45;
   transition: color 0.28s ease;
 }
@@ -776,7 +785,7 @@
 
 .morePartner {
   color: #0a7199;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
 
@@ -811,7 +820,7 @@
 
 .ctaStrip small {
   color: rgba(255,255,255,0.82);
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
 }
 
 .ctaStrip a {
@@ -820,7 +829,7 @@
   border-radius: 6px;
   background: #ffffff;
   color: #0a7199;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
   transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease, color 0.28s ease, border-color 0.28s ease;
@@ -1116,7 +1125,7 @@
   }
 
   .heroCopy span {
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .heroCopy h1 {
@@ -1141,7 +1150,8 @@
     width: 100%;
     min-width: 0;
     min-height: calc(48px / var(--figma-scale, 1));
-    font-size: calc(13px / var(--figma-scale, 1));
+    padding-inline: calc(16px / var(--figma-scale, 1));
+    font-size: calc(12px / var(--figma-scale, 1));
   }
 
   .heroVisual {
@@ -1220,7 +1230,7 @@
     gap: calc(14px / var(--figma-scale, 1));
     padding: calc(16px / var(--figma-scale, 1)) 0;
     border-bottom: 1px solid rgba(13, 126, 169, 0.1);
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .benefits div:last-child {
@@ -1343,7 +1353,7 @@
   .blockHeader a,
   .morePartner {
     max-width: 100%;
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
     overflow-wrap: anywhere;
   }
 
@@ -1376,7 +1386,7 @@
   }
 
   .productMeta dt {
-    font-size: calc(11px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .productMeta dd {
@@ -1407,7 +1417,7 @@
   }
 
   .statItem span {
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .bottomContent {
@@ -1470,7 +1480,7 @@
   }
 
   .ctaStrip small {
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .ctaStrip a {

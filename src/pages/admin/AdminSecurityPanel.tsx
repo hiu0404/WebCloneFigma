@@ -121,7 +121,7 @@ export function AdminSecurityPanel() {
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
         <div>
           <div style={{ fontSize: 16, fontWeight: 800 }}>Bao mat admin</div>
-          <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>
+          <div style={{ fontSize: 14, color: '#6b7280', marginTop: 4 }}>
             JWT 12 gio · Recovery con lai: {status?.recoveryCodesRemaining ?? '-'} · TOTP cap nhat: {formatDate(status?.totpUpdatedAt ?? null)}
           </div>
         </div>
@@ -130,17 +130,17 @@ export function AdminSecurityPanel() {
         </button>
       </div>
 
-      {message ? <div style={{ color: '#b91c1c', fontSize: 13, fontWeight: 700, marginBottom: 10 }}>{message}</div> : null}
+      {message ? <div style={{ color: '#b91c1c', fontSize: 14, fontWeight: 700, marginBottom: 10 }}>{message}</div> : null}
 
       {setup ? (
         <div style={{ display: 'grid', gap: 12 }}>
           <div style={{ border: '1px solid #e5e7eb', borderRadius: 10, padding: 12, background: '#f9fafb' }}>
-            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>Khoa thiet lap Google Authenticator</div>
+            <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 6 }}>Khoa thiet lap Google Authenticator</div>
             <code style={{ display: 'block', wordBreak: 'break-all', fontSize: 14, lineHeight: 1.6 }}>{setup.manualKey}</code>
           </div>
           <form onSubmit={(e) => void confirmReset(e)} style={{ display: 'grid', gap: 10 }}>
             <label style={{ display: 'block' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>Ma 6 so tu app moi *</div>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 6 }}>Ma 6 so tu app moi *</div>
               <input
                 {...register('code', {
                   required: 'Vui long nhap ma 6 so',
@@ -150,7 +150,7 @@ export function AdminSecurityPanel() {
                 maxLength={6}
                 style={inputStyle}
               />
-              {errors.code ? <div style={{ color: '#b91c1c', fontSize: 12, marginTop: 6 }}>{errors.code.message}</div> : null}
+              {errors.code ? <div style={{ color: '#b91c1c', fontSize: 14, marginTop: 6 }}>{errors.code.message}</div> : null}
             </label>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               <button type="submit" disabled={busy} style={buttonStyle}>Xac nhan reset</button>
@@ -162,7 +162,7 @@ export function AdminSecurityPanel() {
 
       {recoveryCodes ? (
         <div style={{ marginTop: 14, borderTop: '1px solid #e5e7eb', paddingTop: 12 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8 }}>Recovery codes moi</div>
+          <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 8 }}>Recovery codes moi</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8 }}>
             {recoveryCodes.map((code) => (
               <code key={code} style={{ padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: 8, background: '#f9fafb' }}>

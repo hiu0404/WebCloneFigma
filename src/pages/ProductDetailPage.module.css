@@ -126,7 +126,7 @@
   gap: 6px;
   margin-top: 10px;
   color: #586973;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
 }
 
 .shareRow a {
@@ -139,7 +139,7 @@
   background: #74be45;
   color: #ffffff;
   text-decoration: none;
-  font-size: 12px;
+  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
 }
 
 .summary {
@@ -158,7 +158,7 @@
 .short {
   margin: 0 0 12px;
   color: #6d4d39;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.55;
 }
 
@@ -175,7 +175,7 @@
   padding: 9px 0;
   border-bottom: 1px solid #e2e7ea;
   color: #344b57;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.45;
 }
 
@@ -202,7 +202,7 @@
   min-height: 34px;
   padding: 0 14px;
   border-radius: 3px;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
@@ -244,7 +244,7 @@
   background: transparent;
   color: #344b57;
   font: inherit;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   cursor: pointer;
 }
 
@@ -264,7 +264,7 @@
 .tabBody h2 {
   margin: 22px 0 10px;
   color: #164466;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.3;
 }
 
@@ -272,13 +272,13 @@
 .specs {
   color: #2f4854;
   font: inherit;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.7;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.noSpecs { color: #647580; font-size: 14px; line-height: 1.5; }
+.noSpecs { color: #647580; font-size: max(14px, calc(14px / var(--figma-scale, 1))); line-height: 1.5; }
 
 .specs {
   margin: 0;
@@ -314,7 +314,7 @@
   align-items: center;
   background: #1377bd;
   color: #ffffff;
-  font-size: 16px;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.2;
   font-weight: 700;
 }
@@ -346,14 +346,14 @@
 
 .relatedCard span {
   color: #36525f;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.4;
 }
 
 .relatedEmpty {
   padding: 18px 16px;
   color: #647580;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.5;
 }
 
@@ -361,7 +361,7 @@
   padding: 28px;
   border: 1px solid #dbe4e8;
   color: #315f70;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.6;
 }
 
@@ -512,8 +512,8 @@
 @media (min-width: 1025px) and (max-width: 1600px) {
   .summary h1 { font-size: calc(21px / var(--figma-scale, 1)); }
   .short, .metaGrid dt, .metaGrid dd { font-size: calc(14px / var(--figma-scale, 1)); }
-  .richText, .specs, .relatedCard span, .relatedEmpty { font-size: calc(13px / var(--figma-scale, 1)); }
-  .primaryButton, .secondaryButton, .tab { font-size: calc(13px / var(--figma-scale, 1)); }
+  .richText, .specs, .relatedCard span, .relatedEmpty { font-size: calc(14px / var(--figma-scale, 1)); }
+  .primaryButton, .secondaryButton, .tab { font-size: calc(14px / var(--figma-scale, 1)); }
 }
 .installationsSection { margin:24px 0; padding:24px; border:1px solid #e4eaee; background:#fff; }
 .installationsSection h2 { margin:0 0 18px; color:#214158; font-size:23px; }

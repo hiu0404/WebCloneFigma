@@ -60,7 +60,7 @@
   display: block;
   margin: 0;
   color: #174d70;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.65;
   font-weight: 800;
 }
@@ -116,14 +116,14 @@
 
 .benefitItem strong {
   color: #164a6d;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
 
 .benefitItem small {
   margin-top: 6px;
   color: #506b79;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
 }
 
@@ -192,7 +192,7 @@
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   line-height: 1.35;
   text-align: left;
@@ -226,7 +226,7 @@
   border-radius: 8px;
   background: linear-gradient(135deg, #0b83b6, #00739f);
   color: #ffffff;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.65;
   font-weight: 800;
   white-space: pre-line;
@@ -259,7 +259,7 @@
 .groupHeader p {
   margin: 0;
   color: #587383;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
 }
 
@@ -306,7 +306,7 @@
   min-height: 48px;
   margin: 0 0 8px;
   color: #164a6d;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.35;
   font-weight: 900;
 }
@@ -322,7 +322,7 @@
   border-radius: 999px;
   background: #e9f6fb;
   color: #0d6896;
-  font-size: 12px;
+  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
 
@@ -330,7 +330,7 @@
 .productcard p {
   margin: 0;
   color: #587383;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   line-height: 1.6;
 }
@@ -340,7 +340,7 @@
   display: inline-flex;
   margin-top: 18px;
   color: #0078a7;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
 
@@ -351,7 +351,7 @@
   background: #f6f8f9;
   color: #263942;
   font: inherit;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.55;
   white-space: pre-wrap;
 }
@@ -363,7 +363,7 @@
   border-radius: 10px;
   background: #f5fafc;
   color: #315f70;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.6;
 }
 
@@ -403,7 +403,7 @@
 
 .equipmentMeta dt {
   color: #587383;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
 }
 
@@ -411,7 +411,7 @@
   min-width: 0;
   margin: 0;
   color: #164a6d;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   overflow-wrap: anywhere;
 }
@@ -426,7 +426,7 @@
   border-radius: 7px !important;
   background: #0879a8 !important;
   color: #fff !important;
-  font-size: 14px !important;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1))) !important;
   font-weight: 900 !important;
 }
 
@@ -521,7 +521,7 @@
   }
 
   .benefitItem small {
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .categorypage {
@@ -548,7 +548,7 @@
   .sidebar::after {
     margin-top: calc(22px / var(--figma-scale, 1));
     padding: calc(22px / var(--figma-scale, 1));
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .groupHeader {

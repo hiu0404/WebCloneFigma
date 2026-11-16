@@ -70,8 +70,8 @@ export function AdminLoginPage() {
     outline: 'none',
   }
   const labelStyle: CSSProperties = { display: 'block', marginBottom: 12 }
-  const labelTextStyle: CSSProperties = { fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 6 }
-  const errorStyle: CSSProperties = { color: '#b91c1c', fontSize: 13, fontWeight: 700, marginBottom: 10 }
+  const labelTextStyle: CSSProperties = { fontSize: 14, fontWeight: 700, color: '#374151', marginBottom: 6 }
+  const errorStyle: CSSProperties = { color: '#b91c1c', fontSize: 14, fontWeight: 700, marginBottom: 10 }
 
   if (checking) {
     return (
@@ -129,7 +129,7 @@ export function AdminLoginPage() {
     >
       <form style={cardStyle} onSubmit={onSubmit}>
         <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>Admin dang nhap</div>
-        <div style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.5, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, color: '#6b7280', lineHeight: 1.5, marginBottom: 16 }}>
           {step === 'credentials'
             ? 'Nhap email va mat khau admin de tiep tuc.'
             : `Nhap ma 6 so trong Google Authenticator hoac recovery code cho ${loginEmail}.`}

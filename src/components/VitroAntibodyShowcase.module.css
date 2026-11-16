@@ -18,7 +18,7 @@
 .eyebrow {
   display: block;
   color: #2082a6;
-  font-size: 12px;
+  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   letter-spacing: 0.12em;
 }
@@ -36,7 +36,7 @@
   max-width: 680px;
   margin: 0;
   color: #e0edf2;
-  font-size: 17px;
+  font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.7;
 }
 
@@ -50,7 +50,7 @@
   border-radius: 7px;
   background: #fff;
   color: #15506e;
-  font-size: 14px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   text-decoration: none;
   transition: transform 0.2s ease, background 0.2s ease;
@@ -69,9 +69,9 @@
   border-radius: 16px;
   background: #fff;
 }
-.brandPanel span { color: #508096; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; }
+.brandPanel span { color: #508096; font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1))); font-weight: 800; letter-spacing: 0.12em; }
 .brandPanel img { width: min(100%, 330px); height: auto; margin: 25px 0; object-fit: contain; }
-.brandPanel p { margin: 0; color: #5b7280; font-size: 15px; line-height: 1.6; }
+.brandPanel p { margin: 0; color: #5b7280; font-size: max(15px, calc(14px / var(--figma-scale, 1))); line-height: 1.6; }
 
 .sectionHeading {
   display: flex;
@@ -81,7 +81,7 @@
   margin-bottom: 25px;
 }
 .sectionHeading h2 { margin: 8px 0 0; color: #123e59; font-size: 31px; line-height: 1.2; }
-.sectionHeading p { max-width: 330px; margin: 0; color: #5b7280; font-size: 14px; line-height: 1.55; }
+.sectionHeading p { max-width: 330px; margin: 0; color: #5b7280; font-size: max(14px, calc(14px / var(--figma-scale, 1))); line-height: 1.55; }
 
 .panelGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .panelCard {
@@ -117,9 +117,9 @@
 .panelMotif::after { width: 48px; height: 39px; top: 34px; right: -5px; }
 .panelNumber { position: absolute; top: 19px; left: 20px; color: #234e67; font-size: 24px; font-weight: 800; }
 .panelBody { display: flex; flex: 1; flex-direction: column; padding: 23px 21px 22px; }
-.panelOriginal { color: #447f9b; font-size: 11px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
-.panelBody h3 { min-height: 48px; margin: 9px 0 10px; color: #173c53; font-size: 18px; line-height: 1.3; }
-.panelBody p { flex: 1; margin: 0 0 22px; color: #566d7b; font-size: 13px; line-height: 1.6; }
+.panelOriginal { color: #447f9b; font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1))); font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+.panelBody h3 { min-height: 48px; margin: 9px 0 10px; color: #173c53; font-size: max(18px, calc(14px / var(--figma-scale, 1))); line-height: 1.3; }
+.panelBody p { flex: 1; margin: 0 0 22px; color: #566d7b; font-size: max(14px, calc(14px / var(--figma-scale, 1))); line-height: 1.6; }
 .panelBody a {
   display: flex;
   justify-content: space-between;
@@ -127,7 +127,7 @@
   padding-top: 14px;
   border-top: 1px solid #e2ebef;
   color: #187093;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   text-decoration: none;
 }
@@ -144,7 +144,7 @@
   background: #e9f4f8;
 }
 .note strong { color: #143e57; font-size: 19px; }
-.note p { max-width: 720px; margin: 8px 0 0; color: #516e7e; font-size: 14px; line-height: 1.55; }
+.note p { max-width: 720px; margin: 8px 0 0; color: #516e7e; font-size: max(14px, calc(14px / var(--figma-scale, 1))); line-height: 1.55; }
 .note a { flex: 0 0 auto; background: #187093; color: #fff; }
 .note a:hover { background: #115773; color: #fff; }
 
@@ -158,7 +158,7 @@
 @media (max-width: 1024px) {
   .introCopy, .brandPanel { padding: 26px; }
   .intro h2 { font-size: 28px; }
-  .introCopy p { font-size: 15px; }
+  .introCopy p { font-size: max(15px, calc(14px / var(--figma-scale, 1))); }
   .brandPanel { flex-direction: column; align-items: flex-start; }
   .sectionHeading { align-items: flex-start; flex-direction: column; gap: 8px; }
   .sectionHeading h2 { font-size: 27px; }

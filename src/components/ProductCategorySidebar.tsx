@@ -56,7 +56,6 @@ export function ProductCategorySidebar({ activeGroup, selectedSlug, subcategorie
                           to={subcategoryUrl(category.slug)}
                           aria-current={selectedSlug === category.slug ? 'page' : undefined}
                         >
-                          <span className={styles.circle} aria-hidden="true" />
                           <span>{category.label}{counts ? ` (${counts.get(category.slug) ?? 0})` : ''}</span>
                         </Link>
                         {category.children?.length ? (
@@ -68,7 +67,6 @@ export function ProductCategorySidebar({ activeGroup, selectedSlug, subcategorie
                                   to={subcategoryUrl(child.slug)}
                                   aria-current={selectedSlug === child.slug ? 'page' : undefined}
                                 >
-                                  <span className={styles.circle} aria-hidden="true" />
                                   <span>{child.label}{counts ? ` (${counts.get(child.slug) ?? 0})` : ''}</span>
                                 </Link>
                               </li>

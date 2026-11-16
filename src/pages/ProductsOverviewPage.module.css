@@ -110,7 +110,7 @@
   align-self: start;
   padding: 4px 8px;
   background: #fff;
-  font-size: 17px;
+  font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.5;
   font-weight: 500;
   overflow-wrap: anywhere;
@@ -125,7 +125,7 @@
   margin: 0;
   min-height: 90px;
   color: #667785;
-  font-size: 17px;
+  font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.5;
 }
 
@@ -139,7 +139,7 @@
   border: 2px solid #187093;
   background: #187093;
   color: #fff;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;

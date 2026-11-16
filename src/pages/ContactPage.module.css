@@ -219,7 +219,7 @@
   margin: 18px 0 0;
   color: #fff;
   text-align: center;
-  font-size: 18px;
+  font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.4;
 }
 

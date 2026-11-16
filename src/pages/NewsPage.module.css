@@ -44,7 +44,7 @@
 .sectionHeader span {
   display: inline-flex;
   color: #187093;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   letter-spacing: 2.4px;
   text-transform: uppercase;
@@ -106,7 +106,7 @@
   border-radius: 4px;
   background: #e7f6fb;
   color: #0a7199;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -122,7 +122,7 @@
 .sidePanel p {
   margin: 0;
   color: #52636c;
-  font-size: 17px;
+  font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.75;
 }
 
@@ -135,7 +135,7 @@
   width: fit-content;
   margin-top: 28px;
   color: #0a7199;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-decoration: none;
 }
@@ -187,7 +187,7 @@
   flex-wrap: wrap;
   gap: 14px;
   color: #60737d;
-  font-size: 13px;
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
 }
 
@@ -210,7 +210,7 @@
   min-height: 90px;
   margin: 0;
   color: #52636c;
-  font-size: 16px;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.65;
 }
 
@@ -245,7 +245,7 @@
   background: #ffffff;
   color: #193744;
   font: inherit;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   text-align: left;
   padding: 0 14px;
@@ -309,7 +309,7 @@
 
   .heroContent span,
   .sectionHeader span {
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
     letter-spacing: calc(1.6px / var(--figma-scale, 1));
   }
 
@@ -356,7 +356,7 @@
   .category {
     padding: calc(7px / var(--figma-scale, 1)) calc(12px / var(--figma-scale, 1));
     border-radius: calc(4px / var(--figma-scale, 1));
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .featuredBody h2,
@@ -413,7 +413,7 @@
 
   .meta {
     gap: calc(10px / var(--figma-scale, 1));
-    font-size: calc(12px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .meta span {
@@ -449,7 +449,7 @@
     min-height: calc(42px / var(--figma-scale, 1));
     padding: 0 calc(12px / var(--figma-scale, 1));
     border-radius: calc(4px / var(--figma-scale, 1));
-    font-size: calc(13px / var(--figma-scale, 1));
+    font-size: calc(14px / var(--figma-scale, 1));
   }
 
   .contactButton {

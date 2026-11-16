@@ -12,7 +12,7 @@
   overflow: hidden;
   background: #fff;
   color: #183c72;
-  font-family: Arial, Roboto, sans-serif;
+  font-family: inherit;
 }
 
 .hero {
@@ -37,7 +37,7 @@
   margin: 0 auto;
 }
 .heroCopy { width: min(590px, 58%); padding: 25px 0; }
-.eyebrow { color: #183c72; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+.eyebrow { color: #183c72; font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1))); font-weight: 800; letter-spacing: .1em; }
 .hero h1 {
   margin: 14px 0 20px;
   color: #183c72;
@@ -46,7 +46,7 @@
   line-height: 1.18;
 }
 .rule { display: block; width: 150px; height: 3px; margin: 0 0 26px; background: #97bc12; }
-.hero p { max-width: 550px; margin: 0 0 32px; color: #243648; font-size: 18px; line-height: 1.4; }
+.hero p { max-width: 550px; margin: 0 0 32px; color: #243648; font-size: max(18px, calc(14px / var(--figma-scale, 1))); line-height: 1.4; }
 .dossier {
   display: inline-flex;
   align-items: center;
@@ -56,7 +56,7 @@
   border-radius: 3px;
   background: #86a800;
   color: white;
-  font-size: 16px;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
   text-decoration: none;
 }
 .dossier span { font-size: 24px; line-height: 1; }
@@ -87,7 +87,7 @@
 }
 .panelCopy { display: flex; flex: 1; flex-direction: column; padding: 0 15px; }
 .panelCopy h2 { min-height: 62px; margin: 0 0 15px; color: #183c72; font-size: 24px; line-height: 1.17; }
-.panelCopy p { flex: 1; margin: 0 0 24px; color: #333; font-size: 15px; line-height: 1.45; }
+.panelCopy p { flex: 1; margin: 0 0 24px; color: #333; font-size: max(15px, calc(14px / var(--figma-scale, 1))); line-height: 1.45; }
 .panelCopy a {
   display: inline-flex;
   justify-content: center;
@@ -99,7 +99,7 @@
   border-radius: 8px;
   background: #008ac3;
   color: #fff;
-  font-size: 15px;
+  font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   text-decoration: none;
 }
 .panelCopy a:hover { background: #0473a4; }
@@ -119,8 +119,8 @@
 }
 .recombinantCopy { padding: 50px 55px; background: #fff; }
 .recombinant h2 { margin: 0 0 22px; color: #183c72; font-size: 40px; line-height: 1.2; }
-.recombinant p { margin: 0 0 22px; color: #3c4750; font-size: 17px; line-height: 1.7; }
-.recombinant a { color: #008ac3; font-size: 16px; font-weight: 700; text-decoration: none; }
+.recombinant p { margin: 0 0 22px; color: #3c4750; font-size: max(17px, calc(14px / var(--figma-scale, 1))); line-height: 1.7; }
+.recombinant a { color: #008ac3; font-size: max(16px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
 .recombinant a:hover { text-decoration: underline; }
 
 .solutions { padding: 60px 0 88px; background: #f8fbfd; }
@@ -132,12 +132,12 @@
   margin: 0 auto;
 }
 .solutionsHeading h2, .portfolioHeading h2 { margin: 0 0 22px; color: #183c72; font-size: 40px; line-height: 1.15; }
-.solutionsHeading p { margin: 0; color: #3c4750; font-size: 17px; line-height: 1.55; }
+.solutionsHeading p { margin: 0; color: #3c4750; font-size: max(17px, calc(14px / var(--figma-scale, 1))); line-height: 1.55; }
 .solutionCard { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
 .solutionCard img { width: 176px; height: 176px; margin-bottom: 20px; object-fit: contain; }
 .solutionCard h3 { margin: 0 0 15px; color: #183c72; font-size: 28px; line-height: 1.18; }
-.solutionCard p { flex: 1; margin: 0 0 21px; color: #4a535a; font-size: 15px; line-height: 1.6; }
-.solutionCard a { color: #008ac3; font-size: 15px; font-weight: 700; text-decoration: none; }
+.solutionCard p { flex: 1; margin: 0 0 21px; color: #4a535a; font-size: max(15px, calc(14px / var(--figma-scale, 1))); line-height: 1.6; }
+.solutionCard a { color: #008ac3; font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
 .solutionCard a:hover { text-decoration: underline; }
 
 .portfolio { padding: 95px 0; }
@@ -151,7 +151,7 @@
 }
 .feature { text-align: center; }
 .feature img { width: 112px; height: 112px; margin: 0 auto 20px; object-fit: contain; }
-.feature h3 { margin: 0; color: #183c72; font-size: 18px; line-height: 1.3; }
+.feature h3 { margin: 0; color: #183c72; font-size: max(18px, calc(14px / var(--figma-scale, 1))); line-height: 1.3; }
 
 .contact {
   padding: 80px 0;
@@ -166,8 +166,8 @@
   margin: 0 auto;
 }
 .contact h2 { margin: 0 0 16px; color: #183c72; font-size: 38px; line-height: 1.2; }
-.contact p { max-width: 680px; margin: 0; color: #455664; font-size: 17px; line-height: 1.55; }
-.contact a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: #008ac3; color: #fff; font-size: 16px; text-decoration: none; }
+.contact p { max-width: 680px; margin: 0; color: #455664; font-size: max(17px, calc(14px / var(--figma-scale, 1))); line-height: 1.55; }
+.contact a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: #008ac3; color: #fff; font-size: max(16px, calc(14px / var(--figma-scale, 1))); text-decoration: none; }
 .contact a:hover { background: #0473a4; }
 
 @media (max-width: 1024px) {
@@ -193,7 +193,7 @@
   .heroInner { align-items: flex-start; min-height: 760px; padding-top: 28px; }
   .heroCopy { width: 100%; padding: 22px; background: rgba(239, 244, 249, .89); }
   .hero h1 { font-size: 32px; }
-  .hero p { font-size: 15px; }
+  .hero p { font-size: max(15px, calc(14px / var(--figma-scale, 1))); }
   .panels { margin: 38px auto 55px; }
   .panelGrid { grid-template-columns: 1fr; gap: 20px; }
   .panelCard { min-height: 0; }

@@ -10,6 +10,7 @@
   width: 1920px;
   margin-inline: auto;
   box-sizing: border-box;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
 }
 
 /* Fallback when zoom is unsupported (narrower visual + clip overflow). */
@@ -22,6 +23,7 @@
 .stageInner {
   width: 1920px;
   transform-origin: top left;
+  font-size: max(16px, calc(14px / var(--figma-scale, 1)));
 }
 
 @media (max-width: 1024px) {
