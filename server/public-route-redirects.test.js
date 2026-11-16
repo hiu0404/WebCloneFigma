@@ -9,6 +9,7 @@ test('old public category links keep their matching destination', () => {
   assert.equal(legacyPublicRedirect('/ChemicalsPage/reagents'), '/hoa-chat/reagents')
   assert.equal(legacyPublicRedirect('/ContactPage'), '/lien-he')
   assert.equal(legacyPublicRedirect('/SupportService'), '/dich-vu-ho-tro')
+  assert.equal(legacyPublicRedirect('/BrandPage'), '/hang-dai-dien')
   assert.equal(legacyPublicRedirect('/Trimmingtech'), '/giai-phau-benh/trimmingtech')
   assert.equal(legacyPublicRedirect('/GiamDinhADN'), '/giam-dinh-hinh-su/giam-dinh-adn')
   assert.equal(legacyPublicRedirect('/admin/products'), null)

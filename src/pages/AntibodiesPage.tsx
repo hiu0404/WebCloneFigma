@@ -12,6 +12,7 @@ import { productUrl } from '../lib/seo'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
+import { VitroAntibodyShowcase, VITRO_ANTIBODY_DESCRIPTION } from '../components/VitroAntibodyShowcase'
 import {
   getChildCategoryLabel,
   getProductChildCategorySlug,
@@ -81,10 +82,16 @@ export function AntibodiesPage() {
     selectedGroup === 'all' ? 'Kháng thể' : getChildCategoryLabel(categories, 'antibodies', selectedGroup)
   const selectedCategory = childCategories.find((item) => item.slug === selectedGroup)
   const canonical = selectedGroup === 'all' ? '/khang-the' : `/khang-the/${selectedGroup}`
+  const isVitroCategory = selectedGroup === 'khang-the-vitro'
+  const breadcrumbs = [
+    { label: 'Trang chủ', to: '/' },
+    { label: 'Kháng thể', to: '/khang-the' },
+    ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }]),
+  ]
 
   return (
     <div className={styles.page}>
-      <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/khang-the' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
+      <CategorySeo title={selectedTitle} description={selectedCategory?.description || (isVitroCategory ? VITRO_ANTIBODY_DESCRIPTION : undefined)} canonical={canonical} image={isVitroCategory ? '/assetsFull/vitro.png' : undefined} breadcrumbs={breadcrumbs} />
       <Header />
 
       <FigmaImage
@@ -97,13 +104,13 @@ export function AntibodiesPage() {
       />
 
       <div className={styles.heroTitle}>
-        <div>Kháng thể</div>
-        <div className={styles.heroTitleSmall}>Trang chủ / Kháng thể</div>
+        <div>{selectedTitle}</div>
+        <div className={styles.heroTitleSmall}>Trang chủ / Kháng thể{selectedGroup === 'all' ? '' : ` / ${selectedTitle}`}</div>
       </div>
 
       <main className={styles.container}>
-        <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Kháng thể', to: '/khang-the' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
-                <section className={styles.benefitBar}>
+        <Breadcrumb items={breadcrumbs} />
+        {!isVitroCategory && <section className={styles.benefitBar}>
                     <div className={styles.benefitItem}>
                         <span aria-hidden>&#9678;</span>
                         <div><strong>Chất lượng quốc tế</strong><small>Đạt tiêu chuẩn</small></div>
@@ -120,15 +127,25 @@ export function AntibodiesPage() {
                         <span aria-hidden>&#9742;</span>
                         <div><strong>Hỗ trợ kỹ thuật 24/7</strong><small>Đồng hành cùng bạn</small></div>
                     </div>
-                </section>
+                </section>}
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
           <ProductCategorySidebar activeGroup="antibodies" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/khang-the/${slug}`} counts={groupCounts} />
 
           <section className={styles.content}>
+            {selectedGroup === 'all' && childCategories.length > 0 && (
+              <nav className={styles.categoryChoices} aria-label="Các nhóm kháng thể">
+                {childCategories.map((category) => (
+                  <Link key={category.slug} to={`/khang-the/${category.slug}`}>
+                    <span>{category.label}</span><span aria-hidden="true">→</span>
+                  </Link>
+                ))}
+              </nav>
+            )}
+            {isVitroCategory && <div className={styles.vitroShowcase}><VitroAntibodyShowcase /></div>}
             <div className={styles.groupHeader}>
-              <h2>{selectedTitle}</h2>
+              <h2>{isVitroCategory ? 'Sản phẩm Vitro hiện có tại Ecolink' : selectedTitle}</h2>
               <p>{shownProducts.length} sản phẩm</p>
             </div>
 
@@ -156,7 +173,9 @@ export function AntibodiesPage() {
                 })}
               </div>
             ) : (
-              <div className={styles.emptyState}>Chưa có sản phẩm trong danh mục này.</div>
+              <div className={styles.emptyState}>
+                {isVitroCategory ? 'Chưa có mã kháng thể Vitro được đăng trong hệ thống Ecolink. Bạn có thể xem tài liệu Vitro ở trên hoặc liên hệ để hỏi sản phẩm cụ thể.' : 'Chưa có sản phẩm trong danh mục này.'}
+              </div>
             )}
           </section>
         </div>

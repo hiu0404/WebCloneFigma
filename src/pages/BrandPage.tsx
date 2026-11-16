@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
 import { SeoHead } from '../components/SeoHead';
@@ -8,13 +8,7 @@ import styles from "./BrandPage.module.css";
 
 const brands = [
   {
-    image: "/assetsFull/Lecia.svg",
-    name: "Leica-microsystems",
-    country: "Germany",
-    url: "https://www.leica-microsystems.com/",
-    desc: "Kính hiển vi, giải pháp hình ảnh khoa học, thiết bị giải phẫu bệnh và pháp y.",
-  },
-  {
+    id: "bio-optica",
     image: "/assetsFull/bio.png",
     name: "Bio-Optica",
     country: "Italy",
@@ -22,6 +16,15 @@ const brands = [
     desc: "Thiết bị và hóa chất chuyên dụng cho phòng xét nghiệm và giải phẫu bệnh.",
   },
   {
+    id: "leica-microsystems",
+    image: "/assetsFull/Lecia.svg",
+    name: "Leica-microsystems",
+    country: "Germany",
+    url: "https://www.leica-microsystems.com/",
+    desc: "Kính hiển vi, giải pháp hình ảnh khoa học, thiết bị giải phẫu bệnh và pháp y.",
+  },
+  {
+    id: "huron",
     image: "/assetsFull/huron.svg",
     name: "Huron Digital Pathology",
     country: "Canada",
@@ -29,6 +32,7 @@ const brands = [
     desc: "Giải pháp scan lam kính và số hóa tiêu bản giải phẫu bệnh.",
   },
   {
+    id: "lupetec",
     image: "/assetsFull/lupetec.png",
     name: "Lupetec",
     country: "Germany",
@@ -36,6 +40,7 @@ const brands = [
     desc: "Thiết bị phòng thí nghiệm và giải pháp xử lý mô hiện đại.",
   },
   {
+    id: "vitro",
     image: "/assetsFull/vitro.png",
     name: "Vitro",
     country: "Spain",
@@ -43,6 +48,7 @@ const brands = [
     desc: "Hệ thống nhuộm tiêu bản tự động và thiết bị xét nghiệm giải phẫu bệnh.",
   },
   {
+    id: "citotest",
     image: "/assetsFull/citotest.webp",
     name: "Citotest",
     country: "China",
@@ -50,6 +56,7 @@ const brands = [
     desc: "Vật tư tiêu hao, lam kính và thiết bị phục vụ phòng xét nghiệm.",
   },
   {
+    id: "plan1health",
     image: "/assetsFull/Plan1Health.png",
     name: "Plan1Health",
     country: "Italy",
@@ -60,12 +67,14 @@ const brands = [
 
 export default function BrandPage() {
   const [displayBrands, setDisplayBrands] = useState(brands);
+  const { hash } = useLocation();
 
   useEffect(() => {
     let alive = true;
     apiGetBrands().then((items) => {
       if (!alive) return;
       setDisplayBrands(items.filter((item) => item.status === 'active').map((item) => ({
+        id: item.id,
         image: item.imageUrl ?? '',
         name: item.name,
         country: item.country,
@@ -76,9 +85,17 @@ export default function BrandPage() {
     return () => { alive = false; };
   }, []);
 
+  useEffect(() => {
+    if (!hash) return;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [hash, displayBrands]);
+
   return (
     <div className={styles.page}>
-      <SeoHead title="Hãng đại diện | Ecolink" description="Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng." canonical="/BrandPage" />
+      <SeoHead title="Hãng đại diện | Ecolink" description="Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng." canonical="/hang-dai-dien" />
       <Header />
 
       <FigmaImage
@@ -110,7 +127,7 @@ export default function BrandPage() {
       <section className={styles.brandSection}>
         <div className={styles.brandGrid}>
           {displayBrands.map((brand) => (
-            <div className={styles.brandCard} key={brand.name}>
+            <div className={styles.brandCard} id={`brand-${brand.id}`} key={brand.id}>
               <div className={styles.brandImageWrapper}>
                 <img src={brand.image} alt={brand.name} className={styles.brandImage} loading="lazy" />
               </div>

@@ -13,6 +13,8 @@ import { productUrl } from '../../lib/seo'
 import { apiGetMicroscopes } from '../../services/microscopeService'
 import { apiGetForensicProducts } from '../../services/forensicProductService'
 import { apiGetPiccProducts } from '../../services/piccProductService'
+import { apiGetBrands } from '../../services/brandService'
+import type { Brand } from '../../data/brands'
 import { productMainImageUrl } from '../../lib/productImages'
 import styles from './Header.module.css'
 
@@ -45,6 +47,7 @@ export function Header() {
   })
   const query = watch('query') ?? ''
   const [allProducts, setAllProducts] = useState<SearchItem[]>([])
+  const [brands, setBrands] = useState<Brand[]>([])
   const [open, setOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -107,6 +110,14 @@ export function Header() {
     return () => {
       alive = false
     }
+  }, [])
+
+  useEffect(() => {
+    let alive = true
+    apiGetBrands().then((items) => {
+      if (alive) setBrands(items.filter((item) => item.status === 'active'))
+    })
+    return () => { alive = false }
   }, [])
 
   const trimmed = query.trim().toLowerCase()
@@ -205,6 +216,18 @@ export function Header() {
               <NavLink key={item.to} to={item.to}>{item.label}</NavLink>
             ))}
           </div>
+        </div>
+        <div className={styles.dropdown}>
+          <NavLink to="/hang-dai-dien">Hãng đại diện <FaChevronDown /></NavLink>
+          {brands.length > 0 && (
+            <div className={`${styles.dropdownMenu} ${styles.brandDropdownMenu}`}>
+              {brands.map((brand) => (
+                <NavLink key={brand.id} to={`/hang-dai-dien#brand-${encodeURIComponent(brand.id)}`}>
+                  {brand.name}
+                </NavLink>
+              ))}
+            </div>
+          )}
         </div>
         <div className={styles.dropdown}>
           <div className={styles.dropdownMenu}>

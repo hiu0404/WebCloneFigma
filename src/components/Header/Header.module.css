@@ -252,6 +252,24 @@
   color: #007aa4;
 }
 
+.brandDropdownMenu {
+  min-width: 310px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.brandDropdownMenu a {
+  border-bottom: 1px solid #e6edf1;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.brandDropdownMenu a:last-child {
+  border-bottom: none;
+}
+
 .socials {
   display: flex;
   align-items: center;
@@ -500,6 +518,14 @@
     min-height: calc(42px / var(--figma-scale, 1));
     padding: 0 calc(18px / var(--figma-scale, 1)) 0 calc(34px / var(--figma-scale, 1));
     border-bottom: 1px solid #edf4f7;
+    font-size: calc(13px / var(--figma-scale, 1));
+  }
+
+  .brandDropdownMenu {
+    max-height: none;
+  }
+
+  .brandDropdownMenu a {
     font-size: calc(13px / var(--figma-scale, 1));
   }
 

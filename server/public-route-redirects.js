@@ -2,6 +2,7 @@ const legacyPublicBases = {
   equipmentpage: '/giai-phau-benh', giamdinhkhoahocthuathinhsu: '/giam-dinh-hinh-su',
   microscopepage: '/kinh-hien-vi', chemicalspage: '/hoa-chat', antibodiespage: '/khang-the',
   picc: '/hoi-suc-tich-cuc', supportservice: '/dich-vu-ho-tro', contactpage: '/lien-he',
+  brandpage: '/hang-dai-dien',
 }
 
 const legacyCategoryPages = {

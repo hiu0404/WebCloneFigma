@@ -366,7 +366,7 @@ export function HomePage() {
                   <FigmaImage src={partner.image} alt={partner.name} loading="lazy" />
                 </a>
               ))}
-              <Link to="/BrandPage" className={styles.morePartner}>Xem thêm <FaArrowRight /></Link>
+              <Link to="/hang-dai-dien" className={styles.morePartner}>Xem thêm <FaArrowRight /></Link>
             </div>
           </div>
         </section>

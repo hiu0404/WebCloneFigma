@@ -5,12 +5,10 @@ import { productUrl } from '../lib/seo'
 import { sendContactMessage } from '../services/contactService'
 import styles from './QuoteRequestModal.module.css'
 
-type Props = {
-  product: Product
-  onClose: () => void
-}
+type CatalogueItem = { name: string; panel: string; path: string; source: string }
+type Props = ({ product: Product; catalogueItem?: never } | { product?: never; catalogueItem: CatalogueItem }) & { onClose: () => void }
 
-export function QuoteRequestModal({ product, onClose }: Props) {
+export function QuoteRequestModal({ product, catalogueItem, onClose }: Props) {
   const nameRef = useRef<HTMLInputElement>(null)
   const dialogRef = useRef<HTMLElement>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -42,8 +40,12 @@ export function QuoteRequestModal({ product, onClose }: Props) {
     if (submitting) return
     const form = event.currentTarget
     const values = new FormData(form)
-    const productPath = productUrl(product)
-    const productLink = new URL(productPath, window.location.origin).href
+    const itemPath = product ? productUrl(product) : catalogueItem.path
+    const itemLink = new URL(itemPath, window.location.origin).href
+    const itemName = product ? product.title : catalogueItem.name
+    const itemDetails = product
+      ? `Sản phẩm: ${product.title}\n${product.model || product.sku ? `Model: ${product.model || product.sku}\n` : ''}Mã sản phẩm: ${product.id}\nLiên kết: ${itemLink}`
+      : `Kháng thể Vitro: ${catalogueItem.name}\nNhóm: ${catalogueItem.panel}\nLiên kết: ${itemLink}\nTài liệu nhà sản xuất: ${catalogueItem.source}`
     const customerMessage = String(values.get('message') || '').trim()
     setSubmitting(true)
     setFeedback(null)
@@ -52,8 +54,8 @@ export function QuoteRequestModal({ product, onClose }: Props) {
         name: String(values.get('name') || '').trim(),
         phone: String(values.get('phone') || '').trim(),
         email: String(values.get('email') || '').trim(),
-        subject: `Yêu cầu báo giá: ${product.title}`.slice(0, 160),
-        message: `Sản phẩm: ${product.title}\n${product.model || product.sku ? `Model: ${product.model || product.sku}\n` : ''}Mã sản phẩm: ${product.id}\nLiên kết: ${productLink}\nEmail: ${String(values.get('email') || '').trim()}\n\nNội dung yêu cầu:\n${customerMessage}`,
+        subject: `Yêu cầu báo giá: ${itemName}`.slice(0, 160),
+        message: `${itemDetails}\nEmail: ${String(values.get('email') || '').trim()}\n\nNội dung yêu cầu:\n${customerMessage}`,
         website: String(values.get('website') || ''),
       })
       form.reset()
@@ -73,7 +75,7 @@ export function QuoteRequestModal({ product, onClose }: Props) {
           <button type="button" className={styles.close} onClick={onClose} aria-label="Đóng biểu mẫu báo giá">×</button>
         </div>
         <div className={styles.content}>
-          <p className={styles.productName}>Sản phẩm: <strong>{product.title}</strong></p>
+          <p className={styles.productName}>{product ? 'Sản phẩm' : 'Kháng thể'}: <strong>{product ? product.title : catalogueItem.name}</strong></p>
           <p className={styles.intro}>Vui lòng để lại thông tin để Ecolink tư vấn và gửi báo giá. Liên hệ nhanh: <a href="tel:+84812119668">0812 119 668</a>.</p>
           <form onSubmit={(event) => void submit(event)}>
             <label>Họ và tên *<input ref={nameRef} name="name" autoComplete="name" required minLength={2} maxLength={120} /></label>

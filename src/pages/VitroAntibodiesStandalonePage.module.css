@@ -1,0 +1,217 @@
+.shell {
+  position: relative;
+  width: 1920px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding-top: 194px;
+}
+
+.page {
+  --content-width: min(1680px, calc(100% - 96px));
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  color: #183c72;
+  font-family: Arial, Roboto, sans-serif;
+}
+
+.hero {
+  position: relative;
+  min-height: 680px;
+  background: #d9e0e9 url('/assetsFull/vitro-antibody-hero-original.webp') center 12% / cover no-repeat;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/assetsFull/vitro-antibody-hero-leica.png') center 12% / cover no-repeat;
+  mask-image: linear-gradient(to right, transparent 58%, #000 84%);
+  pointer-events: none;
+}
+.heroInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: var(--content-width);
+  min-height: 680px;
+  margin: 0 auto;
+}
+.heroCopy { width: min(590px, 58%); padding: 25px 0; }
+.eyebrow { color: #183c72; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+.hero h1 {
+  margin: 14px 0 20px;
+  color: #183c72;
+  font-size: clamp(36px, 4vw, 50px);
+  font-weight: 800;
+  line-height: 1.18;
+}
+.rule { display: block; width: 150px; height: 3px; margin: 0 0 26px; background: #97bc12; }
+.hero p { max-width: 550px; margin: 0 0 32px; color: #243648; font-size: 18px; line-height: 1.4; }
+.dossier {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 46px;
+  padding: 0 17px;
+  border-radius: 3px;
+  background: #86a800;
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+}
+.dossier span { font-size: 24px; line-height: 1; }
+.dossier:hover { background: #759800; }
+
+.panels { width: var(--content-width); margin: 65px auto 80px; }
+.panelGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.panelCard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 515px;
+  padding: 20px 20px 28px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 1px 18px rgba(29, 51, 78, .1);
+}
+.panelImage { position: relative; height: 236px; margin-bottom: 18px; }
+.panelImage > img:first-child { width: 100%; height: 203px; border-radius: 18px; object-fit: cover; }
+.panelIcon {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  transform: translateX(-50%);
+}
+.panelCopy { display: flex; flex: 1; flex-direction: column; padding: 0 15px; }
+.panelCopy h2 { min-height: 62px; margin: 0 0 15px; color: #183c72; font-size: 24px; line-height: 1.17; }
+.panelCopy p { flex: 1; margin: 0 0 24px; color: #333; font-size: 15px; line-height: 1.45; }
+.panelCopy a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  gap: 14px;
+  width: 176px;
+  min-height: 48px;
+  border-radius: 8px;
+  background: #008ac3;
+  color: #fff;
+  font-size: 15px;
+  text-decoration: none;
+}
+.panelCopy a:hover { background: #0473a4; }
+.panelCopy a span { font-size: 22px; line-height: 1; }
+
+.recombinant {
+  display: grid;
+  grid-template-columns: 43% 57%;
+  align-items: center;
+  width: var(--content-width);
+  min-height: 540px;
+  margin: 0 auto 55px;
+}
+.recombinantImage {
+  height: 440px;
+  background: #e8e9f0 url('https://vitro.bio/wp-content/uploads/2026/06/cabecera-neuropatologia.webp') center / cover no-repeat;
+}
+.recombinantCopy { padding: 50px 55px; background: #fff; }
+.recombinant h2 { margin: 0 0 22px; color: #183c72; font-size: 40px; line-height: 1.2; }
+.recombinant p { margin: 0 0 22px; color: #3c4750; font-size: 17px; line-height: 1.7; }
+.recombinant a { color: #008ac3; font-size: 16px; font-weight: 700; text-decoration: none; }
+.recombinant a:hover { text-decoration: underline; }
+
+.solutions { padding: 60px 0 88px; background: #f8fbfd; }
+.solutionsInner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  width: var(--content-width);
+  margin: 0 auto;
+}
+.solutionsHeading h2, .portfolioHeading h2 { margin: 0 0 22px; color: #183c72; font-size: 40px; line-height: 1.15; }
+.solutionsHeading p { margin: 0; color: #3c4750; font-size: 17px; line-height: 1.55; }
+.solutionCard { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.solutionCard img { width: 176px; height: 176px; margin-bottom: 20px; object-fit: contain; }
+.solutionCard h3 { margin: 0 0 15px; color: #183c72; font-size: 28px; line-height: 1.18; }
+.solutionCard p { flex: 1; margin: 0 0 21px; color: #4a535a; font-size: 15px; line-height: 1.6; }
+.solutionCard a { color: #008ac3; font-size: 15px; font-weight: 700; text-decoration: none; }
+.solutionCard a:hover { text-decoration: underline; }
+
+.portfolio { padding: 95px 0; }
+.portfolioInner {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(4, 1fr);
+  align-items: start;
+  gap: 22px;
+  width: var(--content-width);
+  margin: 0 auto;
+}
+.feature { text-align: center; }
+.feature img { width: 112px; height: 112px; margin: 0 auto 20px; object-fit: contain; }
+.feature h3 { margin: 0; color: #183c72; font-size: 18px; line-height: 1.3; }
+
+.contact {
+  padding: 80px 0;
+  background: #edf4f9;
+}
+.contactInner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 50px;
+  width: var(--content-width);
+  margin: 0 auto;
+}
+.contact h2 { margin: 0 0 16px; color: #183c72; font-size: 38px; line-height: 1.2; }
+.contact p { max-width: 680px; margin: 0; color: #455664; font-size: 17px; line-height: 1.55; }
+.contact a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: #008ac3; color: #fff; font-size: 16px; text-decoration: none; }
+.contact a:hover { background: #0473a4; }
+
+@media (max-width: 1024px) {
+  .page { --content-width: calc(100% - 48px); }
+  .heroCopy { width: min(590px, 68%); }
+  .panelGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .recombinant h2, .solutionsHeading h2, .portfolioHeading h2 { font-size: 32px; }
+  .solutionsInner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .portfolioInner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .page { --content-width: calc(100% - 36px); }
+  .shell { width: 100%; padding-top: calc(156px / var(--figma-scale, 1)); }
+  .hero { min-height: 760px; background-position: 62% center; }
+  .hero::before {
+    inset: auto 0 0;
+    height: 340px;
+    background-position: right bottom;
+    background-size: auto 340px;
+    mask-image: linear-gradient(to bottom, transparent, #000 16%);
+  }
+  .heroInner { align-items: flex-start; min-height: 760px; padding-top: 28px; }
+  .heroCopy { width: 100%; padding: 22px; background: rgba(239, 244, 249, .89); }
+  .hero h1 { font-size: 32px; }
+  .hero p { font-size: 15px; }
+  .panels { margin: 38px auto 55px; }
+  .panelGrid { grid-template-columns: 1fr; gap: 20px; }
+  .panelCard { min-height: 0; }
+  .panelImage { height: 206px; }
+  .panelImage > img:first-child { height: 173px; }
+  .panelCopy h2 { min-height: 0; }
+  .recombinant { grid-template-columns: 1fr; margin-bottom: 20px; }
+  .recombinantImage { height: 260px; }
+  .recombinantCopy { padding: 30px 8px; }
+  .recombinant h2, .solutionsHeading h2, .portfolioHeading h2 { font-size: 28px; }
+  .solutions, .portfolio, .contact { padding: 55px 0; }
+  .solutionsInner, .portfolioInner, .contactInner { grid-template-columns: 1fr; gap: 40px; }
+  .solutionCard img { width: 130px; height: 130px; }
+  .feature { display: flex; align-items: center; gap: 18px; text-align: left; }
+  .feature img { width: 80px; height: 80px; margin: 0; }
+  .contact h2 { font-size: 28px; }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+  .shell { width: 100%; padding-top: calc(156px / var(--figma-scale, 1)); }
+}

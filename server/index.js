@@ -1297,10 +1297,23 @@ const publicCategoryBases = {
   antibodies: '/khang-the', 'forensic-science': '/giam-dinh-hinh-su', 'intensive-care': '/hoi-suc-tich-cuc',
 }
 
+const vitroPanelNames = {
+  'benh-ly-than-kinh': 'Bệnh lý thần kinh',
+  'benh-truyen-nhiem': 'Bệnh truyền nhiễm',
+  'benh-ly-mo-mem': 'Bệnh lý mô mềm',
+  'benh-ly-tuyen-yen': 'Bệnh lý tuyến yên',
+  'benh-ly-mo-lympho': 'Bệnh lý mô lympho',
+  'benh-ly-tiet-nieu': 'Bệnh lý tiết niệu',
+  'benh-ly-phoi-mang-phoi': 'Bệnh lý phổi và màng phổi',
+  'benh-ly-tuyen-giap': 'Bệnh lý tuyến giáp',
+}
+
 app.get('/sitemap.xml', (_req, res) => {
   const urls = new Map()
   const add = (pathName, lastmod) => urls.set(pathName, lastmod ? new Date(lastmod).toISOString().slice(0, 10) : null)
-  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/giai-phau-benh', '/vat-tu-tieu-hao', '/hoa-chat', '/khang-the', '/kinh-hien-vi', '/hoi-suc-tich-cuc', '/giam-dinh-hinh-su', '/lien-he', '/BrandPage', '/dich-vu-ho-tro'].forEach((pathName) => add(pathName))
+  ;['/', '/gioi-thieu', '/tin-tuc', '/san-pham', '/giai-phau-benh', '/vat-tu-tieu-hao', '/hoa-chat', '/khang-the', '/kinh-hien-vi', '/hoi-suc-tich-cuc', '/giam-dinh-hinh-su', '/lien-he', '/hang-dai-dien', '/dich-vu-ho-tro'].forEach((pathName) => add(pathName))
+  add('/khang-the/khang-the-vitro')
+  for (const slug of Object.keys(vitroPanelNames)) add(`/khang-the/khang-the-vitro/${slug}`)
   for (const category of readCategories().filter((item) => item.status === 'active')) {
     for (const child of category.children.filter((item) => item.status === 'active')) {
       const base = publicCategoryBases[category.slug]
@@ -2052,8 +2065,15 @@ const staticSeo = {
   '/vat-tu-tieu-hao': ['Vật tư tiêu hao | Ecolink', 'Xem các sản phẩm vật tư tiêu hao đang được giới thiệu tại Ecolink.'],
   '/hoa-chat': ['Hóa chất | Ecolink', 'Xem các sản phẩm hóa chất đang được giới thiệu tại Ecolink.'],
   '/khang-the': ['Kháng thể | Ecolink', 'Xem các sản phẩm kháng thể đang được giới thiệu tại Ecolink.'],
+  '/khang-the/khang-the-vitro': ['Kháng thể Vitro | Ecolink', 'Tìm hiểu tám nhóm kháng thể hóa mô miễn dịch được Vitro giới thiệu, xem tài liệu nhà sản xuất và các sản phẩm hiện có tại Ecolink.'],
+  ...Object.fromEntries(Object.entries(vitroPanelNames).map(([slug, name]) => [
+    `/khang-the/khang-the-vitro/${slug}`,
+    [`Kháng thể Vitro – ${name} | Ecolink`, slug === 'benh-truyen-nhiem'
+      ? `Tìm hiểu nhóm kháng thể ${name.toLocaleLowerCase('vi')} của Vitro và gửi yêu cầu tư vấn tại Ecolink.`
+      : `Xem danh sách kháng thể ${name.toLocaleLowerCase('vi')} theo tài liệu Vitro và gửi yêu cầu báo giá từng kháng thể tại Ecolink.`],
+  ])),
   '/hoi-suc-tich-cuc': ['Hồi sức tích cực | Ecolink', 'Xem các sản phẩm hồi sức tích cực đang được giới thiệu tại Ecolink.'],
-  '/BrandPage': ['Hãng đại diện | Ecolink', 'Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng.'],
+  '/hang-dai-dien': ['Hãng đại diện | Ecolink', 'Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng.'],
   '/tin-tuc': ['Tin tức và cập nhật | Ecolink', 'Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế.'],
 }
 if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {

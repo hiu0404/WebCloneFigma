@@ -122,7 +122,7 @@ export function AboutPage() {
               </a>
             ))}
           </div>
-          <a href="/BrandPage">Xem tất cả đối tác <span>→</span></a>
+          <a href="/hang-dai-dien">Xem tất cả đối tác <span>→</span></a>
         </section>
       </main>
     </div>

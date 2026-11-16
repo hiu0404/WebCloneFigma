@@ -12,6 +12,8 @@ import { EquipmentCatalogPage } from './pages/EquipmentCatalogPage'
 import { VatTuTieuHaoPage } from './pages/VatTuTieuHaoPage'
 import { ChemicalsPage } from './pages/ChemicalsPage'
 import { AntibodiesPage } from './pages/AntibodiesPage'
+import { VitroAntibodiesStandalonePage } from './pages/VitroAntibodiesStandalonePage'
+import { VitroAntibodyPanelPage } from './pages/VitroAntibodyPanelPage'
 import { AdminLoginPage } from './pages/admin/AdminLoginPage'
 import { ProductManagePage } from './pages/admin/ProductManagePage'
 import { RequireAdmin } from './pages/admin/RequireAdmin'
@@ -61,6 +63,11 @@ function LegacyCategoryRedirect({ from, to }: { from: string; to: string }) {
   return <Navigate to={`${to}${pathname.slice(from.length)}`} replace />
 }
 
+function LegacyBrandRedirect() {
+  const { search, hash } = useLocation()
+  return <Navigate to={`/hang-dai-dien${search}${hash}`} replace />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -70,10 +77,13 @@ export default function App() {
       <FloatingHotline />
       <Routes>
         <Route element={<FigmaScaledLayout />}>
+          <Route path="/khang-the/khang-the-vitro" element={<VitroAntibodiesStandalonePage />} />
+          <Route path="/khang-the/khang-the-vitro/:panelSlug" element={<VitroAntibodyPanelPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/gioi-thieu" element={<AboutPage />} />
           <Route path="/dich-vu-ho-tro" element={<SupportService />} />
-          <Route path="/BrandPage" element={<BrandPage />} />
+          <Route path="/hang-dai-dien" element={<BrandPage />} />
+          <Route path="/BrandPage" element={<LegacyBrandRedirect />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
           <Route path="/san-pham" element={<ProductsOverviewPage />} />
           <Route path="/thiet-bi-da-trien-khai" element={<InstallationsPage />} />
