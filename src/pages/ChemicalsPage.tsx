@@ -139,19 +139,19 @@ export function ChemicalsPage() {
                 {shownProducts.map((item) => {
                   const src = productMainImageUrl(item)
                   return (
-                    <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
+                    <Link className={`${styles.productcard} ${styles.equipmentCard}`} key={item.id} to={productUrl(item)}>
                       {src ? (
                         <img src={src} alt={item.title} loading="lazy" />
                       ) : (
                         <div className={styles.imagePlaceholder} aria-hidden />
                       )}
                       <div className={styles.productcardContent}>
-                        <span className={styles.groupPill}>
-                          {getChildCategoryLabel(categories, 'chemicals', getProductChildCategorySlug(item))}
-                        </span>
                         <h3>{item.title}</h3>
-                        <p>{item.shortDescription || item.description || 'Chưa có mô tả ngắn.'}</p>
-                        {item.specs ? <pre className={styles.specs}>{item.specs}</pre> : null}
+                        <dl className={styles.equipmentMeta}>
+                          <div><dt>Model</dt><dd>{item.sku || 'Đang cập nhật'}</dd></div>
+                          <div><dt>Hãng sản xuất</dt><dd>{item.brand || 'Đang cập nhật'}</dd></div>
+                        </dl>
+                        <span className={styles.detailButton}>Xem chi tiết <b>→</b></span>
                       </div>
                     </Link>
                   )

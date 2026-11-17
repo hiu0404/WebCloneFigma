@@ -565,8 +565,8 @@
 
 .productMeta div {
   display: grid;
-  grid-template-columns: 82px 1fr;
-  gap: 12px;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 10px;
   align-items: baseline;
   min-height: 34px;
   padding: 8px 0;
@@ -580,9 +580,9 @@
 
 .productMeta dt {
   color: #6b8795;
-  font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
+  font-size: max(13px, calc(13px / var(--figma-scale, 1)));
   font-weight: 900;
-  letter-spacing: 0.2px;
+  white-space: nowrap;
   text-transform: uppercase;
 }
 
@@ -591,6 +591,13 @@
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 800;
   line-height: 1.35;
+}
+
+@media (min-width: 1025px) and (max-width: 1400px) {
+  .productMeta div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 }
 
 .productDetailLink {

@@ -5,6 +5,9 @@ import { FigmaImage } from '../components/FigmaImage'
 import styles from './ProductDetailPage.module.css'
 import type { Product } from '../lib/adminStore'
 import { apiGetProducts } from '../services/productService'
+import { apiGetMicroscopes } from '../services/microscopeService'
+import { apiGetForensicProducts } from '../services/forensicProductService'
+import { apiGetPiccProducts } from '../services/piccProductService'
 import { apiGetCategories } from '../services/categoryService'
 import { productMainImageUrl } from '../lib/productImages'
 import {
@@ -15,7 +18,7 @@ import {
   type AdminCategory,
 } from '../data/categories'
 import { SeoHead } from '../components/SeoHead'
-import { productSeoDescription, productSeoTitle } from '../lib/seo'
+import { productSeoDescription, productSeoTitle, type ProductKind } from '../lib/seo'
 import { apiUrl } from '../lib/apiClient'
 import { Breadcrumb, type BreadcrumbItem } from '../components/Breadcrumb'
 import { productUrl } from '../lib/seo'
@@ -104,6 +107,19 @@ function youtubeEmbedUrl(url?: string) {
   }
 }
 
+async function productsInGroup(kind: ProductKind): Promise<Product[]> {
+  if (kind === 'microscope') {
+    return (await apiGetMicroscopes()).map((item) => ({ ...item, title: item.name, type: kind, parentCategorySlug: 'microscopes' }))
+  }
+  if (kind === 'forensic') {
+    return (await apiGetForensicProducts()).map((item) => ({ ...item, title: item.name, type: kind, parentCategorySlug: 'forensic-science' }))
+  }
+  if (kind === 'picc') {
+    return (await apiGetPiccProducts()).map((item) => ({ ...item, title: item.name, type: kind, parentCategorySlug: 'intensive-care' }))
+  }
+  return (await apiGetProducts()).map((item) => ({ ...normalizeProductCategoryFields(item), type: kind }))
+}
+
 export function ProductDetailPage() {
   const [search] = useSearchParams()
   const { slug } = useParams()
@@ -123,12 +139,17 @@ export function ProductDetailPage() {
   useEffect(() => {
     let alive = true
     if (slug) {
-      Promise.all([fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' }), apiGetCategories(), apiGetProducts()])
-        .then(async ([response, categoryList, productList]) => response.ok ? [await response.json(), categoryList, productList] : Promise.reject(new Error('Not found')))
-        .then(([item, categoryList, productList]) => {
+      Promise.all([fetch(apiUrl(`/api/public/products/${encodeURIComponent(slug)}`), { credentials: 'include' }), apiGetCategories()])
+        .then(async ([response, categoryList]) => {
+          if (!response.ok) throw new Error('Not found')
+          const item = await response.json() as Product & { name: string }
+          const current = { ...item, title: item.name }
+          const relatedCatalog = await productsInGroup(current.type || 'product').catch(() => [] as Product[])
+          return { current, categoryList, relatedCatalog }
+        })
+        .then(({ current, categoryList, relatedCatalog }) => {
           if (!alive) return
-          const current = { ...item, title: item.name } as Product
-          setCatalog([current, ...(productList as Product[]).filter((product: Product) => product.id !== current.id).map(normalizeProductCategoryFields)])
+          setCatalog([current, ...relatedCatalog.filter((item) => item.id !== current.id)])
           setCategories(categoryList)
         })
         .catch(() => alive && (setCatalog([]), setCategories([])))
@@ -197,9 +218,9 @@ export function ProductDetailPage() {
   const relatedProducts = useMemo(() => {
     if (!product) return []
     return catalog
-      .filter((item) => item.id !== product.id)
+      .filter((item) => item.id !== product.id && (item.status ?? 'active') === 'active')
       .filter((item) => getProductParentCategorySlug(item) === parentSlug)
-      .filter((item) => !childSlug || getProductChildCategorySlug(item) === childSlug)
+      .sort((a, b) => Number(getProductChildCategorySlug(b) === childSlug) - Number(getProductChildCategorySlug(a) === childSlug))
       .slice(0, 4)
   }, [catalog, parentSlug, childSlug, product])
 
