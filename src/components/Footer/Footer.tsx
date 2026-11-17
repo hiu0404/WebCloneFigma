@@ -60,15 +60,11 @@ export function Footer({ top }: FooterProps) {
             <h3>Hà Nội</h3>
             <p><FaMapMarkerAlt />Trụ sở chính: Số 67, Ngõ 281, Phố Đội Cấn, P. Ngọc Hà, TP. Hà Nội.</p>
             <p><FaMapMarkerAlt />Văn phòng: LK9-59, Khu liền kề Tổng cục V, P. Thanh Liệt, TP. Hà Nội.</p>
-            <a href="tel:+84812119668"><FaPhoneAlt /> +84 812 119 668</a>
-            <a href="mailto:info.ecolinkvn@gmail.com"><FaEnvelope /> info.ecolinkvn@gmail.com</a>
           </div>
 
           <div className={styles.office}>
             <h3>Hồ Chí Minh</h3>
             <p><FaMapMarkerAlt />Văn phòng TP. HCM: Số 48, đường S7, P. Tây Thạnh, TP. Hồ Chí Minh.</p>
-            <a href="tel:+84812119668"><FaPhoneAlt /> +84 812 119 668</a>
-            <a href="mailto:info.ecolinkvn@gmail.com"><FaEnvelope /> info.ecolinkvn@gmail.com</a>
           </div>
         </section>
 

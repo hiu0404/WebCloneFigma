@@ -10,9 +10,9 @@
 .hero {
   position: absolute;
   left: 0;
-  top: 270px;
+  top: 194px;
   width: 1920px;
-  height: 461px;
+  height: 301px;
   object-fit: cover;
   z-index: 1;
 }
@@ -20,24 +20,27 @@
 .heroTitle {
   position: absolute;
   left: 145px;
-  top: 465px;
+  top: 228px;
   width: 1630px;
   height: 234px;
-  font-weight: 700;
-  font-size: 50px;
-  line-height: 61px;
-  text-align: center;
-  color: #111111;
+  font-weight: 850;
+  font-size: 49px;
+  line-height: 1.1;
+  text-align: left;
+  color: #073f6d;
   z-index: 2;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px;
 }
 
 .heroTitleSmall {
   font-weight: 700;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 28px;
-  margin-top: -20px;
+  margin-top: 0;
 }
 
 .heroTitle h1 { margin: 0; font: inherit; }
@@ -45,7 +48,7 @@
 .infoSection {
   width: 1630px;
   max-width: calc(100% - 290px);
-  margin: 910px auto 72px;
+  margin: 674px auto 72px;
 }
 
 .infoGrid {

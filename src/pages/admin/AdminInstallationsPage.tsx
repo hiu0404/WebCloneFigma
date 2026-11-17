@@ -5,7 +5,7 @@ import { apiGetMicroscopes } from '../../services/microscopeService'
 import { apiGetForensicProducts } from '../../services/forensicProductService'
 import { apiGetPiccProducts } from '../../services/piccProductService'
 import { apiGetAdminInstallations, apiSaveInstallation, apiUploadInstallationImage } from '../../services/installationService'
-import { publicRegionLabels, type InstallationInput, type InstallationRecord, type PublicRegion } from '../../data/installations'
+import { currentProvinces, formerProvinces, publicRegionLabels, type InstallationInput, type InstallationRecord, type PublicRegion } from '../../data/installations'
 import type { ProductKind } from '../../lib/seo'
 import pageStyles from './AdminPages.module.css'
 import styles from './AdminInstallationsPage.module.css'
@@ -17,7 +17,7 @@ const groupLabels: Record<ProductKind, string> = {
 }
 
 function emptyForm(): InstallationInput {
-  return { id: '', title: '', summary: '', productType: 'product', productId: '', imageUrls: [], imageCaptions: {}, publicRegion: '', status: 'draft', sortOrder: undefined, privacyReviewed: false }
+  return { id: '', title: '', summary: '', productType: 'product', productId: '', imageUrls: [], imageCaptions: {}, publicRegion: '', publicProvince: '', status: 'draft', sortOrder: undefined, privacyReviewed: false }
 }
 
 export function AdminInstallationsPage() {
@@ -160,6 +160,19 @@ export function AdminInstallationsPage() {
                 </select>
               </label>
               <label className={pageStyles.field}>
+                <span className={pageStyles.label}>Tỉnh/thành nơi lắp đặt (công khai khi xuất bản)</span>
+                <select className={pageStyles.select} value={form.publicProvince || ''} onChange={(event) => setForm((current) => ({ ...current, publicProvince: event.target.value }))}>
+                  <option value="">Chưa công khai địa phương</option>
+                  <optgroup label="Tỉnh/thành hiện nay">
+                    {currentProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                  </optgroup>
+                  <optgroup label="Địa danh trước sáp nhập (dùng cho hồ sơ cũ)">
+                    {formerProvinces.map((province) => <option key={province} value={province}>{province}</option>)}
+                  </optgroup>
+                </select>
+                <span className={styles.fieldHint}>Ví dụ: Quảng Ninh, Hải Phòng, Bắc Ninh, Lào Cai; Yên Bái nằm trong nhóm địa danh trước sáp nhập. Chỉ chọn khi địa điểm được phép công bố.</span>
+              </label>
+              <label className={pageStyles.field}>
                 <span className={pageStyles.label}>Vùng công khai (tùy chọn)</span>
                 <select className={pageStyles.select} value={form.publicRegion || ''} onChange={(event) => setForm((current) => ({ ...current, publicRegion: event.target.value as PublicRegion | '' }))}>
                   <option value="">Ẩn khu vực</option>
@@ -175,7 +188,7 @@ export function AdminInstallationsPage() {
 
             <label className={styles.privacyCheck}>
               <input type="checkbox" checked={form.privacyReviewed} onChange={(event) => setForm((current) => ({ ...current, privacyReviewed: event.target.checked }))} />
-              <span>Tôi xác nhận ảnh và vùng công khai (nếu có) được phép công bố. Tôi đã kiểm tra biển tên, logo, người, màn hình, nhãn, mã QR và hình phản chiếu. Hệ thống chuyển ảnh sang WebP để bỏ metadata, nhưng không tự che chi tiết nhận diện trong ảnh.</span>
+              <span>Tôi xác nhận ảnh và địa phương công khai (nếu có) được phép công bố. Tôi đã kiểm tra biển tên, logo, người, màn hình, nhãn, mã QR và hình phản chiếu. Hệ thống chuyển ảnh sang WebP để bỏ metadata, nhưng không tự che chi tiết nhận diện trong ảnh.</span>
             </label>
             <div className={styles.uploadRow}>
               <label className={pageStyles.field}>
@@ -213,7 +226,7 @@ export function AdminInstallationsPage() {
         {loading ? <p className={styles.empty}>Đang tải...</p> : listError ? <p className={styles.empty} role="status">{listError} Nhấn “Tải lại” để thử lại.</p> : items.length ? <div className={styles.records}>
           {items.map((item) => <article className={styles.record} key={item.id}>
             {item.imageUrls[0] && <img src={item.imageUrls[0]} alt="" loading="lazy" />}
-            <div><strong>{item.title}</strong><p>{productNames.get(`${item.productType}:${item.productId}`) || 'Sản phẩm không còn trong hệ thống'}</p><span>{item.internalReference ? `${item.internalReference} · ` : ''}{item.status === 'published' ? 'Công khai' : 'Bản nháp'} · {item.imageUrls.length} ảnh</span></div>
+            <div><strong>{item.title}</strong><p>{productNames.get(`${item.productType}:${item.productId}`) || 'Sản phẩm không còn trong hệ thống'}</p><span>{item.internalReference ? `${item.internalReference} · ` : ''}{item.status === 'published' ? 'Công khai' : 'Bản nháp'} · {item.publicProvince ? `${item.publicProvince} · ` : ''}{item.imageUrls.length} ảnh</span></div>
             <button className={pageStyles.secondaryButton} type="button" onClick={() => edit(item)}><FiEdit2 aria-hidden />Sửa</button>
           </article>)}
         </div> : <p className={styles.empty}>Chưa có công trình. Hãy thêm từ biểu mẫu phía trên.</p>}

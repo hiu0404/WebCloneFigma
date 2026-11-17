@@ -1,4 +1,8 @@
 import type { ProductKind } from '../lib/seo'
+import provinceDirectory from './vietnam-provinces.json'
+
+export const currentProvinces = provinceDirectory.current
+export const formerProvinces = provinceDirectory.former
 
 export const publicRegionLabels = {
   north: 'Miền Bắc',
@@ -19,13 +23,14 @@ export type InstallationRecord = {
   imageUrls: string[]
   imageCaptions?: Record<string, string>
   publicRegion?: PublicRegion | ''
+  publicProvince?: string
   status: 'draft' | 'published'
   sortOrder?: number
   createdAt: number
   updatedAt: number
 }
 
-export type PublicInstallation = Pick<InstallationRecord, 'id' | 'slug' | 'title' | 'summary' | 'productType' | 'productId' | 'imageUrls' | 'imageCaptions' | 'publicRegion' | 'sortOrder' | 'updatedAt'> & {
+export type PublicInstallation = Pick<InstallationRecord, 'id' | 'slug' | 'title' | 'summary' | 'productType' | 'productId' | 'imageUrls' | 'imageCaptions' | 'publicRegion' | 'publicProvince' | 'sortOrder' | 'updatedAt'> & {
   product: {
     name: string
     model: string

@@ -10,7 +10,7 @@ export function InstallationCard({ item, priority = false }: { item: PublicInsta
       <strong>{item.title}</strong>
       {item.product.model && <span className={styles.cardModel}>Model: {item.product.model}</span>}
       {item.product.brand && <span className={styles.cardModel}>Hãng: {item.product.brand}</span>}
-      {item.publicRegion && <span className={styles.cardRegion}>{publicRegionLabels[item.publicRegion]}</span>}
+      {item.publicProvince ? <span className={styles.cardRegion}>{item.publicProvince}</span> : item.publicRegion && <span className={styles.cardRegion}>{publicRegionLabels[item.publicRegion]}</span>}
       <span className={styles.cardAction}>Xem hình ảnh →</span>
     </span>
   </Link>

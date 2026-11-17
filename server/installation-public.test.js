@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
+import { isPublicProvince, isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
 
 test('drafts, private references and hidden products never reach public output', () => {
   const base = {
@@ -21,6 +21,16 @@ test('drafts, private references and hidden products never reach public output',
   assert.equal(withRegion.publicRegion, 'central')
   assert.deepEqual(withRegion.imageCaptions, { [base.imageUrls[0]]: 'Thiết bị sau khi lắp đặt' })
   assert.equal(JSON.stringify(withRegion).includes('Không công khai'), false)
+  assert.equal(isPublicProvince('Quảng Ninh'), true)
+  assert.equal(isPublicProvince('Hải Phòng'), true)
+  assert.equal(isPublicProvince('Bắc Ninh'), true)
+  assert.equal(isPublicProvince('Lào Cai'), true)
+  assert.equal(isPublicProvince('Yên Bái'), true)
+  assert.equal(isPublicProvince('Tên đơn vị bí mật'), false)
+  const withProvince = toPublicInstallations([{ ...base, status: 'published', publicProvince: 'Quảng Ninh' }], products)[0]
+  assert.equal(withProvince.publicProvince, 'Quảng Ninh')
+  const withInvalidProvince = toPublicInstallations([{ ...base, status: 'published', publicProvince: 'Tên đơn vị bí mật' }], products)[0]
+  assert.equal('publicProvince' in withInvalidProvince, false)
   assert.deepEqual(toPublicInstallations([{ ...base, status: 'published' }], [{ ...products[0], status: 'hidden' }]), [])
   assert.deepEqual(toPublicInstallations([{ ...base, status: 'published', imageUrls: [] }], products), [])
   assert.equal(isPublishedInstallationImage([{ ...base, status: 'draft' }], base.imageUrls[0]), false)

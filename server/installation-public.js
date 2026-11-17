@@ -1,5 +1,13 @@
 // Keep the public response as an explicit allowlist. Internal customer references
 // and publication review fields must never be sent to public clients.
+import provinceDirectory from '../src/data/vietnam-provinces.json' with { type: 'json' }
+
+const publicProvinces = new Set([...provinceDirectory.current, ...provinceDirectory.former])
+
+export function isPublicProvince(value) {
+  return typeof value === 'string' && publicProvinces.has(value)
+}
+
 export function toPublicInstallations(records, products) {
   const byProduct = new Map(products.map((item) => [`${item.type}:${item.id}`, item]))
   return records
@@ -17,6 +25,7 @@ export function toPublicInstallations(records, products) {
           .filter(([, caption]) => typeof caption === 'string' && caption.trim())
           .map(([url, caption]) => [url, caption.trim().slice(0, 160)])),
         ...(['north', 'central', 'south'].includes(item.publicRegion) ? { publicRegion: item.publicRegion } : {}),
+        ...(isPublicProvince(item.publicProvince) ? { publicProvince: item.publicProvince } : {}),
         productType: item.productType,
         productId: item.productId,
         product: {

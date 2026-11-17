@@ -94,21 +94,22 @@ export default function NewsPage() {
 
       <main className={styles.content}>
         <section className={styles.featuredSection}>
-          <article className={styles.featuredCard}>
+          <a
+            className={styles.featuredCard}
+            href={featured.url}
+            target={isExternalUrl(featured.url) ? '_blank' : undefined}
+            rel={isExternalUrl(featured.url) ? 'noopener noreferrer' : undefined}
+          >
             <FigmaImage className={styles.featuredImage} src={featured.image} alt={featured.title} />
             <div className={styles.featuredBody}>
               <span className={styles.category}>{featured.category}</span>
               <h2>{featured.title}</h2>
               <p>{featured.excerpt}</p>
-              <a
-                href={featured.url}
-                target={isExternalUrl(featured.url) ? '_blank' : undefined}
-                rel={isExternalUrl(featured.url) ? 'noreferrer' : undefined}
-              >
+              <span className={styles.readMore}>
                 Đọc bài viết <FaArrowRight />
-              </a>
+              </span>
             </div>
-          </article>
+          </a>
         </section>
 
         <section className={styles.newsLayout}>
@@ -120,7 +121,13 @@ export default function NewsPage() {
 
             <div className={styles.newsGrid}>
               {latest.map((item) => (
-                <article className={styles.newsCard} key={item.title}>
+                <a
+                  className={styles.newsCard}
+                  href={item.url}
+                  target={isExternalUrl(item.url) ? '_blank' : undefined}
+                  rel={isExternalUrl(item.url) ? 'noopener noreferrer' : undefined}
+                  key={item.title}
+                >
                   <FigmaImage className={styles.newsImage} src={item.image} alt={item.title} loading="lazy" />
                   <div className={styles.newsBody}>
                     <div className={styles.meta}>
@@ -129,15 +136,11 @@ export default function NewsPage() {
                     </div>
                     <h3>{item.title}</h3>
                     <p>{item.excerpt}</p>
-                    <a
-                      href={item.url}
-                      target={isExternalUrl(item.url) ? '_blank' : undefined}
-                      rel={isExternalUrl(item.url) ? 'noreferrer' : undefined}
-                    >
+                    <span className={styles.readMore}>
                       Đọc thêm <FaArrowRight />
-                    </a>
+                    </span>
                   </div>
-                </article>
+                </a>
               ))}
             </div>
           </div>

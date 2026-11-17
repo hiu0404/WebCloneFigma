@@ -6,7 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import multer from 'multer'
 import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
-import { isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
+import { isPublicProvince, isPublishedInstallationImage, toPublicInstallations } from './installation-public.js'
 import { legacyPublicRedirect } from './public-route-redirects.js'
 import {
   decryptString,
@@ -1410,6 +1410,7 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
     const product = installationProductMap().get(`${productType}:${productId}`)
     const imageUrls = req.body?.imageUrls
     const region = String(req.body?.publicRegion || '')
+    const province = String(req.body?.publicProvince || '').trim()
     const captionsInput = req.body?.imageCaptions ?? {}
     const status = req.body?.status === 'published' ? 'published' : 'draft'
     const requestedOrder = Number(req.body?.sortOrder)
@@ -1423,6 +1424,9 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
     }
     if (region && !['north', 'central', 'south'].includes(region)) {
       return res.status(400).json({ error: 'Vùng công khai không hợp lệ' })
+    }
+    if (province && !isPublicProvince(province)) {
+      return res.status(400).json({ error: 'Tỉnh/thành công khai không hợp lệ' })
     }
     if (!captionsInput || typeof captionsInput !== 'object' || Array.isArray(captionsInput)) {
       return res.status(400).json({ error: 'Chú thích ảnh không hợp lệ' })
@@ -1444,7 +1448,7 @@ app.post('/api/admin/installations', requireAdminApi, (req, res) => {
     const now = Date.now()
     const item = {
       id, slug, title, summary, internalReference, productType, productId,
-      imageUrls: [...new Set(imageUrls)], imageCaptions, publicRegion: region, status, sortOrder,
+      imageUrls: [...new Set(imageUrls)], imageCaptions, publicRegion: region, publicProvince: province, status, sortOrder,
       createdAt: previous?.createdAt || now, updatedAt: now,
       privacyReviewedAt: status === 'published' ? now : previous?.privacyReviewedAt,
     }

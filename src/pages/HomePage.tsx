@@ -253,14 +253,14 @@ export function HomePage() {
             {solutions.map((item) => {
               const Icon = item.icon
               return (
-                <article className={styles.solutionCard} key={item.title}>
+                <Link className={styles.solutionCard} key={item.title} to={item.to}>
                   <Icon />
                   <div>
                     <h3>{item.title}</h3>
                     <p>{item.text}</p>
-                    <Link to={item.to}>Xem thêm <FaArrowRight /></Link>
+                    <span className={styles.solutionReadMore}>Xem thêm <FaArrowRight /></span>
                   </div>
-                </article>
+                </Link>
               )
             })}
           </div>
@@ -279,7 +279,7 @@ export function HomePage() {
               {[...featuredProducts.slice(featuredOffset), ...featuredProducts.slice(0, featuredOffset)].map((item) => {
                 const image = productMainImageUrl(item)
                 return (
-                <article className={styles.productCard} key={item.id}>
+                <Link className={styles.productCard} key={item.id} to={productUrl(item)}>
                   <div className={styles.productImage}>
                     {image ? <FigmaImage src={image} alt={item.title} loading="lazy" /> : null}
                   </div>
@@ -289,14 +289,11 @@ export function HomePage() {
                       <div><dt>Model:</dt><dd>{item.sku || 'Đang cập nhật'}</dd></div>
                       <div><dt>Hãng sx:</dt><dd>{item.brand || 'Đang cập nhật'}</dd></div>
                     </dl>
-                    <Link
-                      className={styles.productDetailLink}
-                      to={productUrl(item)}
-                    >
+                    <span className={styles.productDetailLink}>
                       Chi tiết <FaArrowRight />
-                    </Link>
+                    </span>
                   </div>
-                </article>
+                </Link>
                 )
               })}
             </div>
@@ -337,14 +334,14 @@ export function HomePage() {
             </div>
             <div className={styles.newsGrid}>
               {news.map((item) => (
-                <article className={styles.newsCard} key={item.title}>
+                <a className={styles.newsCard} href={item.to} target="_blank" rel="noopener noreferrer" key={item.title}>
                   <FigmaImage src={item.image} alt="" ariaHidden loading="lazy" />
                   <div>
-                    <span>{item.category}</span>
+                    <span className={styles.newsCategory}>{item.category}</span>
                     <h3>{item.title}</h3>
-                    <a href={item.to} target="_blank" rel="noreferrer">Đọc thêm <FaArrowRight /></a>
+                    <span className={styles.newsReadMore}>Đọc thêm <FaArrowRight /></span>
                   </div>
-                </article>
+                </a>
               ))}
             </div>
           </div>

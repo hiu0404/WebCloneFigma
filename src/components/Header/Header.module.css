@@ -23,8 +23,8 @@
 .logo {
   display: flex;
   align-items: center;
-  width: 210px;
-  height: 78px;
+  width: 230px;
+  height: 86px;
   text-decoration: none;
 }
 
@@ -188,24 +188,11 @@
   color: #ffffff;
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
+  letter-spacing: 0.4px;
+  line-height: 1.35;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 0.28s ease, background 0.28s ease;
-}
-
-.nav > a::after,
-.dropdown > a::after {
-  content: "";
-  position: absolute;
-  left: 30px;
-  right: 30px;
-  bottom: 0;
-  height: 3px;
-  border-radius: 999px 999px 0 0;
-  background: #ffffff;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: color 0.28s ease;
 }
 
 .dropdown {
@@ -318,15 +305,9 @@
   }
 
   .nav > a:hover,
-  .dropdown > a:hover {
-    background: rgba(255,255,255,0.1);
-    color: #187093;
-  }
-
-  .nav > a:hover::after,
-  .dropdown > a:hover::after {
-    background: #187093;
-    transform: scaleX(1);
+  .dropdown:hover > a,
+  .dropdown:focus-within > a {
+    color: #d1f4ff;
   }
 
   .dropdownMenu a:hover {
@@ -349,8 +330,6 @@
   .search button,
   .nav > a,
   .dropdown > a,
-  .nav > a::after,
-  .dropdown > a::after,
   .dropdownMenu,
   .dropdownMenu a,
   .socials a,
@@ -379,8 +358,8 @@
   }
 
   .logo {
-    width: calc(104px / var(--figma-scale, 1));
-    height: calc(52px / var(--figma-scale, 1));
+    width: calc(114px / var(--figma-scale, 1));
+    height: calc(56px / var(--figma-scale, 1));
   }
 
   .searchWrap {
@@ -493,9 +472,10 @@
     line-height: 1.2;
   }
 
-  .nav > a::after,
-  .dropdown > a::after {
-    display: none;
+  .nav > a:hover,
+  .dropdown:hover > a,
+  .dropdown:focus-within > a {
+    color: #187093;
   }
 
   .dropdownMenu {
@@ -551,7 +531,7 @@
   }
 
   .logo {
-    width: calc(92px / var(--figma-scale, 1));
+    width: calc(100px / var(--figma-scale, 1));
   }
 
   .searchWrap {

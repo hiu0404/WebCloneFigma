@@ -10,8 +10,8 @@
 
 .hero {
   position: relative;
-  height: 540px;
-  margin-top: 270px;
+  height: 301px;
+  margin-top: 194px;
   display: grid;
   align-items: center;
 }
@@ -35,9 +35,9 @@
 .heroContent {
   position: relative;
   z-index: 1;
-  width: 1320px;
+  width: 1620px;
   margin: 0 auto;
-  color: #111111;
+  color: #073f6d;
 }
 
 .heroContent span,
@@ -53,7 +53,7 @@
 .heroContent h1 {
   width: 860px;
   margin: 18px 0 20px;
-  font-size: 56px;
+  font-size: 49px;
   line-height: 1.15;
   letter-spacing: 0;
 }
@@ -83,6 +83,9 @@
   border: 1px solid #dce8ef;
   border-radius: 8px;
   background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
   box-shadow: 0 20px 46px rgba(18, 75, 95, 0.1);
 }
 
@@ -126,8 +129,7 @@
   line-height: 1.75;
 }
 
-.featuredBody a,
-.newsBody a,
+.readMore,
 .contactButton {
   display: inline-flex;
   align-items: center;
@@ -165,10 +167,14 @@
 }
 
 .newsCard {
+  display: block;
   overflow: hidden;
   border: 1px solid #e1ebf0;
   border-radius: 8px;
   background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
@@ -272,8 +278,8 @@
     transform: translateY(-5px);
   }
 
-  .featuredBody a:hover,
-  .newsBody a:hover {
+  .featuredCard:hover .readMore,
+  .newsCard:hover .readMore {
     color: #064f70;
   }
 
@@ -281,6 +287,12 @@
     border-color: rgba(20, 154, 190, 0.34);
     color: #0a7199;
   }
+}
+
+.featuredCard:focus-visible,
+.newsCard:focus-visible {
+  outline: 3px solid #187093;
+  outline-offset: 4px;
 }
 
 @media (max-width: 1024px) {
@@ -291,7 +303,7 @@
 
   .hero {
     height: auto;
-    min-height: calc(430px / var(--figma-scale, 1));
+    min-height: calc(350px / var(--figma-scale, 1));
     margin-top: calc(156px / var(--figma-scale, 1));
     padding: calc(44px / var(--figma-scale, 1)) calc(18px / var(--figma-scale, 1)) calc(58px / var(--figma-scale, 1));
   }
@@ -375,8 +387,7 @@
     line-height: 1.65;
   }
 
-  .featuredBody a,
-  .newsBody a,
+  .readMore,
   .contactButton {
     gap: calc(8px / var(--figma-scale, 1));
     margin-top: calc(20px / var(--figma-scale, 1));

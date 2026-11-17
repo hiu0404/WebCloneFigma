@@ -53,6 +53,7 @@ export function InstallationDetailPage() {
               <dt>Tên sản phẩm</dt><dd>{item.product.name}</dd>
               {item.product.model && <><dt>Model</dt><dd>{item.product.model}</dd></>}
               {item.product.brand && <><dt>Hãng sản xuất</dt><dd>{item.product.brand}</dd></>}
+              {item.publicProvince && <><dt>Tỉnh/thành</dt><dd>{item.publicProvince}</dd></>}
               {item.publicRegion && <><dt>Khu vực</dt><dd>{publicRegionLabels[item.publicRegion]}</dd></>}
             </dl>
             <Link className={styles.productLink} to={item.product.url}>Xem thông tin sản phẩm →</Link>
