@@ -42,7 +42,7 @@ const groups: { key: GroupKey; title: string; to: string }[] = [
   { key: 'consumables', title: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
   { key: 'chemicals', title: 'Hóa chất', to: '/hoa-chat' },
   { key: 'antibodies', title: 'Kháng thể', to: '/khang-the' },
-  { key: 'intensive-care', title: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
+  { key: 'intensive-care', title: 'Đường tiếp cận mạch máu', to: '/hoi-suc-tich-cuc' },
 ]
 
 const emptyCatalog: Catalog = {
@@ -76,7 +76,8 @@ function previewSpecial<T extends ForensicProduct | PiccProduct>(
   if (!parent) return []
   return products
     .filter((item) => (item.status ?? 'active') === 'active')
-    .filter((item) => !item.categorySlug || parent.children.some((child) => child.slug === item.categorySlug && isCategoryVisible(child)))
+    .filter((item) => !item.categorySlug || parent.children.some((child) => isCategoryVisible(child)
+      && (child.slug === item.categorySlug || child.children?.some((nested) => nested.slug === item.categorySlug && isCategoryVisible(nested)))))
     .sort(compareByDisplayOrder)
     .slice(0, 4)
     .map((item) => ({ id: item.id, name: item.name, imageUrl: item.imageUrl, to: productUrl(item, kind) }))
@@ -129,7 +130,7 @@ export function ProductsOverviewPage() {
     <div className={styles.page}>
       <CategorySeo
         title="Sản phẩm"
-        description="Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và hồi sức tích cực."
+        description="Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và đường tiếp cận mạch máu."
         canonical="/san-pham"
         breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm' }]}
       />

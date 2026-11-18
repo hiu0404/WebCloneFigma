@@ -36,6 +36,11 @@ function readLocalCategories() {
   if (Array.isArray(saved) && saved.length > 0) {
     const categories = cloneCategories(saved)
     let changed = false
+    const vascular = categories.find((item) => item.slug === 'intensive-care')
+    if (vascular?.label === 'Hồi sức tích cực') {
+      vascular.label = 'Đường tiếp cận mạch máu'
+      changed = true
+    }
     for (const defaultCategory of DEFAULT_CATEGORIES) {
       if (!categories.some((item) => item.slug === defaultCategory.slug)) {
         categories.push(cloneCategories([defaultCategory])[0])
@@ -57,6 +62,11 @@ function writeLocalCategories(categories: AdminCategory[]) {
 function mergeDefaultCategories(categories: AdminCategory[]) {
   const next = cloneCategories(categories.length > 0 ? categories : DEFAULT_CATEGORIES)
   let changed = false
+  const vascular = next.find((item) => item.slug === 'intensive-care')
+  if (vascular?.label === 'Hồi sức tích cực') {
+    vascular.label = 'Đường tiếp cận mạch máu'
+    changed = true
+  }
   for (const defaultCategory of DEFAULT_CATEGORIES) {
     if (!next.some((item) => item.slug === defaultCategory.slug)) {
       next.push(cloneCategories([defaultCategory])[0])
@@ -70,7 +80,9 @@ function findDuplicateSlug(categories: AdminCategory[], slug: string, ignoreId?:
   return categories.some(
     (category) =>
       (category.slug === slug && category.id !== ignoreId) ||
-      category.children.some((child) => child.slug === slug && child.id !== ignoreId),
+      category.children.some((child) =>
+        (child.slug === slug && child.id !== ignoreId)
+        || child.children?.some((nested) => nested.slug === slug && nested.id !== ignoreId)),
   )
 }
 
@@ -81,19 +93,32 @@ function upsertLocalCategory(input: CategoryInput) {
     throw new Error('Slug danh mục đã tồn tại')
   }
 
+  const previous = categories.flatMap((category) => category.children).find((child) => child.id === id)
   for (const category of categories) {
     category.children = category.children.filter((child) => child.id !== id)
+    for (const child of category.children) child.children = (child.children ?? []).filter((nested) => nested.id !== id)
   }
 
-  const parentIndex = categories.findIndex((category) => category.id === input.parentId)
-  if (input.parentId && parentIndex >= 0) {
-    categories[parentIndex].children.push({
+  const parent = categories.find((category) => category.id === input.parentId)
+  const group = categories.flatMap((category) => category.children).find((child) => child.id === input.parentId)
+  if (input.parentId && !parent && !group) throw new Error('Danh mục cha không hợp lệ')
+  if (group && previous?.children?.length) throw new Error('Không thể đưa nhóm có danh mục con vào danh mục cấp ba')
+  if (parent) {
+    parent.children.push({
       id,
       slug: input.slug,
       label: input.label,
       description: input.description,
       imageUrl: input.imageUrl,
-      sortOrder: Number(input.sortOrder) || categories[parentIndex].children.length + 1,
+      sortOrder: Number(input.sortOrder) || parent.children.length + 1,
+      status: input.status ?? 'active',
+      children: previous?.children ?? [],
+    })
+  } else if (group) {
+    group.children ??= []
+    group.children.push({
+      id, slug: input.slug, label: input.label, description: input.description,
+      imageUrl: input.imageUrl, sortOrder: Number(input.sortOrder) || group.children.length + 1,
       status: input.status ?? 'active',
     })
   } else {
@@ -121,10 +146,13 @@ function deleteLocalCategory(id: string) {
   const categories = cloneCategories(readLocalCategories())
   const parentIndex = categories.findIndex((category) => category.id === id)
   if (parentIndex >= 0) {
+    if (categories[parentIndex].children.length) throw new Error('Hãy xóa các danh mục con trước')
     categories.splice(parentIndex, 1)
   } else {
     for (const category of categories) {
+      if (category.children.some((child) => child.id === id && child.children?.length)) throw new Error('Hãy xóa các danh mục con trước')
       category.children = category.children.filter((child) => child.id !== id)
+      for (const child of category.children) child.children = (child.children ?? []).filter((nested) => nested.id !== id)
     }
   }
   writeLocalCategories(categories)

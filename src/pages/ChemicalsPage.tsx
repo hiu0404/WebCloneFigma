@@ -124,7 +124,7 @@ export function ChemicalsPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="chemicals" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/hoa-chat/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="chemicals" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/hoa-chat/${slug}`} counts={groupCounts} categories={categories} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

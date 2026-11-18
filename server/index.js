@@ -702,15 +702,13 @@ const defaultCategories = [
   {
     id: 'intensive-care',
     slug: 'intensive-care',
-    label: 'H\u1ed3i s\u1ee9c t\u00edch c\u1ef1c',
+    label: 'Đường tiếp cận mạch máu',
     sortOrder: 6,
     status: 'active',
     children: [
-      { id: 'picc-3f-1n', slug: 'picc-3f-1n', label: '(PICC) LO\u1ea0I 3F 1 n\u00f2ng', sortOrder: 1, status: 'active' },
-      { id: 'picc-4f-1n', slug: 'picc-4f-1n', label: '(PICC) LO\u1ea0I 4F 1 n\u00f2ng', sortOrder: 2, status: 'active' },
-      { id: 'picc-5fr-1n', slug: 'picc-5fr-1n', label: '(PICC) LO\u1ea0I 5F 1 n\u00f2ng', sortOrder: 3, status: 'active' },
-      { id: 'picc-5fr-2n', slug: 'picc-5fr-2n', label: '(PICC) LO\u1ea0I 5F 2 n\u00f2ng', sortOrder: 4, status: 'active' },
-      { id: 'picc-6f-3n', slug: 'picc-6f-3n', label: '(PICC) LO\u1ea0I 6F 3 n\u00f2ng', sortOrder: 5, status: 'active' },
+      { id: 'duong-tiep-can-dong-mach', slug: 'duong-tiep-can-dong-mach', label: 'Đường tiếp cận động mạch', sortOrder: 1, status: 'active', children: [] },
+      { id: 'duong-truyen-ngoai-vi', slug: 'duong-truyen-ngoai-vi', label: 'Đường truyền ngoại vi', sortOrder: 2, status: 'active', children: [] },
+      { id: 'duong-truyen-trung-tam', slug: 'duong-truyen-trung-tam', label: 'Đường truyền trung tâm', sortOrder: 3, status: 'active', children: [] },
     ],
   },
 ]
@@ -731,6 +729,13 @@ function normalizeCategories(categories) {
               ...child,
               sortOrder: Number.isFinite(Number(child.sortOrder)) ? Number(child.sortOrder) : childIndex + 1,
               status: child.status === 'hidden' ? 'hidden' : 'active',
+              children: Array.isArray(child.children)
+                ? child.children.map((nested, nestedIndex) => ({
+                    ...nested,
+                    sortOrder: Number.isFinite(Number(nested.sortOrder)) ? Number(nested.sortOrder) : nestedIndex + 1,
+                    status: nested.status === 'hidden' ? 'hidden' : 'active',
+                  })).sort(sortCategoryNodes)
+                : [],
             }))
             .sort(sortCategoryNodes)
         : [],
@@ -741,7 +746,9 @@ function normalizeCategories(categories) {
 function cloneCategories(categories) {
   return normalizeCategories(categories).map((item) => ({
     ...item,
-    children: Array.isArray(item.children) ? item.children.map((child) => ({ ...child })) : [],
+    children: Array.isArray(item.children)
+      ? item.children.map((child) => ({ ...child, children: child.children?.map((nested) => ({ ...nested })) ?? [] }))
+      : [],
   }))
 }
 
@@ -757,6 +764,11 @@ function readCategories() {
         equipment.children = defaultEquipment.children.map((child) => ({ ...child }))
       }
       equipment.equipmentCategoriesInitialized = true
+      changed = true
+    }
+    const vascular = categories.find((item) => item.slug === 'intensive-care')
+    if (vascular?.label === 'Hồi sức tích cực') {
+      vascular.label = 'Đường tiếp cận mạch máu'
       changed = true
     }
     for (const defaultCategory of defaultCategories) {
@@ -781,7 +793,9 @@ function categorySlugExists(categories, slug, ignoreId) {
   return categories.some(
     (category) =>
       (category.slug === slug && category.id !== ignoreId) ||
-      category.children.some((child) => child.slug === slug && child.id !== ignoreId),
+      category.children.some((child) =>
+        (child.slug === slug && child.id !== ignoreId)
+        || child.children?.some((nested) => nested.slug === slug && nested.id !== ignoreId)),
   )
 }
 
@@ -790,6 +804,10 @@ function findCategoryNode(categories, id) {
     if (category.id === id) return { type: 'parent', category }
     const child = category.children.find((item) => item.id === id)
     if (child) return { type: 'child', parent: category, category: child }
+    for (const child of category.children) {
+      const nested = child.children?.find((item) => item.id === id)
+      if (nested) return { type: 'grandchild', parent: category, group: child, category: nested }
+    }
   }
   return null
 }
@@ -929,7 +947,9 @@ function seoProduct(type, item, categories = [], microscopeCategories = []) {
   const parentSlug = item.parentCategorySlug || item.category || (type === 'microscope' ? 'microscopes' : type === 'picc' ? 'intensive-care' : type === 'forensic' ? 'forensic-science' : 'equipment')
   const childSlug = item.categorySlug || ''
   const parent = categories.find((category) => category.slug === parentSlug)
-  const child = parent?.children?.find((category) => category.slug === childSlug)
+  const directChild = parent?.children?.find((category) => category.slug === childSlug)
+  const nestedParent = parent?.children?.find((category) => category.children?.some((nested) => nested.slug === childSlug))
+  const child = directChild || nestedParent?.children?.find((category) => category.slug === childSlug)
   const microscopeCategory = type === 'microscope' ? microscopeCategories.find((category) => category.slug === childSlug) : null
   const microscopeParent = microscopeCategory?.parentSlug ? microscopeCategories.find((category) => category.slug === microscopeCategory.parentSlug) : null
   return {
@@ -943,8 +963,8 @@ function seoProduct(type, item, categories = [], microscopeCategories = []) {
     canonicalPath: `/san-pham/${encodeURIComponent(slug)}`,
     categoryLabel: microscopeCategory?.label || child?.label || parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
     parentCategoryLabel: parent?.label || (type === 'microscope' ? 'Kính hiển vi' : ''),
-    categoryParentSlug: microscopeParent?.slug,
-    categoryParentLabel: microscopeParent?.label,
+    categoryParentSlug: (microscopeParent || nestedParent)?.slug,
+    categoryParentLabel: (microscopeParent || nestedParent)?.label,
   }
 }
 
@@ -1297,6 +1317,7 @@ app.get('/sitemap.xml', (_req, res) => {
       const base = publicCategoryBases[category.slug]
       const pathName = base ? `${base}/${encodeURIComponent(child.slug)}` : null
       if (pathName) add(pathName)
+      if (base) for (const nested of (child.children ?? []).filter((item) => item.status === 'active')) add(`${base}/${encodeURIComponent(nested.slug)}`)
     }
   }
   const microscopeCategories = readMicroscopeCategories()
@@ -1360,17 +1381,33 @@ app.post('/api/categories', requireAdminApi, (req, res) => {
   }
 
   const previous = findCategoryNode(categories, categoryId)
+  const previousParentSlug = previous?.type === 'parent' ? previous.category.slug : previous?.parent.slug
+  const previousSlug = previous?.category.slug
+  const previousChildren = previous?.type === 'parent' || previous?.type === 'child'
+    ? previous.category.children ?? []
+    : []
   for (const category of categories) {
     category.children = category.children.filter((child) => child.id !== categoryId)
+    for (const child of category.children) {
+      child.children = (child.children ?? []).filter((nested) => nested.id !== categoryId)
+    }
   }
 
   const parent = parentId ? categories.find((category) => category.id === parentId) : null
+  const groupParent = parentId && !parent
+    ? categories.find((category) => category.children.some((child) => child.id === parentId))
+    : null
+  const group = groupParent?.children.find((child) => child.id === parentId)
+  if (parentId && !parent && !group) return res.status(400).json({ error: 'Danh mục cha không hợp lệ' })
+  if (group && previousChildren.length) return res.status(400).json({ error: 'Không thể đưa nhóm có danh mục con vào danh mục cấp ba' })
   if (parent) {
-    parent.children.push({ id: categoryId, slug, label, description, imageUrl, sortOrder, status })
+    parent.children.push({ id: categoryId, slug, label, description, imageUrl, sortOrder, status, children: previousChildren })
+  } else if (group) {
+    group.children ??= []
+    group.children.push({ id: categoryId, slug, label, description, imageUrl, sortOrder, status })
   } else {
     const existingIndex = categories.findIndex((category) => category.id === categoryId)
-    const children = previous?.type === 'parent' ? previous.category.children : []
-    const next = { id: categoryId, slug, label, description, imageUrl, sortOrder, status, children }
+    const next = { id: categoryId, slug, label, description, imageUrl, sortOrder, status, children: previousChildren }
     if (existingIndex >= 0) categories[existingIndex] = next
     else categories.push(next)
   }
@@ -1378,19 +1415,24 @@ app.post('/api/categories', requireAdminApi, (req, res) => {
   writeCategories(categories)
 
   if (previous) {
-    if (previous.type === 'parent' && previous.category.slug !== slug) {
+    if (previous.type === 'parent' && previousSlug !== slug) {
       migrateProductsForCategoryChange({
-        oldParentSlug: previous.category.slug,
+        oldParentSlug: previousSlug,
         newParentSlug: slug,
       })
     }
-    if (previous.type === 'child' && (previous.category.slug !== slug || previous.parent.id !== parentId)) {
+    if (previous.type !== 'parent' && (previousSlug !== slug || (previous.type === 'child' ? previous.parent.id : previous.group.id) !== parentId)) {
       migrateProductsForCategoryChange({
-        oldParentSlug: previous.parent.slug,
-        newParentSlug: parent?.slug || previous.parent.slug,
-        oldChildSlug: previous.category.slug,
+        oldParentSlug: previousParentSlug,
+        newParentSlug: parent?.slug || groupParent?.slug || previousParentSlug,
+        oldChildSlug: previousSlug,
         newChildSlug: slug,
       })
+      if (previousParentSlug === 'intensive-care' && previousSlug !== slug) {
+        writePiccProducts(readPiccProducts().map((item) => item.categorySlug === previousSlug
+          ? { ...item, categorySlug: slug, updatedAt: Date.now() }
+          : item))
+      }
     }
   }
 
@@ -1402,12 +1444,14 @@ app.delete('/api/categories/:id', requireAdminApi, (req, res) => {
   const categories = readCategories()
   const node = findCategoryNode(categories, id)
   if (!node) return res.status(404).json({ error: 'Không tìm thấy danh mục' })
-  if (node.type === 'parent' && node.category.children.length > 0) {
+  if ((node.type === 'parent' || node.type === 'child') && node.category.children?.length > 0) {
     return res.status(409).json({ error: 'Không thể xóa danh mục cha khi vẫn còn danh mục con. Hãy chuyển hoặc xóa danh mục con trước.' })
   }
 
-  const parentSlug = node.type === 'child' ? node.parent.slug : node.category.slug
+  const parentSlug = node.type === 'parent' ? node.category.slug : node.parent.slug
   const used = readProducts().some((product) => productUsesCategory(product, node, parentSlug))
+    || (parentSlug === 'intensive-care' && readPiccProducts().some((item) => item.categorySlug === node.category.slug))
+    || (parentSlug === 'forensic-science' && readForensicProducts().some((item) => item.categorySlug === node.category.slug))
   if (used) {
     return res.status(409).json({ error: 'Không thể xóa danh mục khi vẫn còn sản phẩm thuộc danh mục này' })
   }
@@ -1415,8 +1459,10 @@ app.delete('/api/categories/:id', requireAdminApi, (req, res) => {
   if (node.type === 'parent') {
     const index = categories.findIndex((category) => category.id === id)
     categories.splice(index, 1)
-  } else {
+  } else if (node.type === 'child') {
     node.parent.children = node.parent.children.filter((child) => child.id !== id)
+  } else {
+    node.group.children = node.group.children.filter((child) => child.id !== id)
   }
   writeCategories(categories)
   res.json(readCategories())
@@ -1791,8 +1837,8 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
   if (!categorySlug) return res.status(400).json({ error: 'Missing PICC product category' })
 
   const piccCategory = readCategories().find((item) => item.slug === 'intensive-care')
-  const categoryExists = piccCategory?.children.some((item) => item.slug === categorySlug)
-  if (!categoryExists) return res.status(400).json({ error: 'Danh mục hồi sức tích cực không hợp lệ' })
+  const categoryExists = piccCategory?.children.some((item) => item.slug === categorySlug || item.children?.some((child) => child.slug === categorySlug))
+  if (!categoryExists) return res.status(400).json({ error: 'Danh mục đường tiếp cận mạch máu không hợp lệ' })
 
   const list = readPiccProducts()
   const index = list.findIndex((item) => item.id === id)
@@ -1896,7 +1942,7 @@ const isProd = process.env.NODE_ENV === 'production'
 app.get(/^\/thiet-bi-da-trien-khai(?:\/.*)?$/, (_req, res) => res.sendStatus(410))
 const staticSeo = {
   '/': ['Ecolink | Thiết bị khoa học, y tế và an ninh', 'Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn.'],
-  '/san-pham': ['Sản phẩm | Ecolink', 'Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và hồi sức tích cực.'],
+  '/san-pham': ['Sản phẩm | Ecolink', 'Sản phẩm Ecolink theo nhóm: giải phẫu bệnh, giám định hình sự, kính hiển vi, vật tư tiêu hao, hóa chất, kháng thể và đường tiếp cận mạch máu.'],
   '/gioi-thieu': ['Giới thiệu Ecolink | Thiết bị và giải pháp khoa học', 'Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học.'],
   '/lien-he': ['Liên hệ Ecolink | Tư vấn thiết bị', 'Liên hệ Ecolink để được tư vấn về thiết bị, vật tư và giải pháp khoa học, y tế. Gửi yêu cầu qua biểu mẫu liên hệ.'],
   '/dich-vu-ho-tro': ['Dịch vụ hỗ trợ | Ecolink', 'Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ.'],
@@ -1913,7 +1959,7 @@ const staticSeo = {
       ? `Tìm hiểu nhóm kháng thể ${name.toLocaleLowerCase('vi')} của Vitro và gửi yêu cầu tư vấn tại Ecolink.`
       : `Xem danh sách kháng thể ${name.toLocaleLowerCase('vi')} theo tài liệu Vitro và gửi yêu cầu báo giá từng kháng thể tại Ecolink.`],
   ])),
-  '/hoi-suc-tich-cuc': ['Hồi sức tích cực | Ecolink', 'Xem các sản phẩm hồi sức tích cực đang được giới thiệu tại Ecolink.'],
+  '/hoi-suc-tich-cuc': ['Đường tiếp cận mạch máu | Ecolink', 'Xem các sản phẩm đường tiếp cận mạch máu đang được giới thiệu tại Ecolink.'],
   '/hang-dai-dien': ['Hãng đại diện | Ecolink', 'Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng.'],
   '/tin-tuc': ['Tin tức và cập nhật | Ecolink', 'Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế.'],
 }

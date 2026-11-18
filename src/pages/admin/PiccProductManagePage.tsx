@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { FiEdit2, FiPlus, FiRefreshCw, FiTrash2 } from 'react-icons/fi'
 import {
   getChildCategoryLabel,
-  visibleChildCategories,
+  findChildCategoryParent,
+  visibleCategoryOptions,
   type AdminCategory,
 } from '../../data/categories'
 import {
@@ -54,16 +55,18 @@ export function PiccProductManagePage() {
   const [toast, setToast] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
-  const activeCategories = useMemo(() => visibleChildCategories(categories, PARENT_SLUG), [categories])
-  const firstCategorySlug = activeCategories[0]?.slug ?? ''
+  const activeCategories = useMemo(() => visibleCategoryOptions(categories, PARENT_SLUG), [categories])
+  const firstCategorySlug = activeCategories.find((item) => !item.children?.length)?.slug ?? ''
   const form = useForm<FormValues>({ defaultValues: emptyForm(firstCategorySlug) })
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = form
   const imageUrlWatch = watch('imageUrl')
 
   const filteredProducts = useMemo(() => {
     if (categoryFilter === 'all') return products
-    return products.filter((item) => item.categorySlug === categoryFilter)
-  }, [products, categoryFilter])
+    const selected = visibleCategoryOptions(categories, PARENT_SLUG).find((item) => item.slug === categoryFilter)
+    const slugs = new Set([categoryFilter, ...(selected?.children ?? []).map((item) => item.slug)])
+    return products.filter((item) => slugs.has(item.categorySlug))
+  }, [products, categoryFilter, categories])
 
   function showToast(message: string) {
     setToast(message)
@@ -74,10 +77,10 @@ export function PiccProductManagePage() {
     setLoading(true)
     try {
       const [categoryList, productList] = await Promise.all([apiGetCategories(), apiGetPiccProducts()])
-      const activeSlugs = new Set(visibleChildCategories(categoryList, PARENT_SLUG).map((item) => item.slug))
+      const activeSlugs = new Set(visibleCategoryOptions(categoryList, PARENT_SLUG).map((item) => item.slug))
       setCategories(categoryList)
       setProducts(productList.filter((item) => activeSlugs.has(item.categorySlug) || item.status === 'hidden'))
-      const firstActive = visibleChildCategories(categoryList, PARENT_SLUG)[0]?.slug ?? ''
+      const firstActive = visibleCategoryOptions(categoryList, PARENT_SLUG).find((item) => !item.children?.length)?.slug ?? ''
       if (!editingId) reset(emptyForm(firstActive))
     } finally {
       setLoading(false)
@@ -109,9 +112,9 @@ export function PiccProductManagePage() {
       await reload()
       setEditingId(null)
       reset(emptyForm(categorySlug))
-      showToast(editingId ? 'Đã cập nhật sản phẩm hồi sức tích cực' : 'Đã thêm sản phẩm hồi sức tích cực')
+      showToast(editingId ? 'Đã cập nhật sản phẩm đường tiếp cận mạch máu' : 'Đã thêm sản phẩm đường tiếp cận mạch máu')
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Không lưu được sản phẩm hồi sức tích cực')
+      showToast(err instanceof Error ? err.message : 'Không lưu được sản phẩm đường tiếp cận mạch máu')
     } finally {
       setBusy(false)
     }
@@ -142,9 +145,9 @@ export function PiccProductManagePage() {
         setEditingId(null)
         reset(emptyForm(firstCategorySlug))
       }
-      showToast('Đã xóa sản phẩm hồi sức tích cực')
+      showToast('Đã xóa sản phẩm đường tiếp cận mạch máu')
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Không xóa được sản phẩm hồi sức tích cực')
+      showToast(err instanceof Error ? err.message : 'Không xóa được sản phẩm đường tiếp cận mạch máu')
     } finally {
       setBusy(false)
     }
@@ -155,9 +158,9 @@ export function PiccProductManagePage() {
     try {
       const url = await apiUploadPiccProductImage(file)
       setValue('imageUrl', url, { shouldDirty: true, shouldValidate: true })
-      showToast('Đã tải ảnh sản phẩm hồi sức tích cực')
+      showToast('Đã tải ảnh sản phẩm đường tiếp cận mạch máu')
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Upload ảnh sản phẩm hồi sức tích cực thất bại')
+      showToast(err instanceof Error ? err.message : 'Upload ảnh sản phẩm đường tiếp cận mạch máu thất bại')
     } finally {
       setBusy(false)
     }
@@ -168,8 +171,8 @@ export function PiccProductManagePage() {
       <section className={styles.panel}>
         <div className={styles.panelHeader}>
           <div>
-            <h2 className={styles.panelTitle}>{editingId ? 'Sửa sản phẩm hồi sức tích cực' : 'Thêm sản phẩm hồi sức tích cực'}</h2>
-            <p className={styles.panelSub}>CRUD riêng cho sản phẩm Hồi sức tích cực, không dùng chung form sản phẩm tổng.</p>
+            <h2 className={styles.panelTitle}>{editingId ? 'Sửa sản phẩm đường tiếp cận mạch máu' : 'Thêm sản phẩm đường tiếp cận mạch máu'}</h2>
+            <p className={styles.panelSub}>Quản lý sản phẩm theo nhóm và danh mục con.</p>
           </div>
           <button className={styles.secondaryButton} type="button" onClick={() => { setEditingId(null); reset(emptyForm(firstCategorySlug)) }}>
             <FiRefreshCw aria-hidden />
@@ -195,7 +198,7 @@ export function PiccProductManagePage() {
                   <option value="">Chọn danh mục</option>
                   {activeCategories.map((category) => (
                     <option value={category.slug} key={category.slug}>
-                      {category.label}
+                      {findChildCategoryParent(categories, PARENT_SLUG, category.slug) ? `↳ ${category.label}` : category.label}
                     </option>
                   ))}
                 </select>
@@ -242,7 +245,7 @@ export function PiccProductManagePage() {
                 <FiPlus aria-hidden />
                 {editingId ? 'Lưu sản phẩm' : 'Thêm sản phẩm'}
               </button>
-              {activeCategories.length === 0 ? <span className={styles.error}>Cần tạo danh mục hồi sức tích cực hiển thị trước.</span> : null}
+              {activeCategories.length === 0 ? <span className={styles.error}>Cần tạo danh mục đường tiếp cận mạch máu hiển thị trước.</span> : null}
             </div>
           </form>
         </div>
@@ -251,7 +254,7 @@ export function PiccProductManagePage() {
       <section className={styles.panel}>
         <div className={styles.panelHeader}>
           <div>
-            <h2 className={styles.panelTitle}>Danh sách sản phẩm hồi sức tích cực</h2>
+            <h2 className={styles.panelTitle}>Danh sách sản phẩm đường tiếp cận mạch máu</h2>
             <p className={styles.panelSub}>Hiển thị {filteredProducts.length}/{products.length} sản phẩm.</p>
           </div>
         </div>
@@ -259,18 +262,18 @@ export function PiccProductManagePage() {
           <div className={styles.toolbar}>
             <select className={styles.select} value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
               <option value="all">Tất cả danh mục</option>
-              {visibleChildCategories(categories, PARENT_SLUG).map((category) => (
+              {activeCategories.map((category) => (
                 <option value={category.slug} key={category.slug}>
-                  {category.label}
+                  {findChildCategoryParent(categories, PARENT_SLUG, category.slug) ? `↳ ${category.label}` : category.label}
                 </option>
               ))}
             </select>
           </div>
         </div>
         {loading ? (
-          <div className={styles.loadingState}>Đang tải sản phẩm hồi sức tích cực...</div>
+          <div className={styles.loadingState}>Đang tải sản phẩm đường tiếp cận mạch máu...</div>
         ) : filteredProducts.length === 0 ? (
-          <div className={styles.emptyState}>Chưa có sản phẩm hồi sức tích cực phù hợp.</div>
+          <div className={styles.emptyState}>Chưa có sản phẩm đường tiếp cận mạch máu phù hợp.</div>
         ) : (
           <div className={styles.tableWrap}>
             <table className={styles.table}>

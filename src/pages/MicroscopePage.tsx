@@ -133,6 +133,7 @@ const MicroscopePage = () => {
             subcategories={sidebarCategories}
             subcategoryUrl={(slug) => microscopeCategoryUrl(categories.find((category) => category.slug === slug) ?? { slug })}
             counts={counts}
+            microscopeCategories={categories}
           />
 
           <section className={styles.content}>

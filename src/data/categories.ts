@@ -8,6 +8,7 @@ export type AdminCategoryChild = {
   imageUrl?: string
   sortOrder?: number
   status?: 'active' | 'hidden'
+  children?: AdminCategoryChild[]
 }
 
 export type AdminCategory = {
@@ -121,15 +122,13 @@ export const DEFAULT_CATEGORIES: AdminCategory[] = [
   {
     id: 'intensive-care',
     slug: 'intensive-care',
-    label: 'Hồi sức tích cực',
+    label: 'Đường tiếp cận mạch máu',
     sortOrder: 6,
     status: 'active',
     children: [
-      { id: 'picc-3f-1n', slug: 'picc-3f-1n', label: '(PICC) LOẠI 3F 1 nòng', sortOrder: 1, status: 'active' },
-      { id: 'picc-4f-1n', slug: 'picc-4f-1n', label: '(PICC) LOẠI 4F 1 nòng', sortOrder: 2, status: 'active' },
-      { id: 'picc-5fr-1n', slug: 'picc-5fr-1n', label: '(PICC) LOẠI 5F 1 nòng', sortOrder: 3, status: 'active' },
-      { id: 'picc-5fr-2n', slug: 'picc-5fr-2n', label: '(PICC) LOẠI 5F 2 nòng', sortOrder: 4, status: 'active' },
-      { id: 'picc-6f-3n', slug: 'picc-6f-3n', label: '(PICC) LOẠI 6F 3 nòng', sortOrder: 5, status: 'active' },
+      { id: 'duong-tiep-can-dong-mach', slug: 'duong-tiep-can-dong-mach', label: 'Đường tiếp cận động mạch', sortOrder: 1, status: 'active', children: [] },
+      { id: 'duong-truyen-ngoai-vi', slug: 'duong-truyen-ngoai-vi', label: 'Đường truyền ngoại vi', sortOrder: 2, status: 'active', children: [] },
+      { id: 'duong-truyen-trung-tam', slug: 'duong-truyen-trung-tam', label: 'Đường truyền trung tâm', sortOrder: 3, status: 'active', children: [] },
     ],
   },
 ]
@@ -137,7 +136,7 @@ export const DEFAULT_CATEGORIES: AdminCategory[] = [
 export function cloneCategories(categories: AdminCategory[]) {
   return normalizeCategories(categories).map((item) => ({
     ...item,
-    children: item.children.map((child) => ({ ...child })),
+    children: item.children.map((child) => ({ ...child, children: child.children?.map((nested) => ({ ...nested })) })),
   }))
 }
 
@@ -152,6 +151,13 @@ export function normalizeCategories(categories: AdminCategory[]) {
           ...child,
           sortOrder: Number.isFinite(Number(child.sortOrder)) ? Number(child.sortOrder) : childIndex + 1,
           status: normalizeCategoryStatus(child.status),
+          children: (child.children ?? [])
+            .map((nested, nestedIndex) => ({
+              ...nested,
+              sortOrder: Number.isFinite(Number(nested.sortOrder)) ? Number(nested.sortOrder) : nestedIndex + 1,
+              status: normalizeCategoryStatus(nested.status),
+            }))
+            .sort(sortCategoryNodes),
         }))
         .sort(sortCategoryNodes),
     }))
@@ -171,7 +177,13 @@ export function isCategoryVisible(category?: { status?: string }) {
 }
 
 export function visibleChildCategories(categories: AdminCategory[], parentSlug: string) {
-  return (findParentCategory(categories, parentSlug)?.children ?? []).filter(isCategoryVisible)
+  return (findParentCategory(categories, parentSlug)?.children ?? [])
+    .filter(isCategoryVisible)
+    .map((child) => ({ ...child, children: child.children?.filter(isCategoryVisible) }))
+}
+
+export function visibleCategoryOptions(categories: AdminCategory[], parentSlug: string) {
+  return visibleChildCategories(categories, parentSlug).flatMap((child) => [child, ...(child.children ?? [])])
 }
 
 export function findParentCategory(categories: AdminCategory[], slug?: string) {
@@ -179,7 +191,13 @@ export function findParentCategory(categories: AdminCategory[], slug?: string) {
 }
 
 export function findChildCategory(categories: AdminCategory[], parentSlug?: string, childSlug?: string) {
-  return findParentCategory(categories, parentSlug)?.children.find((item) => item.slug === childSlug)
+  const children = findParentCategory(categories, parentSlug)?.children ?? []
+  return children.find((item) => item.slug === childSlug)
+    ?? children.flatMap((item) => item.children ?? []).find((item) => item.slug === childSlug)
+}
+
+export function findChildCategoryParent(categories: AdminCategory[], parentSlug: string, childSlug?: string) {
+  return findParentCategory(categories, parentSlug)?.children.find((item) => item.children?.some((nested) => nested.slug === childSlug))
 }
 
 export function getCategoryLabel(categories: AdminCategory[], slug?: string) {

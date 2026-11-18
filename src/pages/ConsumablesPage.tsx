@@ -124,7 +124,7 @@ export function ConsumablesPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="consumables" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/vat-tu-tieu-hao/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="consumables" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/vat-tu-tieu-hao/${slug}`} counts={groupCounts} categories={categories} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

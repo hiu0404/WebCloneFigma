@@ -151,44 +151,33 @@
   {
     "id": "intensive-care",
     "slug": "intensive-care",
-    "label": "H\u1ed3i s\u1ee9c t\u00edch c\u1ef1c",
+    "label": "Đường tiếp cận mạch máu",
     "sortOrder": 6,
     "status": "active",
     "children": [
       {
-        "id": "picc-3f-1n",
-        "slug": "picc-3f-1n",
-        "label": "(PICC) LO\u1ea0I 3F 1 n\u00f2ng",
+        "id": "duong-tiep-can-dong-mach",
+        "slug": "duong-tiep-can-dong-mach",
+        "label": "Đường tiếp cận động mạch",
         "sortOrder": 1,
-        "status": "active"
+        "status": "active",
+        "children": []
       },
       {
-        "id": "picc-4f-1n",
-        "slug": "picc-4f-1n",
-        "label": "(PICC) LO\u1ea0I 4F 1 n\u00f2ng",
+        "id": "duong-truyen-ngoai-vi",
+        "slug": "duong-truyen-ngoai-vi",
+        "label": "Đường truyền ngoại vi",
         "sortOrder": 2,
-        "status": "active"
+        "status": "active",
+        "children": []
       },
       {
-        "id": "picc-5fr-1n",
-        "slug": "picc-5fr-1n",
-        "label": "(PICC) LO\u1ea0I 5F 1 n\u00f2ng",
+        "id": "duong-truyen-trung-tam",
+        "slug": "duong-truyen-trung-tam",
+        "label": "Đường truyền trung tâm",
         "sortOrder": 3,
-        "status": "active"
-      },
-      {
-        "id": "picc-5fr-2n",
-        "slug": "picc-5fr-2n",
-        "label": "(PICC) LO\u1ea0I 5F 2 n\u00f2ng",
-        "sortOrder": 4,
-        "status": "active"
-      },
-      {
-        "id": "picc-6f-3n",
-        "slug": "picc-6f-3n",
-        "label": "(PICC) LO\u1ea0I 6F 3 n\u00f2ng",
-        "sortOrder": 5,
-        "status": "active"
+        "status": "active",
+        "children": []
       }
     ]
   }

@@ -52,7 +52,7 @@ async function readApiError(res: Response, fallback: string) {
 export async function apiGetPiccProducts(): Promise<PiccProduct[]> {
   try {
     const res = await fetch(apiUrl('/api/picc-products'), { credentials: 'include' })
-    if (!res.ok) throw new Error('Không tải được sản phẩm hồi sức tích cực')
+    if (!res.ok) throw new Error('Không tải được sản phẩm đường tiếp cận mạch máu')
     const data = (await res.json()) as PiccProduct[]
     return normalizePiccProducts(Array.isArray(data) ? data : [])
   } catch {
@@ -69,11 +69,11 @@ export async function apiUpsertPiccProduct(input: PiccProductInput): Promise<Pic
       credentials: 'include',
       body: JSON.stringify(input),
     })
-    if (!res.ok) throw new Error(await readApiError(res, 'Không lưu được sản phẩm hồi sức tích cực'))
+    if (!res.ok) throw new Error(await readApiError(res, 'Không lưu được sản phẩm đường tiếp cận mạch máu'))
     return (await res.json()) as PiccProduct
   } catch (err) {
     if (import.meta.env.DEV) return upsertLocal(input)
-    throw err instanceof Error ? err : new Error('Không lưu được sản phẩm hồi sức tích cực')
+    throw err instanceof Error ? err : new Error('Không lưu được sản phẩm đường tiếp cận mạch máu')
   }
 }
 
@@ -83,13 +83,13 @@ export async function apiDeletePiccProduct(id: string): Promise<void> {
       method: 'DELETE',
       credentials: 'include',
     })
-    if (!res.ok) throw new Error(await readApiError(res, 'Không xóa được sản phẩm hồi sức tích cực'))
+    if (!res.ok) throw new Error(await readApiError(res, 'Không xóa được sản phẩm đường tiếp cận mạch máu'))
   } catch (err) {
     if (import.meta.env.DEV) {
       deleteLocal(id)
       return
     }
-    throw err instanceof Error ? err : new Error('Không xóa được sản phẩm hồi sức tích cực')
+    throw err instanceof Error ? err : new Error('Không xóa được sản phẩm đường tiếp cận mạch máu')
   }
 }
 
@@ -101,8 +101,8 @@ export async function apiUploadPiccProductImage(file: File): Promise<string> {
     credentials: 'include',
     body: formData,
   })
-  if (!res.ok) throw new Error(await readApiError(res, 'Upload ảnh sản phẩm hồi sức tích cực thất bại'))
+  if (!res.ok) throw new Error(await readApiError(res, 'Upload ảnh sản phẩm đường tiếp cận mạch máu thất bại'))
   const data = (await res.json()) as { url?: string }
-  if (!data.url) throw new Error('Upload ảnh sản phẩm hồi sức tích cực thất bại')
+  if (!data.url) throw new Error('Upload ảnh sản phẩm đường tiếp cận mạch máu thất bại')
   return data.url
 }

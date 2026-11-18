@@ -134,7 +134,7 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="forensic-science" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={categoryPath} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="forensic-science" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={categoryPath} counts={groupCounts} categories={categories} />
 
           <section className={styles.content}>
             <div className={styles.groupHeader}>

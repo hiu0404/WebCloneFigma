@@ -130,7 +130,7 @@ export function AntibodiesPage() {
         <h1 className={styles.title}>{selectedTitle}</h1>
 
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="antibodies" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/khang-the/${slug}`} counts={groupCounts} />
+          <ProductCategorySidebar activeGroup="antibodies" selectedSlug={selectedGroup} subcategories={childCategories} subcategoryUrl={(slug) => `/khang-the/${slug}`} counts={groupCounts} categories={categories} />
 
           <section className={styles.content}>
             {selectedGroup === 'all' && childCategories.length > 0 && (

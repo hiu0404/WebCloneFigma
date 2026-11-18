@@ -12,7 +12,7 @@ import type { Product } from '../../lib/adminStore'
 import { apiDeleteCategory, apiGetCategories, apiUpsertCategory } from '../../services/categoryService'
 import { apiGetForensicProducts } from '../../services/forensicProductService'
 import { apiGetPiccProducts } from '../../services/piccProductService'
-import { apiGetProducts } from '../../services/productService'
+import { apiGetProducts, apiUploadImage } from '../../services/productService'
 import styles from './AdminPages.module.css'
 
 type FormValues = {
@@ -21,6 +21,8 @@ type FormValues = {
   slug: string
   sortOrder: number
   status: 'active' | 'hidden'
+  imageUrl: string
+  parentId: string
 }
 
 type Props = {
@@ -28,17 +30,18 @@ type Props = {
   title: string
   description: string
   itemLabel: string
+  allowNested?: boolean
 }
 
 function emptyForm(): FormValues {
-  return { id: '', label: '', slug: '', sortOrder: 0, status: 'active' }
+  return { id: '', label: '', slug: '', sortOrder: 0, status: 'active', imageUrl: '', parentId: '' }
 }
 
 function childStatus(child: AdminCategoryChild): 'active' | 'hidden' {
   return child.status === 'hidden' ? 'hidden' : 'active'
 }
 
-export function ProductChildCategoryManagePage({ parentSlug, title, description, itemLabel }: Props) {
+export function ProductChildCategoryManagePage({ parentSlug, title, description, itemLabel, allowNested = false }: Props) {
   const [categories, setCategories] = useState<AdminCategory[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [editing, setEditing] = useState<AdminCategoryChild | null>(null)
@@ -50,9 +53,13 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = form
   const labelWatch = watch('label')
   const slugWatch = watch('slug')
+  const imageUrlWatch = watch('imageUrl')
+  const parentIdWatch = watch('parentId')
 
   const parent = useMemo(() => categories.find((item) => item.slug === parentSlug), [categories, parentSlug])
-  const children = parent?.children ?? []
+  const children = useMemo(() => parent?.children ?? [], [parent])
+  const selectedParent = children.find((child) => child.id === parentIdWatch)
+  const rows = allowNested ? children.flatMap((child) => [{ child, group: null }, ...(child.children ?? []).map((nested) => ({ child: nested, group: child }))]) : children.map((child) => ({ child, group: null }))
 
   const usedCounts = useMemo(() => {
     const map = new Map<string, number>()
@@ -61,8 +68,13 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
       const childSlug = getProductChildCategorySlug(product)
       map.set(childSlug, (map.get(childSlug) ?? 0) + 1)
     }
+    if (allowNested) {
+      for (const child of children) {
+        for (const nested of child.children ?? []) map.set(child.slug, (map.get(child.slug) ?? 0) + (map.get(nested.slug) ?? 0))
+      }
+    }
     return map
-  }, [products, parentSlug])
+  }, [products, parentSlug, allowNested, children])
 
   function showToast(message: string) {
     setToast(message)
@@ -121,7 +133,8 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
         id: values.id || slug,
         label,
         slug,
-        parentId: parent.id,
+        parentId: allowNested ? values.parentId || parent.id : parent.id,
+        imageUrl: values.imageUrl.trim() || undefined,
         sortOrder: Number(values.sortOrder) || 0,
         status: values.status,
       })
@@ -136,7 +149,7 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
     }
   })
 
-  function editRow(child: AdminCategoryChild) {
+  function editRow(child: AdminCategoryChild, group?: AdminCategoryChild | null) {
     setEditing(child)
     reset({
       id: child.id,
@@ -144,11 +157,23 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
       slug: child.slug,
       sortOrder: child.sortOrder ?? 0,
       status: childStatus(child),
+      imageUrl: child.imageUrl ?? '',
+      parentId: group?.id ?? parent?.id ?? '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  function startChild(group: AdminCategoryChild) {
+    setEditing(null)
+    reset({ ...emptyForm(), parentId: group.id })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   async function deleteRow(child: AdminCategoryChild) {
+    if (child.children?.length) {
+      showToast('Hãy chuyển hoặc xóa các danh mục con trước')
+      return
+    }
     const used = usedCounts.get(child.slug) ?? 0
     if (used > 0) {
       showToast(`Không thể xóa vì còn ${used} sản phẩm thuộc danh mục này`)
@@ -167,12 +192,25 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
     }
   }
 
+  async function uploadImage(file: File) {
+    setBusy(true)
+    try {
+      const url = await apiUploadImage(file)
+      setValue('imageUrl', url, { shouldDirty: true })
+      showToast('Đã tải ảnh danh mục')
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Không tải được ảnh danh mục')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   return (
     <div className={styles.stack}>
       <section className={styles.panel}>
         <div className={styles.panelHeader}>
           <div>
-            <h2 className={styles.panelTitle}>{editing ? `Sửa danh mục ${itemLabel}` : `Thêm danh mục ${itemLabel}`}</h2>
+            <h2 className={styles.panelTitle}>{editing ? `Sửa danh mục ${itemLabel}` : selectedParent ? `Thêm danh mục con cho ${selectedParent.label}` : `Thêm danh mục ${itemLabel}`}</h2>
             <p className={styles.panelSub}>{description}</p>
           </div>
           <button className={styles.secondaryButton} type="button" onClick={() => { reset(emptyForm()); setEditing(null) }}>
@@ -184,6 +222,15 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
           <form onSubmit={(event) => void onSave(event)}>
             <div className={styles.formGrid}>
               <input type="hidden" {...register('id')} />
+              {allowNested && parent ? (
+                <label className={styles.field}>
+                  <span className={styles.label}>Danh mục cha</span>
+                  <select className={styles.select} {...register('parentId')}>
+                    <option value={parent.id}>{parent.label}</option>
+                    {children.filter((child) => child.id !== editing?.id).map((child) => <option value={child.id} key={child.id}>{child.label}</option>)}
+                  </select>
+                </label>
+              ) : null}
               <label className={styles.field}>
                 <span className={styles.label}>Tên danh mục *</span>
                 <input
@@ -211,6 +258,18 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
                   <option value="hidden">Ẩn</option>
                 </select>
               </label>
+              {allowNested ? (
+                <label className={styles.field}>
+                  <span className={styles.label}>Ảnh danh mục</span>
+                  <input className={styles.input} type="file" accept="image/*" onChange={(event) => {
+                    const file = event.target.files?.[0]
+                    if (file) void uploadImage(file)
+                    event.target.value = ''
+                  }} />
+                  <input className={styles.input} placeholder="/uploads/danh-muc.jpg" {...register('imageUrl')} />
+                  {imageUrlWatch ? <div className={styles.imagePreview}><img src={imageUrlWatch} alt="" /><span className={styles.muted}>{imageUrlWatch}</span></div> : <span className={styles.muted}>Chưa chọn ảnh</span>}
+                </label>
+              ) : null}
             </div>
             <div className={styles.actions}>
               <button className={styles.button} type="submit" disabled={busy || !parent}>
@@ -230,6 +289,22 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
             <p className={styles.panelSub}>Danh mục hiển thị sẽ xuất hiện ở sidebar trang client và dropdown sản phẩm.</p>
           </div>
         </div>
+        {allowNested && !loading && children.length > 0 ? (
+          <div className={styles.categoryParentGrid}>
+            {children.map((group) => (
+              <div className={styles.categoryParentCard} key={group.id}>
+                {group.imageUrl ? <img src={group.imageUrl} alt="" /> : <span className={styles.categoryParentImage} aria-hidden="true" />}
+                <div className={styles.categoryParentInfo}>
+                  <strong>{group.label}</strong>
+                  <span>{group.children?.length ?? 0} danh mục con</span>
+                  <button className={styles.secondaryButton} type="button" disabled={busy} onClick={() => startChild(group)}>
+                    <FiPlus aria-hidden /> Thêm danh mục con
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
         {loading ? (
           <div className={styles.loadingState}>Đang tải danh mục...</div>
         ) : children.length === 0 ? (
@@ -240,6 +315,7 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
               <thead>
                 <tr>
                   <th>Danh mục</th>
+                  {allowNested ? <th>Ảnh</th> : null}
                   <th>Slug</th>
                   <th>Thứ tự</th>
                   <th>Trạng thái</th>
@@ -248,9 +324,10 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
                 </tr>
               </thead>
               <tbody>
-                {children.map((child) => (
+                {rows.map(({ child, group }) => (
                   <tr key={child.id}>
-                    <td><div className={styles.productName}>{child.label}</div></td>
+                    <td><div className={styles.productName}>{group ? `↳ ${child.label}` : child.label}</div></td>
+                    {allowNested ? <td>{child.imageUrl ? <img className={styles.thumb} src={child.imageUrl} alt="" /> : <span className={styles.thumbEmpty} />}</td> : null}
                     <td>{child.slug}</td>
                     <td>{child.sortOrder ?? 0}</td>
                     <td>
@@ -262,7 +339,7 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
                     <td><span className={styles.pill}>{usedCounts.get(child.slug) ?? 0}</span></td>
                     <td>
                       <div className={styles.rowActions}>
-                        <button className={styles.iconButton} type="button" title="Sửa" onClick={() => editRow(child)}>
+                        <button className={styles.iconButton} type="button" title="Sửa" onClick={() => editRow(child, group)}>
                           <FiEdit2 aria-hidden />
                         </button>
                         <button className={styles.dangerButton} type="button" title="Xóa" disabled={busy} onClick={() => void deleteRow(child)}>

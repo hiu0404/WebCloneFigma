@@ -11,6 +11,7 @@ import { apiGetCategories } from '../services/categoryService'
 import { productMainImageUrl } from '../lib/productImages'
 import {
   getChildCategoryLabel,
+  findChildCategoryParent,
   getProductChildCategorySlug,
   getProductParentCategorySlug,
   normalizeProductCategoryFields,
@@ -180,6 +181,7 @@ export function ProductDetailPage() {
   const parentSlug = product ? getProductParentCategorySlug(product) : ''
   const childSlug = product ? getProductChildCategorySlug(product) : ''
   const childLabel = product ? getChildCategoryLabel(categories, parentSlug, childSlug) : ''
+  const nestedParent = parentSlug === 'intensive-care' ? findChildCategoryParent(categories, parentSlug, childSlug) : undefined
   const youtube = youtubeEmbedUrl(product?.youtubeUrl)
   const breadcrumbs = useMemo<BreadcrumbItem[]>(() => {
     if (!product) return []
@@ -192,10 +194,11 @@ export function ProductDetailPage() {
       ...(parentSlug === 'microscopes' && product.categoryParentSlug && product.categoryParentLabel
         ? [{ label: product.categoryParentLabel, to: `/kinh-hien-vi/${encodeURIComponent(product.categoryParentSlug)}` }]
         : []),
+      ...(nestedParent ? [{ label: nestedParent.label, to: `/hoi-suc-tich-cuc/${encodeURIComponent(nestedParent.slug)}` }] : []),
       ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug, product.categoryParentSlug) }] : []),
       { label: product.title },
     ]
-  }, [product, categories, parentSlug, childSlug, childLabel])
+  }, [product, categories, parentSlug, childSlug, childLabel, nestedParent])
 
   const relatedProducts = useMemo(() => {
     if (!product) return []

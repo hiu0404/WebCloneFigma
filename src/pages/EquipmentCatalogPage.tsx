@@ -93,7 +93,7 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
         </section>
         <h1 className={styles.title}>{title}</h1>
         <div className={styles.categorypage}>
-          <ProductCategorySidebar activeGroup="equipment" selectedSlug={selectedSlug} subcategories={childCategories} subcategoryUrl={equipmentCategoryUrl} counts={counts} />
+          <ProductCategorySidebar activeGroup="equipment" selectedSlug={selectedSlug} subcategories={childCategories} subcategoryUrl={equipmentCategoryUrl} counts={counts} categories={categories} />
           <section className={styles.content}>
             <div className={styles.groupHeader}><h2>{title}</h2><p>{shownProducts.length} sản phẩm</p></div>
             {loading ? <div className={styles.emptyState}>Đang tải sản phẩm...</div> : shownProducts.length ? (

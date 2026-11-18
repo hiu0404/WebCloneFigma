@@ -36,7 +36,7 @@ const productMenu = [
   { label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' },
   { label: 'Hóa chất', to: '/hoa-chat' },
   { label: 'Kháng thể', to: '/khang-the' },
-  { label: 'Hồi sức tích cực', to: '/hoi-suc-tich-cuc' },
+  { label: 'Đường tiếp cận mạch máu', to: '/hoi-suc-tich-cuc' },
 ]
 
 export function Header() {
