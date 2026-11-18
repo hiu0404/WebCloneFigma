@@ -12,7 +12,6 @@ const quickLinks = [
   { label: 'Giới thiệu', to: '/gioi-thieu' },
   { label: 'Sản phẩm', to: '/san-pham' },
   { label: 'Dịch vụ hỗ trợ', to: '/dich-vu-ho-tro' },
-  { label: 'Thiết bị đã triển khai', to: '/thiet-bi-da-trien-khai' },
   { label: 'Tin tức', to: '/tin-tuc' },
   { label: 'Liên hệ', to: '/lien-he' },
 ]

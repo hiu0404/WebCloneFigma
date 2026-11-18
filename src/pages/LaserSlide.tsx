@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styles from './LaserSlide.module.css'
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 
 const products = [
     {
@@ -14,7 +13,6 @@ const products = [
 const LaserSlide = ( ) => {
  return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

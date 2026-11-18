@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import {
   FaChevronDown,
   FaEnvelope,
@@ -42,19 +42,17 @@ const productMenu = [
 export function Header() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { register, handleSubmit, watch, reset } = useForm<SearchForm>({
+  const { register, handleSubmit, control, reset } = useForm<SearchForm>({
     defaultValues: { query: '' },
   })
-  const query = watch('query') ?? ''
+  const query = useWatch({ control, name: 'query' }) ?? ''
   const [allProducts, setAllProducts] = useState<SearchItem[]>([])
   const [brands, setBrands] = useState<Brand[]>([])
-  const [open, setOpen] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  useEffect(() => {
-    setOpen(false)
-    setMenuOpen(false)
-  }, [location.pathname, location.search])
+  const routeKey = `${location.pathname}${location.search}`
+  const [openForRoute, setOpenForRoute] = useState<string | null>(null)
+  const [menuOpenForRoute, setMenuOpenForRoute] = useState<string | null>(null)
+  const open = openForRoute === routeKey
+  const menuOpen = menuOpenForRoute === routeKey
 
   useEffect(() => {
     let alive = true
@@ -131,8 +129,8 @@ export function Header() {
 
   const goDetail = (target: string) => {
     navigate(target)
-    setOpen(false)
-    setMenuOpen(false)
+    setOpenForRoute(null)
+    setMenuOpenForRoute(null)
     reset({ query: '' })
   }
 
@@ -147,11 +145,13 @@ export function Header() {
           <FigmaImage src="/assetsFull/logo-trang 3.png" alt="Ecolink" />
         </NavLink>
 
-        <div className={styles.searchWrap}>
+        <div className={styles.searchWrap} onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) setOpenForRoute(null)
+        }}>
           <form className={styles.search} onSubmit={handleSubmit(onSearch)}>
             <input
-              {...register('query', { onChange: () => setOpen(true) })}
-              onFocus={() => setOpen(true)}
+              {...register('query', { onChange: () => setOpenForRoute(routeKey) })}
+              onFocus={() => setOpenForRoute(routeKey)}
               placeholder="Tìm kiếm sản phẩm, model, hãng..."
               aria-label="Tìm kiếm sản phẩm"
             />
@@ -192,7 +192,7 @@ export function Header() {
           type="button"
           aria-label="Mở menu"
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((value) => !value)}
+          onClick={() => setMenuOpenForRoute((value) => value === routeKey ? null : routeKey)}
         >
           <span />
           <span />
@@ -204,7 +204,7 @@ export function Header() {
         className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}
         aria-label="Điều hướng chính"
         onClick={(event) => {
-          if ((event.target as HTMLElement).closest('a')) setMenuOpen(false)
+          if ((event.target as HTMLElement).closest('a')) setMenuOpenForRoute(null)
         }}
       >
         <NavLink to="/">Trang chủ</NavLink>
@@ -237,13 +237,7 @@ export function Header() {
             <NavLink to="/GiamDinhSinhHoc">Sinh học</NavLink>
           </div>
         </div>
-        <div className={styles.dropdown}>
-          <NavLink to="/dich-vu-ho-tro">Dịch vụ hỗ trợ <FaChevronDown /></NavLink>
-          <div className={styles.dropdownMenu}>
-            <NavLink to="/dich-vu-ho-tro">Dịch vụ hỗ trợ</NavLink>
-            <NavLink to="/thiet-bi-da-trien-khai">Thiết bị đã triển khai</NavLink>
-          </div>
-        </div>
+        <NavLink to="/dich-vu-ho-tro">Dịch vụ hỗ trợ</NavLink>
         <NavLink to="/tin-tuc">Tin tức</NavLink>
         <NavLink to="/lien-he">Liên hệ</NavLink>
 

@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Breadcrumb } from '../components/Breadcrumb'
-import { Header } from '../components/Header/Header'
 import { QuoteRequestModal } from '../components/QuoteRequestModal'
 import { SeoHead } from '../components/SeoHead'
-import { VITRO_ANTIBODY_PANELS, VITRO_ANTIBODY_SOURCE, vitroPanelUrl } from '../components/VitroAntibodyShowcase'
+import { VITRO_ANTIBODY_PANELS, VITRO_ANTIBODY_SOURCE, vitroPanelUrl } from '../data/vitroAntibodyPanels'
 import antibodyNames from '../data/vitroAntibodyNames.json'
 import styles from './VitroAntibodyPanelPage.module.css'
 
@@ -49,7 +48,6 @@ export function VitroAntibodyPanelPage() {
         canonical={path}
         jsonLd={jsonLd}
       />
-      <Header />
       <main className={styles.page}>
         <div className={styles.inner}>
           <Breadcrumb items={breadcrumb} />

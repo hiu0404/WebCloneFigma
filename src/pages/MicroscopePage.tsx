@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import { MicroscopeCard } from '../components/microscope/MicroscopeCard'
 import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
@@ -98,7 +97,6 @@ const MicroscopePage = () => {
   return (
     <div className={styles.page}>
       <CategorySeo title={selectedTitle} canonical={canonical} breadcrumbs={breadcrumbs} />
-      <Header />
 
       <div className={styles.heroWrapper}>
         <FigmaImage className={styles.hero} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden width={1920} height={461} />

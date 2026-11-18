@@ -3,7 +3,6 @@
 import { NavLink } from 'react-router-dom';
 import styles from './TissueProcessing.module.css'
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 const products = [
     {
         image: "/assetsFull/BPRO450.jpg",
@@ -21,7 +20,6 @@ const products = [
 const TissueProcessing = () => {
     return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ProductDetailPage.module.css'
 import type { Product } from '../lib/adminStore'
@@ -22,8 +21,6 @@ import { productSeoDescription, productSeoTitle, type ProductKind } from '../lib
 import { apiUrl } from '../lib/apiClient'
 import { Breadcrumb, type BreadcrumbItem } from '../components/Breadcrumb'
 import { productUrl } from '../lib/seo'
-import { apiGetInstallations } from '../services/installationService'
-import { installationUrl, type PublicInstallation } from '../data/installations'
 import { QuoteRequestModal } from '../components/QuoteRequestModal'
 
 function categoryPageUrl(parentSlug: string) {
@@ -127,7 +124,6 @@ export function ProductDetailPage() {
   const [catalog, setCatalog] = useState<Product[]>([])
   const [categories, setCategories] = useState<AdminCategory[]>([])
   const [selectedImage, setSelectedImage] = useState<{ productId: string; url: string } | null>(null)
-  const [installationResult, setInstallationResult] = useState<{ key: string; items: PublicInstallation[] }>({ key: '', items: [] })
   const [resolvedKey, setResolvedKey] = useState<string | null>(null)
   const [tabSelection, setTabSelection] = useState<{ key: string; tab: 'description' | 'specs' }>({ key: '', tab: 'description' })
   const [quoteFor, setQuoteFor] = useState<string | null>(null)
@@ -179,20 +175,6 @@ export function ProductDetailPage() {
     () => slug ? catalog.find((item) => item.slug === slug) : (id ? catalog.find((item) => item.id === id) ?? homepageProducts.find((item) => item.id === id) : undefined),
     [catalog, id, slug],
   )
-  const installationKey = product ? `${product.type || 'product'}:${product.id}` : ''
-  const installationKind = product?.type || 'product'
-  const installationProductId = product?.id || ''
-  const productInstallations = installationResult.key === installationKey ? installationResult.items : []
-
-  useEffect(() => {
-    if (!installationProductId) return
-    let active = true
-    const key = `${installationKind}:${installationProductId}`
-    apiGetInstallations(installationKind, installationProductId)
-      .then((items) => { if (active) setInstallationResult({ key, items }) })
-      .catch(() => { if (active) setInstallationResult({ key, items: [] }) })
-    return () => { active = false }
-  }, [installationKind, installationProductId])
   const images = useMemo(() => galleryImages(product), [product])
   const mainImage = (selectedImage?.productId === product?.id ? selectedImage?.url : '') || images[0] || productMainImageUrl(product) || ''
   const parentSlug = product ? getProductParentCategorySlug(product) : ''
@@ -243,7 +225,6 @@ export function ProductDetailPage() {
           ],
         }}
       /> : null}
-      <Header />
 
       <FigmaImage
         className={styles.hero}
@@ -316,16 +297,6 @@ export function ProductDetailPage() {
                     </div>
                   </div>
                 </section>
-
-                {productInstallations.length > 0 && <section className={styles.installationsSection}>
-                  <h2>Hình ảnh lắp đặt thực tế</h2>
-                  <div className={styles.installationsGrid}>
-                    {productInstallations.slice(0, 3).map((item) => <Link to={installationUrl(item)} key={item.id}>
-                      <img src={item.imageUrls[0]} alt={`Hình ảnh lắp đặt ${product.title}`} loading="lazy" />
-                      <span>{item.title}</span>
-                    </Link>)}
-                  </div>
-                </section>}
 
                 <section className={styles.tabsPanel}>
                   <div className={styles.tabs} role="tablist" aria-label="Thông tin sản phẩm">

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
-import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
 import { SeoHead } from '../components/SeoHead';
 import { apiGetBrands } from "../services/brandService";
@@ -96,7 +95,6 @@ export default function BrandPage() {
   return (
     <div className={styles.page}>
       <SeoHead title="Hãng đại diện | Ecolink" description="Xem các hãng và đối tác đang được giới thiệu trên website Ecolink, cùng thông tin về lĩnh vực sản phẩm của từng hãng." canonical="/hang-dai-dien" />
-      <Header />
 
       <FigmaImage
         className={styles.hero}

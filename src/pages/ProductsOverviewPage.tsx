@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FaLink } from 'react-icons/fa'
-import { Header } from '../components/Header/Header'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { CategorySeo } from '../components/CategorySeo'
 import { compareByDisplayOrder, type Product } from '../lib/adminStore'
@@ -134,7 +133,6 @@ export function ProductsOverviewPage() {
         canonical="/san-pham"
         breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm' }]}
       />
-      <Header />
       <main className={styles.main}>
         <Breadcrumb items={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm' }]} />
         <h1 className={styles.pageTitle}>Sản phẩm</h1>

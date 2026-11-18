@@ -5,9 +5,6 @@ import { ContactPage } from './pages/ContactPage'
 import { AboutPage } from './pages/AboutPage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ProductsOverviewPage } from './pages/ProductsOverviewPage'
-import { InstallationsPage } from './pages/InstallationsPage'
-import { InstallationDetailPage } from './pages/InstallationDetailPage'
-import { AdminInstallationsPage } from './pages/admin/AdminInstallationsPage'
 import { EquipmentCatalogPage } from './pages/EquipmentCatalogPage'
 import { VatTuTieuHaoPage } from './pages/VatTuTieuHaoPage'
 import { ChemicalsPage } from './pages/ChemicalsPage'
@@ -86,8 +83,6 @@ export default function App() {
           <Route path="/BrandPage" element={<LegacyBrandRedirect />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
           <Route path="/san-pham" element={<ProductsOverviewPage />} />
-          <Route path="/thiet-bi-da-trien-khai" element={<InstallationsPage />} />
-          <Route path="/thiet-bi-da-trien-khai/:slug" element={<InstallationDetailPage />} />
           <Route path="/giai-phau-benh" element={<EquipmentCatalogPage />} />
           <Route path="/giai-phau-benh/:categorySlug" element={<EquipmentCatalogPage />} />
           <Route path="/san-pham-chi-tiet" element={<ProductDetailPage />} />
@@ -132,7 +127,6 @@ export default function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="products" element={<ProductManagePage />} />
-            <Route path="installations" element={<AdminInstallationsPage />} />
             <Route path="contact-messages" element={<AdminContactMessagesPage />} />
             <Route path="equipment-categories" element={<EquipmentCategoryManagePage />} />
             <Route path="products/PICC" element={<PiccProductManagePage />} />

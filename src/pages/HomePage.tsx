@@ -17,7 +17,6 @@ import {
 } from 'react-icons/fa'
 import { GiScales } from 'react-icons/gi'
 import { FigmaImage } from '../components/FigmaImage'
-import { Header } from '../components/Header/Header'
 import { SeoHead } from '../components/SeoHead'
 import styles from './HomePage.module.css'
 import { apiGetBrands } from '../services/brandService'
@@ -25,10 +24,6 @@ import type { Product } from '../lib/adminStore'
 import { productMainImageUrl } from '../lib/productImages'
 import { apiGetProducts } from '../services/productService'
 import { productUrl } from '../lib/seo'
-import { apiGetInstallations } from '../services/installationService'
-import type { PublicInstallation } from '../data/installations'
-import { InstallationCard } from '../components/InstallationCard'
-import installationStyles from './InstallationsPage.module.css'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/giai-phau-benh' },
@@ -67,7 +62,6 @@ const solutions = [
 
 const stats = [
   { icon: FaUsers, value: '120+', label: 'Khách hàng & đối tác' },
-  { icon: FaMicroscope, value: '300+', label: 'Thiết bị đã triển khai' },
   { icon: FaClock, value: '24/7', label: 'Hỗ trợ kỹ thuật' },
   { icon: FaShieldAlt, value: 'ISO', label: 'Đạt chuẩn quốc tế' },
   { icon: FaAward, value: '100%', label: 'Cam kết chất lượng' },
@@ -120,7 +114,6 @@ export function HomePage() {
   const [featuredOffset, setFeaturedOffset] = useState(0)
   const [homepagePartners, setHomepagePartners] = useState(partners)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
-  const [installations, setInstallations] = useState<PublicInstallation[]>([])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -155,16 +148,9 @@ export function HomePage() {
     return () => { alive = false }
   }, [])
 
-  useEffect(() => {
-    let alive = true
-    apiGetInstallations().then((items) => { if (alive) setInstallations(items.slice(0, 3)) }).catch(() => { /* Keep the home page available. */ })
-    return () => { alive = false }
-  }, [])
-
   return (
     <div className={styles.page}>
       <SeoHead title="Ecolink | Thiết bị khoa học, y tế và an ninh" description="Ecolink cung cấp thiết bị và giải pháp cho khoa học, y tế và an ninh. Xem danh mục sản phẩm và liên hệ tư vấn." canonical="/" />
-      <Header />
 
       <main>
         <section className={styles.hero} aria-label="Giải pháp công nghệ Ecolink">
@@ -302,16 +288,6 @@ export function HomePage() {
             </button>
           </div>
         </section>
-
-        {installations.length > 0 && <section className={styles.section}>
-          <div className={styles.blockHeader}>
-            <h2>Thiết bị đã triển khai</h2>
-            <Link to="/thiet-bi-da-trien-khai">Xem tất cả <FaArrowRight /></Link>
-          </div>
-          <div className={installationStyles.grid}>
-            {installations.map((item) => <InstallationCard item={item} key={item.id} />)}
-          </div>
-        </section>}
 
         <section className={styles.statsBand}>
           {stats.map((item) => {

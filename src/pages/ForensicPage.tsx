@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
 import { apiGetCategories } from '../services/categoryService'
@@ -97,7 +96,6 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
   return (
     <div className={styles.page}>
       <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: pageTitle, to: '/giam-dinh-hinh-su' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
-      <Header />
 
       <FigmaImage
         className={styles.hero}
@@ -148,20 +146,19 @@ export default function ForensicPage({ categoryKey }: ForensicPageProps) {
               <div className={styles.productgrid}>
                 {shownProducts.map((item) => {
                   return (
-                    <Link className={styles.productcard} key={item.id} to={productUrl(item, 'forensic')}>
+                    <Link className={`${styles.productcard} ${styles.equipmentCard}`} key={item.id} to={productUrl(item, 'forensic')}>
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.name} loading="lazy" />
                       ) : (
                         <div className={styles.imagePlaceholder} aria-hidden />
                       )}
                       <div className={styles.productcardContent}>
-                        <span className={styles.groupPill}>
-                          {getChildCategoryLabel(categories, PARENT_SLUG, item.categorySlug)}
-                        </span>
                         <h3>{item.name}</h3>
-                        {item.model ? <p>Model: {item.model}</p> : null}
-                        <p>{item.shortDescription || 'Chưa có mô tả ngắn.'}</p>
-                        {item.specs ? <pre className={styles.specs}>{item.specs}</pre> : null}
+                        <dl className={styles.equipmentMeta}>
+                          <div><dt>Model</dt><dd>{item.model || 'Đang cập nhật'}</dd></div>
+                          <div><dt>Danh mục</dt><dd>{getChildCategoryLabel(categories, PARENT_SLUG, item.categorySlug)}</dd></div>
+                        </dl>
+                        <span className={styles.detailButton}>Xem chi tiết <b>→</b></span>
                       </div>
                     </Link>
                   )

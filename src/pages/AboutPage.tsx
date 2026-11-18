@@ -9,7 +9,6 @@ import {
   FaShieldAlt,
   FaUsers,
 } from 'react-icons/fa'
-import { Header } from '../components/Header/Header'
 import { SeoHead } from '../components/SeoHead'
 import styles from './AboutPage.module.css'
 
@@ -65,7 +64,6 @@ export function AboutPage() {
   return (
     <div className={styles.page}>
       <SeoHead title="Giới thiệu Ecolink | Thiết bị và giải pháp khoa học" description="Tìm hiểu Ecolink và các lĩnh vực thiết bị giải phẫu bệnh, giám định, an ninh và nghiên cứu khoa học." canonical="/gioi-thieu" />
-      <Header />
 
       <section className={styles.hero}>
         <div className={styles.container}>

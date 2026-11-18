@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
 import { SeoHead } from '../components/SeoHead';
 import styles from "./SupportService.module.css";
@@ -31,7 +30,6 @@ export default function Dichvuhotro() {
   return (
     <div className={styles.page}>
       <SeoHead title="Dịch vụ hỗ trợ | Ecolink" description="Tìm hiểu dịch vụ tư vấn, lắp đặt, vận hành và bảo trì thiết bị của Ecolink. Liên hệ để gửi yêu cầu hỗ trợ." canonical="/dich-vu-ho-tro" />
-      <Header />
 
       <FigmaImage
         className={styles.hero}

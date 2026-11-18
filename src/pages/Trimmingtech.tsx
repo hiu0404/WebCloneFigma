@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 import styles from './Trimmingtech.module.css'
 const products = [
     {
@@ -25,7 +24,6 @@ const products = [
 const Trimmingtech = () => {
     return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

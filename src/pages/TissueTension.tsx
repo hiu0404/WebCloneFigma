@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 import styles from './TissueTension.module.css'
 const products = [
     {
@@ -19,7 +18,6 @@ const products = [
 const TissueTension = () => {
     return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

@@ -4,7 +4,7 @@ import type { BreadcrumbItem } from './Breadcrumb'
 
 type Props = { title: string; description?: string; canonical: string; image?: string; breadcrumbs: BreadcrumbItem[] }
 
-export function categorySeoDescription(title: string, description?: string) {
+function categorySeoDescription(title: string, description?: string) {
   return (description?.replace(/\s+/g, ' ').trim() || `Danh mục ${title} tại Ecolink. Xem các sản phẩm đang được giới thiệu.`).slice(0, 160)
 }
 

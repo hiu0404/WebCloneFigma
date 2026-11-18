@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 import styles from './LaminatingMachine.module.css'
 const products = [
     {
@@ -26,7 +25,6 @@ const products = [
 const LaminatingMachine = () => {
     return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

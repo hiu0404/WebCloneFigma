@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Footer } from '../components/Footer/Footer'
+import { Header } from '../components/Header/Header'
 import styles from './FigmaScaledLayout.module.css'
 
 export const FIGMA_LAYOUT_WIDTH_PX = 1920
@@ -56,6 +57,7 @@ export function FigmaScaledLayout() {
             className={styles.stageInner}
             style={fallbackStageStyle}
           >
+            <Header />
             <Outlet />
           </div>
         </div>
@@ -68,6 +70,7 @@ export function FigmaScaledLayout() {
   return (
     <div className={styles.viewport}>
       <div className={styles.stage} style={stageStyle}>
+        <Header />
         <Outlet />
       </div>
       <Footer />

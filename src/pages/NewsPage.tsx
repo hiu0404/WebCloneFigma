@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { FaArrowRight, FaCalendarAlt, FaTags } from 'react-icons/fa'
 import { FigmaImage } from '../components/FigmaImage'
-import { Header } from '../components/Header/Header'
 import { SeoHead } from '../components/SeoHead'
 import styles from './NewsPage.module.css'
 
@@ -77,7 +76,6 @@ export default function NewsPage() {
   return (
     <div className={styles.page}>
       <SeoHead title="Tin tức và cập nhật | Ecolink" description="Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế." canonical="/tin-tuc" />
-      <Header />
 
       <section className={styles.hero}>
         <FigmaImage className={styles.heroImage} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden />

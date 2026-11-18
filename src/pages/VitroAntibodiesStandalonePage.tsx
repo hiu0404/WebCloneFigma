@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom'
 import { SeoHead } from '../components/SeoHead'
-import { Header } from '../components/Header/Header'
 import {
   VITRO_ANTIBODY_PANELS,
   VITRO_ANTIBODY_SOURCE,
   vitroPanelUrl,
-} from '../components/VitroAntibodyShowcase'
+} from '../data/vitroAntibodyPanels'
 import styles from './VitroAntibodiesStandalonePage.module.css'
 
 const media = 'https://vitro.bio/wp-content/uploads/2026'
@@ -62,7 +61,6 @@ export function VitroAntibodiesStandalonePage() {
         canonical="/khang-the/khang-the-vitro"
         image="/assetsFull/vitro-antibody-hero-leica.png"
       />
-      <Header />
       <main className={styles.page}>
 
       <section className={styles.hero} aria-labelledby="vitro-page-title">

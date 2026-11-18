@@ -565,8 +565,8 @@
 
 .productMeta div {
   display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 8px;
   align-items: baseline;
   min-height: 34px;
   padding: 8px 0;
@@ -580,7 +580,7 @@
 
 .productMeta dt {
   color: #6b8795;
-  font-size: max(13px, calc(13px / var(--figma-scale, 1)));
+  font-size: max(12px, calc(12px / var(--figma-scale, 1)));
   font-weight: 900;
   white-space: nowrap;
   text-transform: uppercase;
@@ -588,16 +588,10 @@
 
 .productMeta dd {
   color: #173f5f;
-  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
+  font-size: max(12px, calc(12px / var(--figma-scale, 1)));
   font-weight: 800;
   line-height: 1.35;
-}
-
-@media (min-width: 1025px) and (max-width: 1400px) {
-  .productMeta div {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
+  overflow-wrap: anywhere;
 }
 
 .productDetailLink {
@@ -649,7 +643,7 @@
 
 .statsBand {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   width: 100%;
   margin-top: 64px;
   padding: 34px 110px;
@@ -1396,18 +1390,18 @@
   }
 
   .productMeta div {
-    grid-template-columns: 1fr;
-    gap: calc(5px / var(--figma-scale, 1));
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: calc(8px / var(--figma-scale, 1));
     min-height: 0;
     padding: calc(9px / var(--figma-scale, 1)) 0;
   }
 
   .productMeta dt {
-    font-size: calc(14px / var(--figma-scale, 1));
+    font-size: calc(12px / var(--figma-scale, 1));
   }
 
   .productMeta dd {
-    font-size: calc(14px / var(--figma-scale, 1));
+    font-size: calc(12px / var(--figma-scale, 1));
   }
 
   .sliderButton {
@@ -1566,9 +1560,12 @@
     font-size: 26px;
   }
 
-  .benefits,
-  .statsBand {
+  .benefits {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .statsBand {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .benefits div {
@@ -1610,8 +1607,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .benefits div:last-child,
-  .statsBand .statItem:last-child {
+  .benefits div:last-child {
     grid-column: 1 / -1;
   }
 
@@ -1626,7 +1622,4 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .statsBand .statItem:last-child {
-    grid-column: 1 / -1;
-  }
 }

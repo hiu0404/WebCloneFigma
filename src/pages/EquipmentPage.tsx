@@ -1,4 +1,3 @@
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './EquipmentPage.module.css'
 import { NavLink } from 'react-router-dom';
@@ -63,7 +62,6 @@ const items = [
 export function EquipmentPage() {
   return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

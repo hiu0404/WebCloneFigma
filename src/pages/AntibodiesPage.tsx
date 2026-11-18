@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ChemicalsPage.module.css'
 import type { Product } from '../lib/adminStore'
@@ -12,7 +11,8 @@ import { productUrl } from '../lib/seo'
 import { CategorySeo } from '../components/CategorySeo'
 import { Breadcrumb } from '../components/Breadcrumb'
 import { ProductCategorySidebar } from '../components/ProductCategorySidebar'
-import { VitroAntibodyShowcase, VITRO_ANTIBODY_DESCRIPTION } from '../components/VitroAntibodyShowcase'
+import { VitroAntibodyShowcase } from '../components/VitroAntibodyShowcase'
+import { VITRO_ANTIBODY_DESCRIPTION } from '../data/vitroAntibodyPanels'
 import {
   getChildCategoryLabel,
   getProductChildCategorySlug,
@@ -92,7 +92,6 @@ export function AntibodiesPage() {
   return (
     <div className={styles.page}>
       <CategorySeo title={selectedTitle} description={selectedCategory?.description || (isVitroCategory ? VITRO_ANTIBODY_DESCRIPTION : undefined)} canonical={canonical} image={isVitroCategory ? '/assetsFull/vitro.png' : undefined} breadcrumbs={breadcrumbs} />
-      <Header />
 
       <FigmaImage
         className={styles.hero}
@@ -154,19 +153,19 @@ export function AntibodiesPage() {
                 {shownProducts.map((item) => {
                   const src = productMainImageUrl(item)
                   return (
-                    <Link className={styles.productcard} key={item.id} to={productUrl(item)}>
+                    <Link className={`${styles.productcard} ${styles.equipmentCard}`} key={item.id} to={productUrl(item)}>
                       {src ? (
                         <img src={src} alt={item.title} loading="lazy" />
                       ) : (
                         <div className={styles.imagePlaceholder} aria-hidden />
                       )}
                       <div className={styles.productcardContent}>
-                        <span className={styles.groupPill}>
-                          {getChildCategoryLabel(categories, 'antibodies', getProductChildCategorySlug(item))}
-                        </span>
                         <h3>{item.title}</h3>
-                        <p>{item.shortDescription || item.description || 'Chưa có mô tả ngắn.'}</p>
-                        {item.specs ? <pre className={styles.specs}>{item.specs}</pre> : null}
+                        <dl className={styles.equipmentMeta}>
+                          <div><dt>Model</dt><dd>{item.sku || 'Đang cập nhật'}</dd></div>
+                          <div><dt>Hãng sản xuất</dt><dd>{item.brand || 'Đang cập nhật'}</dd></div>
+                        </dl>
+                        <span className={styles.detailButton}>Xem chi tiết <b>→</b></span>
                       </div>
                     </Link>
                   )

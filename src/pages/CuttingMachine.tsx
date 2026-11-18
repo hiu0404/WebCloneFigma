@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styles from './CuttingMachine.module.css'
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 
 const products = [
     {
@@ -26,7 +25,6 @@ const products = [
 const CuttingMachine = () => {
     return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

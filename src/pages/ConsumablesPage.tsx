@@ -1,6 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import styles from './ConsumablesPage.module.css'
 import type { Product } from '../lib/adminStore'
@@ -87,7 +86,6 @@ export function ConsumablesPage() {
   return (
     <div className={styles.page}>
       <CategorySeo title={selectedTitle} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Vật tư tiêu hao', to: '/vat-tu-tieu-hao' }, ...(selectedGroup === 'all' ? [] : [{ label: selectedTitle }])]} />
-      <Header />
 
       <FigmaImage
         className={styles.hero}

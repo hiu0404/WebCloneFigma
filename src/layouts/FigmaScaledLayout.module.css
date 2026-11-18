@@ -7,6 +7,7 @@
 }
 
 .stage {
+  position: relative;
   width: 1920px;
   margin-inline: auto;
   box-sizing: border-box;
@@ -21,6 +22,7 @@
 }
 
 .stageInner {
+  position: relative;
   width: 1920px;
   transform-origin: top left;
   font-size: max(16px, calc(14px / var(--figma-scale, 1)));

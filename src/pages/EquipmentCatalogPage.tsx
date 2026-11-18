@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Header } from '../components/Header/Header'
 import { FigmaImage } from '../components/FigmaImage'
 import type { Product } from '../lib/adminStore'
 import { compareByDisplayOrder } from '../lib/adminStore'
@@ -79,7 +78,6 @@ export function EquipmentCatalogPage({ categorySlug }: Props) {
   return (
     <div className={styles.page}>
       <CategorySeo title={title} description={selectedCategory?.description} canonical={canonical} breadcrumbs={[{ label: 'Trang chủ', to: '/' }, { label: 'Sản phẩm thiết bị', to: '/giai-phau-benh' }, ...(selectedSlug === 'all' ? [] : [{ label: title }])]} />
-      <Header />
       <div className={styles.heroWrapper}>
         <FigmaImage className={styles.hero} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden width={1920} height={461} />
         <div className={styles.heroOverlay} />

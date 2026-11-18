@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FiEdit2, FiEye, FiEyeOff, FiPlus, FiRefreshCw, FiTrash2 } from 'react-icons/fi'
 import {
@@ -69,7 +69,7 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
     window.setTimeout(() => setToast(''), 2600)
   }
 
-  async function reload() {
+  const reload = useCallback(async () => {
     setLoading(true)
     try {
       const [categoryList, productList] = await Promise.all([apiGetCategories(), apiGetProducts()])
@@ -104,11 +104,11 @@ export function ProductChildCategoryManagePage({ parentSlug, title, description,
     } finally {
       setLoading(false)
     }
-  }
+  }, [parentSlug])
 
   useEffect(() => {
     void reload()
-  }, [])
+  }, [reload])
 
   const onSave = handleSubmit(async (values) => {
     const label = values.label.trim()

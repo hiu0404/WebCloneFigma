@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styles from './DyeingMachine.module.css'
 import { FigmaImage } from '../components/FigmaImage';
-import { Header } from '../components/Header/Header';
 const products = [
     {
         image: "/assetsFull/AUS240.jpg",
@@ -13,7 +12,6 @@ const products = [
 const DyeingMachine = () => {
    return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>

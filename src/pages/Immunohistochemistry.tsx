@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import styles from './Immunohistochemistry.module.css'
-import { Header } from "../components/Header/Header";
 import { FigmaImage } from "../components/FigmaImage";
 
 const products = [
@@ -15,7 +14,6 @@ const products = [
 const Immunohistochemistry = () => {
   return (
         <div className={styles.page}>
-            <Header />
 
             {/* HERO */}
             <div className={styles.heroWrapper}>
