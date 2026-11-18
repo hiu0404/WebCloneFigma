@@ -51,7 +51,7 @@ export function FigmaScaledLayout() {
   if (!zoomOk) {
     const clipW = FIGMA_LAYOUT_WIDTH_PX * scale
     return (
-      <div className={styles.viewport}>
+      <div className={styles.viewport} data-i18n-root>
         <div className={`${styles.stageClip}`} style={{ width: isResponsiveViewport ? '100%' : clipW }}>
           <div
             className={styles.stageInner}
@@ -68,7 +68,7 @@ export function FigmaScaledLayout() {
   }
 
   return (
-    <div className={styles.viewport}>
+    <div className={styles.viewport} data-i18n-root>
       <div className={styles.stage} style={stageStyle}>
         <Header />
         <Outlet />

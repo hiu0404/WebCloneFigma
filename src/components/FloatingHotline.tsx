@@ -7,7 +7,7 @@ export function FloatingHotline() {
   if (pathname === '/admin' || pathname.startsWith('/admin/')) return null
 
   return (
-    <a className={styles.hotline} href="tel:+84812119668" aria-label="Gọi Ecolink để tư vấn sản phẩm: 0812 119 668">
+    <a className={styles.hotline} data-i18n-root href="tel:+84812119668" aria-label="Gọi Ecolink để tư vấn sản phẩm: 0812 119 668">
       <span className={styles.callGraphic} aria-hidden="true">
         <span className={styles.outerRing} />
         <span className={styles.innerRing} />

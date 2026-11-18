@@ -161,8 +161,10 @@ export function AntibodiesPage() {
                       )}
                       <div className={styles.productcardContent}>
                         <h3>{item.title}</h3>
+                        {(item.shortDescription || item.description) && (
+                          <p className={styles.antibodyDescription}>{item.shortDescription || item.description}</p>
+                        )}
                         <dl className={styles.equipmentMeta}>
-                          <div><dt>Model</dt><dd>{item.sku || 'Đang cập nhật'}</dd></div>
                           <div><dt>Hãng sản xuất</dt><dd>{item.brand || 'Đang cập nhật'}</dd></div>
                         </dl>
                         <span className={styles.detailButton}>Xem chi tiết <b>→</b></span>

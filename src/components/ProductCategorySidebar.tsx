@@ -116,7 +116,7 @@ export function ProductCategorySidebar({ activeGroup, selectedSlug, subcategorie
                       aria-label={`${expanded ? 'Thu gọn' : 'Hiển thị'} danh mục con của ${group.label}`}
                       aria-expanded={expanded}
                       aria-controls={submenuId}
-                      onClick={() => setOpenGroup(expanded ? null : group.key)}
+                      onClick={(event) => setOpenGroup(event.detail > 0 && window.matchMedia('(hover: hover) and (pointer: fine)').matches ? group.key : expanded ? null : group.key)}
                     >
                       <span aria-hidden="true">▾</span>
                     </button>
@@ -156,7 +156,7 @@ export function ProductCategorySidebar({ activeGroup, selectedSlug, subcategorie
                                 aria-label={`${isOpen ? 'Thu gọn' : 'Hiển thị'} danh mục con của ${category.label}`}
                                 aria-expanded={isOpen}
                                 aria-controls={listId}
-                                onClick={() => setOpenCategory(isOpen ? '' : category.slug)}
+                                onClick={(event) => setOpenCategory(event.detail > 0 && window.matchMedia('(hover: hover) and (pointer: fine)').matches ? category.slug : isOpen ? '' : category.slug)}
                               >
                                 <span aria-hidden="true">▾</span>
                               </button>

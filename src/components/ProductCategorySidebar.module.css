@@ -67,7 +67,7 @@
 
 .activeGroup,
 .activeChild,
-.groupOpen > .groupLink,
+.groupOpen > .groupRow > .groupLink,
 .groupLink:hover,
 .childLink:hover {
   color: #187093;

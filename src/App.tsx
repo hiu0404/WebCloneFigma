@@ -43,6 +43,8 @@ import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage
 import { OrganizationJsonLd } from './components/OrganizationJsonLd'
 import { GoogleAnalytics } from './components/GoogleAnalytics'
 import { FloatingHotline } from './components/FloatingHotline'
+import { LanguageProvider } from './i18n/LanguageProvider'
+import { DocumentTranslator } from './i18n/DocumentTranslator'
 
 const legacyCategoryPaths = [
   ['/EquipmentPage', '/giai-phau-benh'],
@@ -68,6 +70,8 @@ function LegacyBrandRedirect() {
 export default function App() {
   return (
     <BrowserRouter>
+      <LanguageProvider>
+      <DocumentTranslator />
       <OrganizationJsonLd />
       <ScrollToTop />
       <GoogleAnalytics />
@@ -150,6 +154,7 @@ export default function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </LanguageProvider>
     </BrowserRouter>
   )
 }

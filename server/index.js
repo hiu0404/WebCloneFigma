@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import multer from 'multer'
 import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
 import { legacyPublicRedirect } from './public-route-redirects.js'
+import { createTranslationService } from './translation.js'
 import {
   decryptString,
   encryptString,
@@ -107,6 +108,11 @@ fs.mkdirSync(productUploadsDir, { recursive: true })
 for (const fileName of runtimeJsonFiles) ensureRuntimeJsonFile(fileName)
 
 const contactMessageStore = createContactMessageStore(contactMessagesFile)
+const translationService = createTranslationService({
+  cacheFile: path.join(dataDir, 'translations-en.json'),
+  contactEmail: process.env.TRANSLATION_CONTACT_EMAIL || '',
+})
+const translationRequests = new Map()
 const contactSubmitTimes = new Map()
 const CONTACT_RATE_WINDOW_MS = 15 * 60 * 1000
 const CONTACT_RATE_LIMIT = 5
@@ -1230,6 +1236,35 @@ app.post('/api/admin/totp/reset/cancel', requireAdminApi, (req, res) => {
 })
 
 app.use('/uploads', express.static(uploadsDir))
+
+app.post('/api/translate', async (req, res) => {
+  const texts = req.body?.texts
+  if (req.body?.target !== 'en' || !Array.isArray(texts) || texts.length > 30 ||
+      texts.some((text) => typeof text !== 'string' || text.length > 4000) ||
+      texts.reduce((length, text) => length + text.length, 0) > 12000) {
+    return res.status(400).json({ error: 'Invalid translation request' })
+  }
+  const now = Date.now()
+  const key = req.ip || 'unknown'
+  const current = translationRequests.get(key)
+  const count = current && now - current.startedAt < 60_000 ? current.count + 1 : 1
+  translationRequests.set(key, { count, startedAt: current && now - current.startedAt < 60_000 ? current.startedAt : now })
+  if (count > 60) return res.status(429).json({ error: 'Too many translation requests' })
+
+  const unique = [...new Set(texts.map((text) => text.trim()).filter(Boolean))]
+  try {
+    const results = []
+    for (let index = 0; index < unique.length; index += 3) {
+      results.push(...await Promise.allSettled(unique.slice(index, index + 3).map((text) => translationService.translate(text))))
+    }
+    translationService.save()
+    const translations = Object.fromEntries(results.flatMap((result, index) =>
+      result.status === 'fulfilled' ? [[unique[index], result.value]] : []))
+    return res.json({ translations, complete: results.every((result) => result.status === 'fulfilled') })
+  } catch {
+    return res.status(502).json({ error: 'Translation is temporarily unavailable' })
+  }
+})
 
 app.post('/api/contact-messages', (req, res) => {
   // Hidden form field: acknowledge automated submissions without storing them.

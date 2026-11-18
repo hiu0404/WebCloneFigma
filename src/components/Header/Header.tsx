@@ -17,6 +17,7 @@ import { apiGetBrands } from '../../services/brandService'
 import type { Brand } from '../../data/brands'
 import { productMainImageUrl } from '../../lib/productImages'
 import styles from './Header.module.css'
+import { useLanguage } from '../../i18n/language'
 
 type SearchForm = { query: string }
 
@@ -40,6 +41,7 @@ const productMenu = [
 ]
 
 export function Header() {
+  const { language, setLanguage } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const { register, handleSubmit, control, reset } = useForm<SearchForm>({
@@ -185,6 +187,12 @@ export function Header() {
           <FaEnvelope />
           <span>Email</span>
           <strong>info.ecolinkvn@gmail.com</strong>
+        </div>
+
+        <div className={styles.languageSwitcher} role="group" aria-label="Language / Ngôn ngữ" data-no-translate>
+          <button type="button" className={language === 'vi' ? styles.languageActive : ''} aria-label="Tiếng Việt" aria-pressed={language === 'vi'} onClick={() => setLanguage('vi')}>VI</button>
+          <span aria-hidden="true">/</span>
+          <button type="button" className={language === 'en' ? styles.languageActive : ''} aria-label="English" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>EN</button>
         </div>
 
         <button

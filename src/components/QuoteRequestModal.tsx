@@ -68,7 +68,7 @@ export function QuoteRequestModal({ product, catalogueItem, onClose }: Props) {
   }
 
   return createPortal(
-    <div className={styles.backdrop} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
+    <div className={styles.backdrop} data-i18n-root onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
       <section ref={dialogRef} className={styles.dialog} role="dialog" aria-modal="true" aria-labelledby="quote-title">
         <div className={styles.heading}>
           <h2 id="quote-title">Yêu cầu báo giá</h2>

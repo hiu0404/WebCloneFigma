@@ -167,6 +167,40 @@
   display: none;
 }
 
+.languageSwitcher {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.languageSwitcher button {
+  min-width: 38px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.languageSwitcher button.languageActive {
+  background: #fff;
+  color: #187093;
+}
+
+.languageSwitcher button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -411,6 +445,17 @@
 
   .contactItem {
     display: none;
+  }
+
+  .languageSwitcher {
+    gap: 1px;
+    padding: 2px;
+  }
+
+  .languageSwitcher button {
+    min-width: 31px;
+    padding: 4px 6px;
+    font-size: calc(12px / var(--figma-scale, 1));
   }
 
   .menuButton {
