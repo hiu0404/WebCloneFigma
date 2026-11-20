@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FaArrowRight, FaCalendarAlt, FaTags } from 'react-icons/fa'
+import { FiChevronDown } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
 import { FigmaImage } from '../components/FigmaImage'
 import { SeoHead } from '../components/SeoHead'
 import styles from './NewsPage.module.css'
@@ -9,8 +10,6 @@ const newsItems = [
     category: 'Tin tức',
     date: '08/07/2026',
     title: 'P16 + Ki-67 Nhuộm miễn dịch đa kênh',
-    excerpt:
-      'Giải pháp hỗ trợ đánh giá dấu ấn sinh học trong mô bệnh học với quy trình nhuộm rõ ràng, ổn định và phù hợp cho phòng xét nghiệm hiện đại.',
     image: '/assetsFull/tintuc1.png',
     url: 'https://bio-optica.it/it/news/detail/1149',
   },
@@ -18,8 +17,6 @@ const newsItems = [
     category: 'Tin tức',
     date: '08/07/2026',
     title: 'p16 INK4a [BC42] Kháng thể đơn dòng chuột',
-    excerpt:
-      'Cập nhật sản phẩm kháng thể dùng trong chẩn đoán mô bệnh học, tối ưu cho độ lặp lại và khả năng quan sát tín hiệu.',
     image: '/assetsFull/tintuc2.png',
     url: 'https://bio-optica.it/it/news/detail/1147',
   },
@@ -27,8 +24,6 @@ const newsItems = [
     category: 'Sản phẩm',
     date: '08/07/2026',
     title: 'Bộ nhuộm tự động GIEMSA mới',
-    excerpt:
-      'Bộ sản phẩm hai màu giúp phòng xét nghiệm chuẩn hóa quy trình nhuộm, giảm thao tác thủ công và cải thiện hiệu quả vận hành.',
     image: '/assetsFull/tintuc4.png',
     url: 'https://bio-optica.it/it/news/detail/917',
   },
@@ -36,8 +31,6 @@ const newsItems = [
     category: 'Giải pháp',
     date: '07/07/2026',
     title: 'Số hóa tiêu bản trong giải phẫu bệnh',
-    excerpt:
-      'Các hệ thống quét lam kính giúp lưu trữ, chia sẻ và hội chẩn hình ảnh mô bệnh học thuận tiện hơn trong môi trường bệnh viện.',
     image: '/assetsFull/VX504.webp',
     url: '/Scaning',
   },
@@ -45,8 +38,6 @@ const newsItems = [
     category: 'Thiết bị',
     date: '07/07/2026',
     title: 'Tối ưu quy trình xử lý mô tự động',
-    excerpt:
-      'Thiết bị xử lý mô giúp chuẩn hóa các bước khử nước, làm trong và thấm paraffin để nâng cao chất lượng mẫu bệnh phẩm.',
     image: '/assetsFull/mayxuly.png',
     url: '/TissueProcessing',
   },
@@ -54,111 +45,70 @@ const newsItems = [
     category: 'Dịch vụ',
     date: '06/07/2026',
     title: 'Đồng hành kỹ thuật sau triển khai',
-    excerpt:
-      'Ecolink cung cấp hỗ trợ kỹ thuật, tư vấn vận hành và bảo trì nhằm bảo đảm hệ thống hoạt động ổn định trong dài hạn.',
     image: '/assetsFull/dichvuhotro.jpeg',
     url: '/dich-vu-ho-tro',
   },
 ]
 
-const categories = ['Tất cả', 'Tin tức', 'Sản phẩm', 'Giải pháp', 'Thiết bị', 'Dịch vụ']
+const categories = ['Tất cả', ...new Set(newsItems.map((item) => item.category))]
 
 function isExternalUrl(url: string) {
   return /^https?:\/\//i.test(url)
 }
 
+function isoDate(date: string) {
+  const [day, month, year] = date.split('/')
+  return `${year}-${month}-${day}`
+}
+
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('Tất cả')
   const visibleNews = selectedCategory === 'Tất cả' ? newsItems : newsItems.filter((item) => item.category === selectedCategory)
-  const featured = visibleNews[0]
-  const latest = visibleNews.slice(1)
 
   return (
     <div className={styles.page}>
       <SeoHead title="Tin tức và cập nhật | Ecolink" description="Tin tức về sản phẩm, thiết bị và giải pháp được Ecolink giới thiệu trong lĩnh vực khoa học và y tế." canonical="/tin-tuc" />
 
-      <section className={styles.hero}>
-        <FigmaImage className={styles.heroImage} src="/assetsFull/page-banner-dna.png" alt="" ariaHidden />
-        <div className={styles.heroOverlay} />
-        <div className={styles.heroContent}>
-          <span>Tin tức & sự kiện</span>
-          <h1>Cập nhật công nghệ, sản phẩm và giải pháp mới</h1>
-          <p>
-            Tổng hợp thông tin từ Ecolink và các đối tác trong lĩnh vực giải phẫu bệnh,
-            xét nghiệm, pháp y và thiết bị khoa học công nghệ.
-          </p>
-        </div>
-      </section>
-
       <main className={styles.content}>
-        <section className={styles.featuredSection}>
-          <a
-            className={styles.featuredCard}
-            href={featured.url}
-            target={isExternalUrl(featured.url) ? '_blank' : undefined}
-            rel={isExternalUrl(featured.url) ? 'noopener noreferrer' : undefined}
-          >
-            <FigmaImage className={styles.featuredImage} src={featured.image} alt={featured.title} />
-            <div className={styles.featuredBody}>
-              <span className={styles.category}>{featured.category}</span>
-              <h2>{featured.title}</h2>
-              <p>{featured.excerpt}</p>
-              <span className={styles.readMore}>
-                Đọc bài viết <FaArrowRight />
-              </span>
-            </div>
-          </a>
-        </section>
+        <nav className={styles.breadcrumb} aria-label="Đường dẫn trang">
+          <Link to="/">Trang chủ</Link><span aria-hidden="true">›</span><span aria-current="page">Tin tức</span>
+        </nav>
+        <h1 className={styles.visuallyHidden}>Tin tức và sự kiện Ecolink</h1>
 
-        <section className={styles.newsLayout}>
-          <div className={styles.newsColumn}>
-            <div className={styles.sectionHeader}>
-              <span>Bài viết mới</span>
-              <h2>Tin tức nổi bật</h2>
-            </div>
-
-            <div className={styles.newsGrid}>
-              {latest.map((item) => (
-                <a
-                  className={styles.newsCard}
-                  href={item.url}
-                  target={isExternalUrl(item.url) ? '_blank' : undefined}
-                  rel={isExternalUrl(item.url) ? 'noopener noreferrer' : undefined}
-                  key={item.title}
-                >
-                  <FigmaImage className={styles.newsImage} src={item.image} alt={item.title} loading="lazy" />
-                  <div className={styles.newsBody}>
-                    <div className={styles.meta}>
-                      <span><FaTags />{item.category}</span>
-                      <span><FaCalendarAlt />{item.date}</span>
-                    </div>
-                    <h3>{item.title}</h3>
-                    <p>{item.excerpt}</p>
-                    <span className={styles.readMore}>
-                      Đọc thêm <FaArrowRight />
-                    </span>
-                  </div>
-                </a>
-              ))}
-            </div>
+        <div className={styles.filterBar}>
+          <label htmlFor="news-category">Lọc theo danh mục:</label>
+          <div className={styles.selectWrap}>
+            <select id="news-category" value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
+              {categories.map((category) => <option key={category} value={category}>{category === 'Tất cả' ? 'Chọn danh mục' : category}</option>)}
+            </select>
+            <FiChevronDown aria-hidden="true" />
           </div>
+        </div>
 
-          <aside className={styles.sidebar}>
-            <section className={styles.sidePanel}>
-              <h2>Danh mục</h2>
-              <div className={styles.categoryList}>
-                {categories.map((item) => (
-                  <button type="button" key={item} aria-pressed={selectedCategory === item} onClick={() => setSelectedCategory(item)}>{item}</button>
-                ))}
+        <section className={styles.newsGrid} aria-label="Danh sách tin tức">
+          {visibleNews.map((item) => {
+            const external = isExternalUrl(item.url)
+            const cardContent = <>
+              <div className={styles.imageFrame}>
+                <FigmaImage className={styles.newsImage} src={item.image} alt="" loading="lazy" />
               </div>
-            </section>
+              <div className={styles.newsBody}>
+                <span className={styles.category}>{item.category}</span>
+                <h2>{item.title}</h2>
+                <time dateTime={isoDate(item.date)}>{item.date}</time>
+              </div>
+            </>
 
-            <section className={styles.sidePanel}>
-              <h2>Theo dõi cập nhật</h2>
-              <p>Nhận tư vấn nhanh về sản phẩm, giải pháp và thông tin kỹ thuật phù hợp với nhu cầu của đơn vị.</p>
-              <a className={styles.contactButton} href="/lien-he">Liên hệ Ecolink</a>
-            </section>
-          </aside>
+            return external ? (
+              <a className={styles.newsCard} href={item.url} target="_blank" rel="noopener noreferrer" key={item.title} aria-label={`${item.title} (mở trang mới)`}>
+                {cardContent}
+              </a>
+            ) : (
+              <Link className={styles.newsCard} to={item.url} key={item.title}>
+                {cardContent}
+              </Link>
+            )
+          })}
         </section>
       </main>
     </div>
