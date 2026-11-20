@@ -1,0 +1,5 @@
+.contentInput { min-height: 230px; line-height: 1.6; }
+.optionalFields { display: grid; gap: 12px; align-content: start; }
+.imagePreview { display: block; width: min(100%, 340px); max-height: 210px; margin-top: 8px; border: 1px solid #d9e7ed; border-radius: 8px; object-fit: cover; }
+.filters { display: grid; grid-template-columns: minmax(220px, 1fr) 190px; gap: 10px; }
+@media (max-width: 700px) { .filters { grid-template-columns: 1fr; } }

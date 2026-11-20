@@ -6,6 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import multer from 'multer'
 import { createContactMessageStore, validateContactMessage } from './contact-messages.js'
+import { createNewsStore, NewsError } from './news.js'
 import { legacyPublicRedirect } from './public-route-redirects.js'
 import { createTranslationService } from './translation.js'
 import {
@@ -33,6 +34,7 @@ const microscopesFile = path.join(dataDir, 'microscopes.json')
 const forensicProductsFile = path.join(dataDir, 'forensic-products.json')
 const piccProductsFile = path.join(dataDir, 'picc-products.json')
 const brandsFile = path.join(dataDir, 'brands.json')
+const newsFile = path.join(dataDir, 'news.json')
 const adminAuthFile = path.join(dataDir, 'admin-auth.json')
 const adminRateLimitFile = path.join(dataDir, 'admin-rate-limit.json')
 const adminAuditLogFile = path.join(dataDir, 'admin-auth.log')
@@ -47,6 +49,7 @@ const runtimeJsonFiles = [
   'forensic-products.json',
   'picc-products.json',
   'brands.json',
+  'news.json',
 ]
 
 function loadEnvFile(filePath) {
@@ -108,6 +111,7 @@ fs.mkdirSync(productUploadsDir, { recursive: true })
 for (const fileName of runtimeJsonFiles) ensureRuntimeJsonFile(fileName)
 
 const contactMessageStore = createContactMessageStore(contactMessagesFile)
+const newsStore = createNewsStore(newsFile)
 const translationService = createTranslationService({
   cacheFile: path.join(dataDir, 'translations-en.json'),
   contactEmail: process.env.TRANSLATION_CONTACT_EMAIL || '',
@@ -1698,6 +1702,51 @@ app.delete('/api/brands/:id', requireAdminApi, (req, res) => {
   res.json({ ok: true })
 })
 
+app.get('/api/news', (_req, res) => {
+  res.json(newsStore.published())
+})
+
+app.get('/api/news/:slug', (req, res) => {
+  const article = newsStore.findPublished(req.params.slug)
+  if (!article) return res.status(404).json({ error: 'Không tìm thấy bài viết' })
+  return res.json(article)
+})
+
+app.get('/api/admin/news', requireAdminApi, (_req, res) => {
+  res.json(newsStore.list())
+})
+
+function sendNewsError(res, error) {
+  if (error instanceof NewsError) return res.status(error.status).json({ error: error.message })
+  console.error('News save failed', error)
+  return res.status(500).json({ error: 'Không lưu được bài viết' })
+}
+
+app.post('/api/admin/news', requireAdminApi, (req, res) => {
+  try {
+    return res.status(201).json(newsStore.save(req.body))
+  } catch (error) {
+    return sendNewsError(res, error)
+  }
+})
+
+app.put('/api/admin/news/:id', requireAdminApi, (req, res) => {
+  try {
+    return res.json(newsStore.save(req.body, req.params.id))
+  } catch (error) {
+    return sendNewsError(res, error)
+  }
+})
+
+app.delete('/api/admin/news/:id', requireAdminApi, (req, res) => {
+  try {
+    newsStore.remove(req.params.id)
+    return res.json({ ok: true })
+  } catch (error) {
+    return sendNewsError(res, error)
+  }
+})
+
 app.get('/api/microscope-categories', (_req, res) => {
   res.json(readMicroscopeCategories())
 })
@@ -2047,7 +2096,10 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
     if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next()
     const match = req.originalUrl.split('?')[0].match(/^\/san-pham\/([^/]+)$/)
     const product = match ? findSeoProductBySlug(decodeURIComponent(match[1])) : null
+    const newsMatch = req.path.match(/^\/tin-tuc\/([^/]+)$/)
+    const article = newsMatch ? newsStore.findPublished(decodeURIComponent(newsMatch[1])) : null
     if (!product && match) return res.status(404).sendFile(path.join(distDir, 'index.html'))
+    if (!article && newsMatch) return res.status(404).sendFile(path.join(distDir, 'index.html'))
     let html = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8')
     if (product) {
       const canonical = `${SITE_URL}${product.canonicalPath}`
@@ -2061,6 +2113,20 @@ if (isProd && fs.existsSync(path.join(distDir, 'index.html'))) {
       }
       const head = `<meta name="description" content="${escapeHtml(product.seoDescription)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:title" content="${escapeHtml(product.seoTitle)}"><meta property="og:description" content="${escapeHtml(product.seoDescription)}"><meta property="og:url" content="${escapeHtml(canonical)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
       html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(product.seoTitle)}</title>`)
+      html = html.replace('</head>', `${head}</head>`)
+    } else if (article) {
+      const title = `${article.title} | Ecolink`
+      const canonical = `${SITE_URL}/tin-tuc/${article.slug}`
+      const image = article.imageUrl ? new URL(article.imageUrl, SITE_URL).href : ''
+      const schema = {
+        '@context': 'https://schema.org', '@type': 'Article',
+        headline: article.title, description: article.excerpt,
+        datePublished: article.publishedAt, dateModified: new Date(article.updatedAt || article.createdAt).toISOString(),
+        mainEntityOfPage: canonical,
+        ...(image ? { image } : {}),
+      }
+      const head = `<meta name="description" content="${escapeHtml(article.excerpt)}"><link rel="canonical" href="${escapeHtml(canonical)}"><meta property="og:type" content="article"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(article.excerpt)}"><meta property="og:url" content="${escapeHtml(canonical)}">${image ? `<meta property="og:image" content="${escapeHtml(image)}">` : ''}<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`
+      html = html.replace('<title>Ecolink</title>', `<title>${escapeHtml(title)}</title>`)
       html = html.replace('</head>', `${head}</head>`)
     } else if (staticSeo[req.path]) {
       const [title, description] = staticSeo[req.path]

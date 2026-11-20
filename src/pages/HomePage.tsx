@@ -24,6 +24,8 @@ import type { Product } from '../lib/adminStore'
 import { productMainImageUrl } from '../lib/productImages'
 import { apiGetProducts } from '../services/productService'
 import { productUrl } from '../lib/seo'
+import { newsHref, type NewsArticle } from '../data/news'
+import { apiGetNews } from '../services/newsService'
 
 const categories = [
   { title: 'Giải phẫu bệnh', image: '/assetsFull/GPBBANER.webp', to: '/giai-phau-benh' },
@@ -67,27 +69,6 @@ const stats = [
   { icon: FaAward, value: '100%', label: 'Cam kết chất lượng' },
 ]
 
-const news = [
-  {
-    category: 'Tin tức',
-    title: 'P16 + Ki-67 Nhuộm miễn dịch đa kênh',
-    image: '/assetsFull/tintuc1.png',
-    to: 'https://bio-optica.it/it/news/detail/1149',
-  },
-  {
-    category: 'Tin tức',
-    title: 'p16 INK4a [BC42] Kháng thể đơn dòng chuột',
-    image: '/assetsFull/tintuc2.png',
-    to: 'https://bio-optica.it/it/news/detail/1147',
-  },
-  {
-    category: 'Sản phẩm',
-    title: 'Bộ sản phẩm hai màu: hãy thử ngay bộ nhuộm tự động GIEMSA mới.',
-    image: '/assetsFull/tintuc4.png',
-    to: 'https://bio-optica.it/it/news/detail/917',
-  },
-]
-
 const partners = [
   { image: '/assetsFull/Lecia.svg', name: 'Leica Microsystems', url: 'https://www.leica-microsystems.com/' },
   { image: '/assetsFull/image 1.png', name: 'Rapid Labs', url: 'https://www.rapidlabs.co.uk/' },
@@ -114,6 +95,7 @@ export function HomePage() {
   const [featuredOffset, setFeaturedOffset] = useState(0)
   const [homepagePartners, setHomepagePartners] = useState(partners)
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
+  const [homepageNews, setHomepageNews] = useState<NewsArticle[]>([])
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -145,6 +127,16 @@ export function HomePage() {
           .slice(0, 5),
       )
     })
+    return () => { alive = false }
+  }, [])
+
+  useEffect(() => {
+    let alive = true
+    apiGetNews().then((items) => {
+      if (!alive) return
+      const featured = items.filter((item) => item.featured)
+      setHomepageNews((featured.length ? featured : items).slice(0, 3))
+    }).catch(() => { if (alive) setHomepageNews([]) })
     return () => { alive = false }
   }, [])
 
@@ -309,16 +301,16 @@ export function HomePage() {
               <Link to="/tin-tuc">Xem tất cả <FaArrowRight /></Link>
             </div>
             <div className={styles.newsGrid}>
-              {news.map((item) => (
-                <a className={styles.newsCard} href={item.to} target="_blank" rel="noopener noreferrer" key={item.title}>
-                  <FigmaImage src={item.image} alt="" ariaHidden loading="lazy" />
-                  <div>
-                    <span className={styles.newsCategory}>{item.category}</span>
-                    <h3>{item.title}</h3>
-                    <span className={styles.newsReadMore}>Đọc thêm <FaArrowRight /></span>
-                  </div>
-                </a>
-              ))}
+              {homepageNews.map((item) => {
+                const href = newsHref(item)
+                const body = <>
+                  {item.imageUrl ? <FigmaImage src={item.imageUrl} alt="" ariaHidden loading="lazy" /> : <span className={styles.newsImagePlaceholder} aria-hidden="true">ECOLINK</span>}
+                  <div><span className={styles.newsCategory}>{item.category}</span><h3>{item.title}</h3><span className={styles.newsReadMore}>Đọc thêm <FaArrowRight /></span></div>
+                </>
+                return /^https?:\/\//i.test(href) ?
+                  <a className={styles.newsCard} href={href} target="_blank" rel="noopener noreferrer" key={item.id}>{body}</a> :
+                  <Link className={styles.newsCard} to={href} key={item.id}>{body}</Link>
+              })}
             </div>
           </div>
 

@@ -128,6 +128,9 @@
   transition: transform .35s ease;
 }
 
+.imagePlaceholder { display: grid; place-items: center; width: 100%; height: 100%; background: linear-gradient(135deg, #e8f4f8, #c8e4ee); color: #187093; font-size: 30px; font-weight: 800; letter-spacing: .12em; }
+.state { margin: 50px 0; color: #526b77; font-size: 18px; }
+
 .newsBody {
   position: relative;
   z-index: 1;

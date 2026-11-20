@@ -34,11 +34,13 @@ import LaserSlide from './pages/LaserSlide'
 import SupportService from './pages/SupportService'
 import BrandPage from './pages/BrandPage'
 import NewsPage from './pages/NewsPage'
+import NewsDetailPage from './pages/NewsDetailPage'
 import PICC from './pages/PICC'
 import ForensicPage from './pages/ForensicPage'
 import { ScrollToTop } from './components/ScrollToTop'
 import { EquipmentCategoryManagePage } from './pages/admin/EquipmentCategoryManagePage'
 import { AdminBrandsPage } from './pages/admin/AdminBrandsPage'
+import { AdminNewsPage } from './pages/admin/AdminNewsPage'
 import { AdminContactMessagesPage } from './pages/admin/AdminContactMessagesPage'
 import { OrganizationJsonLd } from './components/OrganizationJsonLd'
 import { GoogleAnalytics } from './components/GoogleAnalytics'
@@ -86,6 +88,7 @@ export default function App() {
           <Route path="/hang-dai-dien" element={<BrandPage />} />
           <Route path="/BrandPage" element={<LegacyBrandRedirect />} />
           <Route path="/tin-tuc" element={<NewsPage />} />
+          <Route path="/tin-tuc/:slug" element={<NewsDetailPage />} />
           <Route path="/san-pham" element={<ProductsOverviewPage />} />
           <Route path="/giai-phau-benh" element={<EquipmentCatalogPage />} />
           <Route path="/giai-phau-benh/:categorySlug" element={<EquipmentCatalogPage />} />
@@ -146,7 +149,7 @@ export default function App() {
             <Route path="picc-products" element={<PiccProductManagePage />} />
             <Route path="microscope-categories" element={<MicroscopeCategoryManagePage />} />
             <Route path="microscopes" element={<MicroscopeManagePage />} />
-            <Route path="news" element={<AdminSimplePage title="Tin tức" description="Khu vực quản lý tin tức sẽ dùng chung layout admin." />} />
+            <Route path="news" element={<AdminNewsPage />} />
             <Route path="brands" element={<AdminBrandsPage />} />
             <Route path="security" element={<AdminSecurityPage />} />
             <Route path="settings" element={<AdminSimplePage title="Cài đặt" description="Khu vực cấu hình hệ thống admin." />} />
