@@ -59,7 +59,7 @@
 }
 
 .subTitle {
-  color: #187093;
+  color: var(--c-primary);
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.4;
   font-weight: 700;
@@ -150,7 +150,7 @@
   border-radius: 999px;
 
   background: #e9f6fb;
-  color: #187093;
+  color: var(--c-primary);
 
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.2;
@@ -185,7 +185,7 @@
   border: none;
   border-radius: 14px;
 
-  background: #187093;
+  background: var(--c-primary);
   color: white;
 
   font-size: max(16px, calc(14px / var(--figma-scale, 1)));
@@ -259,7 +259,7 @@
   border: none;
   border-radius: 14px;
 
-  background: #187093;
+  background: var(--c-primary);
   color: white;
 
   font-size: max(16px, calc(14px / var(--figma-scale, 1)));

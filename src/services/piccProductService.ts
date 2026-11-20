@@ -61,7 +61,7 @@ export async function apiGetPiccProducts(): Promise<PiccProduct[]> {
   }
 }
 
-export async function apiUpsertPiccProduct(input: PiccProductInput): Promise<PiccProduct> {
+export async function apiUpsertPiccProduct(input: PiccProductInput, requireServer = false): Promise<PiccProduct> {
   try {
     const res = await fetch(apiUrl('/api/picc-products'), {
       method: 'POST',
@@ -72,7 +72,7 @@ export async function apiUpsertPiccProduct(input: PiccProductInput): Promise<Pic
     if (!res.ok) throw new Error(await readApiError(res, 'Không lưu được sản phẩm đường tiếp cận mạch máu'))
     return (await res.json()) as PiccProduct
   } catch (err) {
-    if (import.meta.env.DEV) return upsertLocal(input)
+    if (import.meta.env.DEV && !requireServer) return upsertLocal(input)
     throw err instanceof Error ? err : new Error('Không lưu được sản phẩm đường tiếp cận mạch máu')
   }
 }

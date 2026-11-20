@@ -2,12 +2,12 @@
 .page { min-height: 600px; padding: 44px 0 95px; background: #f6f8fc; color: #173b68; font-family: inherit; }
 .inner { width: min(1560px, calc(100% - 96px)); margin: 0 auto; }
 .heading { padding: 36px 44px 42px; border-radius: 24px; background: #fff; }
-.eyebrow, .cardLabel { color: #187093; font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1))); font-weight: 800; letter-spacing: .1em; }
+.eyebrow, .cardLabel { color: var(--c-primary); font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1))); font-weight: 800; letter-spacing: .1em; }
 .heading h1 { margin: 12px 0 20px; font-size: 44px; line-height: 1.18; }
 .heading p { max-width: 1000px; margin: 0 0 12px; color: #34505f; font-size: max(18px, calc(14px / var(--figma-scale, 1))); line-height: 1.6; }
 .heading .disclaimer { color: #586d78; font-size: max(15px, calc(14px / var(--figma-scale, 1))); }
 .headingLinks { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 24px; }
-.headingLinks a, .unverified a { color: #187093; font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
+.headingLinks a, .unverified a { color: var(--c-primary); font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
 .headingLinks a:hover, .unverified a:hover { text-decoration: underline; }
 .listSection { margin-top: 44px; }
 .listHeader { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 24px; }
@@ -15,11 +15,11 @@
 .listHeader p { margin: 0; color: #60717a; font-size: max(15px, calc(14px / var(--figma-scale, 1))); }
 .search { display: grid; gap: 7px; color: #34505f; font-size: max(14px, calc(14px / var(--figma-scale, 1))); font-weight: 700; }
 .search input { box-sizing: border-box; width: 320px; max-width: 100%; min-height: 44px; padding: 10px 14px; border: 1px solid #bacbd3; border-radius: 8px; background: #fff; color: #173b68; font: inherit; }
-.search input:focus { outline: 2px solid #187093; outline-offset: 2px; }
+.search input:focus { outline: 2px solid var(--c-primary); outline-offset: 2px; }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .card { display: flex; flex-direction: column; justify-content: space-between; gap: 25px; min-width: 0; min-height: 170px; padding: 26px; border: 1px solid #e4ebf0; border-radius: 18px; background: #fff; box-shadow: 0 6px 22px rgb(29 51 78 / 5%); }
 .card h3 { overflow-wrap: anywhere; margin: 12px 0 0; color: #173b68; font-size: 20px; line-height: 1.35; }
-.card button, .unverified button { align-self: flex-start; min-height: 44px; padding: 10px 19px; border: 0; border-radius: 7px; background: #187093; color: #fff; font: inherit; font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; cursor: pointer; }
+.card button, .unverified button { align-self: flex-start; min-height: 44px; padding: 10px 19px; border: 0; border-radius: 7px; background: var(--c-primary); color: #fff; font: inherit; font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; cursor: pointer; }
 .card button:hover, .unverified button:hover { background: #105a78; }
 .card button:focus-visible, .unverified button:focus-visible { outline: 3px solid #87c4df; outline-offset: 2px; }
 .empty, .unverified { padding: 30px; border-radius: 18px; background: #fff; color: #34505f; }

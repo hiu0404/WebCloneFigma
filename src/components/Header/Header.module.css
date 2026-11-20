@@ -5,7 +5,7 @@
   width: 100%;
   height: 194px;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #008ab5 0%, #007aa4 48%, #006f96 100%);
+  background: var(--c-primary);
   color: #ffffff;
   box-shadow: 0 8px 26px rgba(0, 83, 115, 0.14);
 }
@@ -72,7 +72,7 @@
   height: 100%;
   border: none;
   background: transparent;
-  color: #007aa4;
+  color: var(--c-primary);
   cursor: pointer;
   font-size: 21px;
   transition: color 0.28s ease, transform 0.28s ease;
@@ -193,7 +193,7 @@
 
 .languageSwitcher button.languageActive {
   background: #fff;
-  color: #187093;
+  color: var(--c-primary);
 }
 
 .languageSwitcher button:focus-visible {
@@ -270,7 +270,7 @@
 
 .dropdownMenu a:hover {
   background: #eef8fb;
-  color: #007aa4;
+  color: var(--c-primary);
 }
 
 .brandDropdownMenu {
@@ -334,7 +334,7 @@
 
   .search:hover button,
   .searchWrap:focus-within button {
-    color: #187093;
+    color: var(--c-primary);
     transform: scale(1.06);
   }
 
@@ -346,7 +346,7 @@
 
   .dropdownMenu a:hover {
     background: #eef8fb;
-    color: #187093;
+    color: var(--c-primary);
     transform: translateX(4px);
   }
 
@@ -520,7 +520,7 @@
   .nav > a:hover,
   .dropdown:hover > a,
   .dropdown:focus-within > a {
-    color: #187093;
+    color: var(--c-primary);
   }
 
   .dropdownMenu {
@@ -564,7 +564,7 @@
 
   .socials a,
   .socials button {
-    color: #007aa4;
+    color: var(--c-primary);
     font-size: calc(17px / var(--figma-scale, 1));
   }
 }

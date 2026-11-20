@@ -43,7 +43,7 @@
 .heroContent span,
 .sectionHeader span {
   display: inline-flex;
-  color: #187093;
+  color: var(--c-primary);
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   letter-spacing: 2.4px;
@@ -108,7 +108,7 @@
   padding: 8px 14px;
   border-radius: 4px;
   background: #e7f6fb;
-  color: #0a7199;
+  color: var(--c-primary);
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
@@ -136,7 +136,7 @@
   gap: 10px;
   width: fit-content;
   margin-top: 28px;
-  color: #0a7199;
+  color: var(--c-primary);
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-decoration: none;
@@ -259,7 +259,7 @@
 }
 
 .categoryList button[aria-pressed="true"] {
-  background: #187093;
+  background: var(--c-primary);
   color: #ffffff;
 }
 
@@ -267,7 +267,7 @@
   min-height: 46px;
   padding: 0 18px;
   border-radius: 4px;
-  background: #0a7199;
+  background: var(--c-primary);
   color: #ffffff;
 }
 
@@ -280,18 +280,18 @@
 
   .featuredCard:hover .readMore,
   .newsCard:hover .readMore {
-    color: #064f70;
+    color: var(--c-primary);
   }
 
   .categoryList button:hover {
     border-color: rgba(20, 154, 190, 0.34);
-    color: #0a7199;
+    color: var(--c-primary);
   }
 }
 
 .featuredCard:focus-visible,
 .newsCard:focus-visible {
-  outline: 3px solid #187093;
+  outline: 3px solid var(--c-primary);
   outline-offset: 4px;
 }
 

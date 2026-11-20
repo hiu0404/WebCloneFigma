@@ -61,7 +61,7 @@
 }
 
 .subTitle {
-  color: #187093;
+  color: var(--c-primary);
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.4;
   font-weight: 700;
@@ -110,7 +110,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #187093;
+  background: var(--c-primary);
 }
 
 .introList strong {
@@ -135,7 +135,7 @@
   border: none;
   border-radius: 14px;
 
-  background: #187093;
+  background: var(--c-primary);
   color: white;
 
   font-size: max(16px, calc(14px / var(--figma-scale, 1)));
@@ -203,7 +203,7 @@
 
 .serviceCard:hover {
   transform: translateY(-10px);
-  background: #187093;
+  background: var(--c-primary);
   color: white;
 }
 
@@ -216,7 +216,7 @@
   border-radius: 50%;
 
   background: white;
-  color: #187093;
+  color: var(--c-primary);
 
   display: flex;
   justify-content: center;
@@ -303,7 +303,7 @@
   border: none;
   border-radius: 14px;
 
-  background: #187093;
+  background: var(--c-primary);
   color: white;
 
   font-size: max(16px, calc(14px / var(--figma-scale, 1)));

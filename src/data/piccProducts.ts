@@ -1,3 +1,6 @@
+import type { InstallationPhoto } from '../lib/installationPhotos'
+import { normalizeProductHighlights } from '../lib/productHighlights'
+
 export type PiccProductStatus = 'active' | 'hidden'
 
 export type PiccProduct = {
@@ -6,6 +9,8 @@ export type PiccProduct = {
   model: string
   categorySlug: string
   imageUrl?: string
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   slug?: string
   seoTitle?: string
@@ -24,6 +29,8 @@ export type PiccProductInput = {
   model: string
   categorySlug: string
   imageUrl?: string
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   slug?: string
   seoTitle?: string
@@ -43,6 +50,7 @@ export function normalizePiccProducts(products: PiccProduct[]) {
     .map((item) => ({
       ...item,
       imageUrl: item.imageUrl || undefined,
+      highlights: normalizeProductHighlights(item.highlights),
       specs: item.specs || undefined,
       sortOrder: normalizeProductDisplayOrder(item.sortOrder),
       status: normalizePiccProductStatus(item.status),

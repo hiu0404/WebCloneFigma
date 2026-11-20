@@ -131,15 +131,15 @@
 }
 
 .primaryAction {
-  background: linear-gradient(135deg, #0076a4, #0aa6cf);
+  background: var(--c-primary);
   color: #ffffff;
   box-shadow: 0 14px 30px rgba(0, 105, 143, 0.22);
 }
 
 .secondaryAction {
-  border: 2px solid #0a89b7;
+  border: 2px solid var(--c-primary);
   background: rgba(255,255,255,0.72);
-  color: #087aa5;
+  color: var(--c-primary);
 }
 
 .heroVisual {
@@ -248,7 +248,7 @@
 }
 
 .heroDots .heroDotActive {
-  background: #22bfd6;
+  background: var(--c-primary);
   transform: scale(1.16);
 }
 
@@ -284,7 +284,7 @@
   flex: 0 0 auto;
   width: 42px;
   height: 42px;
-  color: #0784b0;
+  color: var(--c-primary);
   transition: transform 0.28s ease, color 0.28s ease, filter 0.28s ease;
 }
 
@@ -331,7 +331,7 @@
 }
 
 .titleMark {
-  background: radial-gradient(circle at center, #0d83b1 0 5px, transparent 6px);
+  background: radial-gradient(circle at center, var(--c-primary) 0 5px, transparent 6px);
 }
 
 .categoryGrid {
@@ -411,7 +411,7 @@
   width: 58px;
   height: 4px;
   margin-top: 16px;
-  background: #f7bc24;
+  background: #ffffff;
   transition: width 0.28s ease, background 0.28s ease;
 }
 
@@ -444,7 +444,7 @@
 .solutionCard > svg {
   width: 46px;
   height: 46px;
-  color: #0b91bd;
+  color: var(--c-primary);
   transition: transform 0.25s ease, color 0.25s ease, filter 0.25s ease;
 }
 
@@ -468,7 +468,7 @@
 .newsReadMore,
 .blockHeader a {
   width: fit-content;
-  color: #0078a7;
+  color: var(--c-primary);
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   transition: color 0.28s ease, transform 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
@@ -604,7 +604,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #0078a7;
+  color: var(--c-primary);
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-decoration: none;
@@ -627,7 +627,7 @@
   border: 1px solid #d8e8ef;
   border-radius: 50%;
   background: #ffffff;
-  color: #0a7199;
+  color: var(--c-primary);
   cursor: pointer;
   transform: translateY(-50%);
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background 0.28s ease, color 0.28s ease;
@@ -647,7 +647,7 @@
   width: 100%;
   margin-top: 64px;
   padding: 34px 110px;
-  background: linear-gradient(90deg, #007ca7, #0097bd, #007ca7);
+  background: var(--c-primary);
 }
 
 .statItem {
@@ -752,7 +752,7 @@
   padding: 5px 10px;
   border-radius: 4px;
   background: #f2f8fb;
-  color: #096f98;
+  color: var(--c-primary);
   font-size: max(calc(12px + var(--small-text-increase, 2px)), calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
@@ -797,7 +797,7 @@
 .morePartner {
   display: flex;
   gap: 8px;
-  color: #0a7199;
+  color: var(--c-primary);
   font-size: max(17px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
@@ -809,7 +809,7 @@
   gap: 40px;
   min-height: 96px;
   padding: 0 145px;
-  background: #0687ad;
+  background: var(--c-primary);
   color: #ffffff;
 }
 
@@ -841,7 +841,7 @@
   border: 1px solid rgba(255,255,255,0.55);
   border-radius: 6px;
   background: #ffffff;
-  color: #0a7199;
+  color: var(--c-primary);
   font-size: max(18px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
   text-transform: uppercase;
@@ -862,13 +862,13 @@
   }
 
   .primaryAction:hover {
-    background: linear-gradient(135deg, #0a89b7, #20c5ea);
+    background: var(--c-primary);
   }
 
   .secondaryAction:hover {
-    border-color: #06a9d1;
+    border-color: var(--c-primary);
     background: rgba(255,255,255,0.92);
-    color: #045f83;
+    color: var(--c-primary);
   }
 
   .primaryAction:hover svg,
@@ -899,12 +899,12 @@
 
   .benefits div:hover {
     background: rgba(235, 249, 253, 0.86);
-    color: #0b6d92;
+    color: var(--c-primary);
     transform: translateY(-4px);
   }
 
   .benefits div:hover svg {
-    color: #05a8c8;
+    color: var(--c-primary);
     filter: drop-shadow(0 8px 14px rgba(0, 151, 189, 0.18));
     transform: translateY(-2px) scale(1.06);
   }
@@ -932,7 +932,7 @@
 
   .categoryCard:hover strong::after {
     width: 104px;
-    background: #28d4e7;
+    background: var(--c-primary);
   }
 
   .solutionCard:hover,
@@ -948,7 +948,7 @@
   }
 
   .solutionCard:hover > svg {
-    color: #05a8c8;
+    color: var(--c-primary);
     filter: drop-shadow(0 10px 16px rgba(0, 151, 189, 0.2));
     transform: translateY(-3px) rotate(-7deg) scale(1.06);
   }
@@ -958,7 +958,7 @@
   .newsCard:hover .newsReadMore,
   .blockHeader a:hover,
   .morePartner:hover {
-    color: #045f83;
+    color: var(--c-primary);
   }
 
   .blockHeader a:hover {
@@ -968,7 +968,7 @@
   }
 
   .productCard:hover h3 {
-    color: #187093;
+    color: var(--c-primary);
   }
 
   .productCard:hover .productImage img {
@@ -977,7 +977,7 @@
   }
 
   .productCard:hover .productDetailLink {
-    color: #187093;
+    color: var(--c-primary);
     transform: translateX(3px);
   }
 
@@ -990,7 +990,7 @@
     border-color: rgba(0, 151, 189, 0.32);
     background: #f2fcff;
     box-shadow: 0 12px 26px rgba(27, 70, 93, 0.14);
-    color: #045f83;
+    color: var(--c-primary);
     transform: translateY(-50%) scale(1.08);
   }
 
@@ -1014,12 +1014,12 @@
   }
 
   .newsCard:hover h3 {
-    color: #187093;
+    color: var(--c-primary);
   }
 
   .newsCard:hover .newsCategory {
     background: #dff6fb;
-    color: #045f83;
+    color: var(--c-primary);
   }
 
   .partnerCard:hover,

@@ -23,7 +23,7 @@
   width: 50px;
   height: 3px;
   margin-top: 8px;
-  background: #187093;
+  background: var(--c-primary);
   content: '';
 }
 
@@ -70,7 +70,7 @@
 .groupOpen > .groupRow > .groupLink,
 .groupLink:hover,
 .childLink:hover {
-  color: #187093;
+  color: var(--c-primary);
 }
 
 .groupLink:hover,
@@ -81,7 +81,7 @@
 
 .groupLink:focus-visible,
 .childLink:focus-visible {
-  outline: 2px solid #187093;
+  outline: 2px solid var(--c-primary);
   outline-offset: 2px;
 }
 
@@ -131,9 +131,9 @@
   color: #587383;
   cursor: pointer;
 }
-.expandButton:hover, .expandButton:focus-visible { background: #e4f2f7; color: #187093; }
+.expandButton:hover, .expandButton:focus-visible { background: #e4f2f7; color: var(--c-primary); }
 .expandButton[aria-expanded='true'] span { transform: rotate(180deg); }
-.expandButton:focus-visible { outline: 2px solid #187093; outline-offset: 2px; }
+.expandButton:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
 .grandchildren { margin: 0 0 5px 8px; }
 .grandchildren[hidden] { display: none; }
 

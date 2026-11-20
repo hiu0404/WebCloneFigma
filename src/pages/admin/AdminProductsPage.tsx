@@ -6,6 +6,9 @@ import { newId, normalizeLegacyProduct, type Product } from '../../lib/adminStor
 import { apiDeleteProduct, apiGetProducts, apiUploadImage, apiUploadProductImage, apiUpsertProduct } from '../../services/productService'
 import { apiGetCategories } from '../../services/categoryService'
 import { sanitizeAdminImageUrls, sanitizeAdminMainImageUrl } from '../../lib/adminImages'
+import { installationPhotosMatch, normalizeInstallationPhotos, type InstallationPhoto } from '../../lib/installationPhotos'
+import { highlightsFromText, normalizeProductHighlights, productHighlightsMatch } from '../../lib/productHighlights'
+import { InstallationPhotosField } from './InstallationPhotosField'
 import { productMainImageUrl } from '../../lib/productImages'
 import styles from './AdminPages.module.css'
 
@@ -18,6 +21,8 @@ type AdminProductFormValues = {
   categorySlug: string
   imageUrl: string
   imageUrls: string[]
+  installationPhotos: InstallationPhoto[]
+  highlightsText: string
   shortDescription: string
   price: string
   sku: string
@@ -57,6 +62,8 @@ function emptyForm(): AdminProductFormValues {
     categorySlug: '',
     imageUrl: '',
     imageUrls: [],
+    installationPhotos: [],
+    highlightsText: '',
     shortDescription: '',
     price: '',
     sku: '',
@@ -98,6 +105,8 @@ function toFormValues(product: Product): AdminProductFormValues {
     categorySlug: normalized.categorySlug ?? '',
     imageUrl: sanitizeAdminMainImageUrl(normalized.imageUrl),
     imageUrls: sanitizeAdminImageUrls(normalized.imageUrls),
+    installationPhotos: normalizeInstallationPhotos(normalized.installationPhotos),
+    highlightsText: normalizeProductHighlights(normalized.highlights).join('\n'),
     shortDescription: normalized.shortDescription ?? '',
     price: normalized.price ?? '',
     sku: normalized.sku ?? '',
@@ -165,6 +174,7 @@ export function AdminProductsPage() {
   const persistSortOrder = useWatch({ control: form.control, name: 'sortOrder' })
   const imageUrlWatch = useWatch({ control: form.control, name: 'imageUrl' })
   const imageUrlsWatch = useWatch({ control: form.control, name: 'imageUrls' })
+  const installationPhotosWatch = useWatch({ control: form.control, name: 'installationPhotos' })
 
   const selectedParent = useMemo(
     () => categories.find((item) => item.slug === selectedCategory),
@@ -283,6 +293,8 @@ export function AdminProductsPage() {
         chemicalGroup: parentCategorySlug === 'chemicals' ? childSlug || undefined : undefined,
         imageUrl: sanitizeAdminMainImageUrl(values.imageUrl.trim()) || undefined,
         imageUrls: cleanedUrls.length > 0 ? cleanedUrls : undefined,
+        installationPhotos: normalizeInstallationPhotos(values.installationPhotos),
+        highlights: highlightsFromText(values.highlightsText),
         shortDescription: values.shortDescription.trim() || undefined,
         price: values.price.trim() || undefined,
         sku: values.sku.trim() || undefined,
@@ -300,7 +312,13 @@ export function AdminProductsPage() {
         sortOrder: Number(values.sortOrder) || undefined,
       })
 
-      await apiUpsertProduct(draftSubmit)
+      const saved = await apiUpsertProduct(draftSubmit, true)
+      if (!installationPhotosMatch(draftSubmit.installationPhotos, saved.installationPhotos)) {
+        throw new Error('Máy chủ chưa lưu ảnh lắp đặt. Vui lòng khởi động lại backend rồi lưu sản phẩm lần nữa.')
+      }
+      if (!productHighlightsMatch(draftSubmit.highlights, saved.highlights)) {
+        throw new Error('Máy chủ chưa lưu điểm nổi bật. Vui lòng cập nhật backend rồi lưu sản phẩm lần nữa.')
+      }
       await reload()
       setEditingId(null)
       showToast(isEditing ? 'Đã cập nhật sản phẩm' : 'Đã thêm sản phẩm')
@@ -557,6 +575,14 @@ export function AdminProductsPage() {
                 </span>
               </div>
 
+              <InstallationPhotosField
+                value={installationPhotosWatch ?? []}
+                onChange={(photos) => setValue('installationPhotos', photos, { shouldDirty: true })}
+                uploadImage={apiUploadProductImage}
+                onBusyChange={setBusy}
+                disabled={busy}
+              />
+
               <label className={styles.field}>
                 <span className={styles.label}>Mã sản phẩm</span>
                 <input className={styles.input} {...register('sku')} />
@@ -638,6 +664,12 @@ export function AdminProductsPage() {
                   {...register('shortDescription', { required: 'Vui lòng nhập mô tả ngắn' })}
                 />
                 {errors.shortDescription ? <span className={styles.error}>{errors.shortDescription.message}</span> : null}
+              </label>
+
+              <label className={`${styles.field} ${styles.full}`}>
+                <span className={styles.label}>Điểm nổi bật trên trang chi tiết</span>
+                <textarea className={styles.textarea} rows={4} placeholder={'Tối đa 450 mẫu\n15 bình hóa chất\nCông nghệ RFID\nMàn hình cảm ứng 15 inch'} {...register('highlightsText')} />
+                <span className={styles.muted}>Mỗi dòng là một thẻ thông tin, tối đa 4 dòng.</span>
               </label>
 
               <label className={`${styles.field} ${styles.full}`}>

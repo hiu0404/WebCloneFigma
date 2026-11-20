@@ -61,7 +61,7 @@ export async function apiGetForensicProducts(): Promise<ForensicProduct[]> {
   }
 }
 
-export async function apiUpsertForensicProduct(input: ForensicProductInput): Promise<ForensicProduct> {
+export async function apiUpsertForensicProduct(input: ForensicProductInput, requireServer = false): Promise<ForensicProduct> {
   try {
     const res = await fetch(apiUrl('/api/forensic-products'), {
       method: 'POST',
@@ -72,7 +72,7 @@ export async function apiUpsertForensicProduct(input: ForensicProductInput): Pro
     if (!res.ok) throw new Error(await readApiError(res, 'Không lưu được sản phẩm giám định hình sự'))
     return (await res.json()) as ForensicProduct
   } catch (err) {
-    if (import.meta.env.DEV) return upsertLocal(input)
+    if (import.meta.env.DEV && !requireServer) return upsertLocal(input)
     throw err instanceof Error ? err : new Error('Không lưu được sản phẩm giám định hình sự')
   }
 }

@@ -97,7 +97,7 @@
   width: 176px;
   min-height: 48px;
   border-radius: 8px;
-  background: #008ac3;
+  background: var(--c-primary);
   color: #fff;
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   text-decoration: none;
@@ -120,7 +120,7 @@
 .recombinantCopy { padding: 50px 55px; background: #fff; }
 .recombinant h2 { margin: 0 0 22px; color: #183c72; font-size: 40px; line-height: 1.2; }
 .recombinant p { margin: 0 0 22px; color: #3c4750; font-size: max(17px, calc(14px / var(--figma-scale, 1))); line-height: 1.7; }
-.recombinant a { color: #008ac3; font-size: max(16px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
+.recombinant a { color: var(--c-primary); font-size: max(16px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
 .recombinant a:hover { text-decoration: underline; }
 
 .solutions { padding: 60px 0 88px; background: #f8fbfd; }
@@ -137,7 +137,7 @@
 .solutionCard img { width: 176px; height: 176px; margin-bottom: 20px; object-fit: contain; }
 .solutionCard h3 { margin: 0 0 15px; color: #183c72; font-size: 28px; line-height: 1.18; }
 .solutionCard p { flex: 1; margin: 0 0 21px; color: #4a535a; font-size: max(15px, calc(14px / var(--figma-scale, 1))); line-height: 1.6; }
-.solutionCard a { color: #008ac3; font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
+.solutionCard a { color: var(--c-primary); font-size: max(15px, calc(14px / var(--figma-scale, 1))); font-weight: 700; text-decoration: none; }
 .solutionCard a:hover { text-decoration: underline; }
 
 .portfolio { padding: 95px 0; }
@@ -167,7 +167,7 @@
 }
 .contact h2 { margin: 0 0 16px; color: #183c72; font-size: 38px; line-height: 1.2; }
 .contact p { max-width: 680px; margin: 0; color: #455664; font-size: max(17px, calc(14px / var(--figma-scale, 1))); line-height: 1.55; }
-.contact a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: #008ac3; color: #fff; font-size: max(16px, calc(14px / var(--figma-scale, 1))); text-decoration: none; }
+.contact a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: var(--c-primary); color: #fff; font-size: max(16px, calc(14px / var(--figma-scale, 1))); text-decoration: none; }
 .contact a:hover { background: #0473a4; }
 
 @media (max-width: 1024px) {

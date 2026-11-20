@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
-import { FigmaImage } from '../components/FigmaImage'
+import { FiArrowRight, FiChevronLeft, FiChevronRight, FiDatabase, FiDownload, FiDroplet, FiFileText, FiImage, FiMonitor, FiPlayCircle, FiRadio, FiStar, FiX, FiZoomIn } from 'react-icons/fi'
 import styles from './ProductDetailPage.module.css'
 import type { Product } from '../lib/adminStore'
 import { apiGetProducts } from '../services/productService'
@@ -23,6 +24,9 @@ import { apiUrl } from '../lib/apiClient'
 import { Breadcrumb, type BreadcrumbItem } from '../components/Breadcrumb'
 import { productUrl } from '../lib/seo'
 import { QuoteRequestModal } from '../components/QuoteRequestModal'
+import { ProductFaqSection } from '../components/ProductFaqSection'
+import { normalizeInstallationPhotos } from '../lib/installationPhotos'
+import { normalizeProductHighlights } from '../lib/productHighlights'
 
 function categoryPageUrl(parentSlug: string) {
   return ({ equipment: '/giai-phau-benh', consumables: '/vat-tu-tieu-hao', chemicals: '/hoa-chat', antibodies: '/khang-the', 'forensic-science': '/giam-dinh-hinh-su', 'intensive-care': '/hoi-suc-tich-cuc', microscopes: '/kinh-hien-vi' } as Record<string, string>)[parentSlug] || '/san-pham'
@@ -128,6 +132,7 @@ export function ProductDetailPage() {
   const [resolvedKey, setResolvedKey] = useState<string | null>(null)
   const [tabSelection, setTabSelection] = useState<{ key: string; tab: 'description' | 'specs' }>({ key: '', tab: 'description' })
   const [quoteFor, setQuoteFor] = useState<string | null>(null)
+  const [installationPreview, setInstallationPreview] = useState<{ productId: string; index: number } | null>(null)
   const requestKey = slug ? `slug:${slug}` : `id:${id || ''}`
   const loading = resolvedKey !== requestKey
   const activeTab = tabSelection.key === requestKey ? tabSelection.tab : 'description'
@@ -183,6 +188,23 @@ export function ProductDetailPage() {
   const childLabel = product ? getChildCategoryLabel(categories, parentSlug, childSlug) : ''
   const nestedParent = parentSlug === 'intensive-care' ? findChildCategoryParent(categories, parentSlug, childSlug) : undefined
   const youtube = youtubeEmbedUrl(product?.youtubeUrl)
+  const installationPhotos = normalizeInstallationPhotos(product?.installationPhotos)
+  const highlights = normalizeProductHighlights(product?.highlights)
+  const highlightIcons = [FiDatabase, FiDroplet, FiRadio, FiMonitor]
+  const activeInstallationPhoto = installationPreview && installationPreview.productId === product?.id ? installationPhotos[installationPreview.index] : undefined
+  const previewOpen = Boolean(activeInstallationPhoto)
+  useEffect(() => {
+    if (!previewOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setInstallationPreview(null)
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        const direction = event.key === 'ArrowLeft' ? -1 : 1
+        setInstallationPreview((current) => current ? { ...current, index: (current.index + direction + installationPhotos.length) % installationPhotos.length } : current)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [previewOpen, installationPhotos.length])
   const breadcrumbs = useMemo<BreadcrumbItem[]>(() => {
     if (!product) return []
     const parentLabel = categories.find((item) => item.slug === parentSlug)?.label || product.parentCategoryLabel || (parentSlug === 'microscopes' ? 'Kính hiển vi' : 'Sản phẩm')
@@ -195,7 +217,9 @@ export function ProductDetailPage() {
         ? [{ label: product.categoryParentLabel, to: `/kinh-hien-vi/${encodeURIComponent(product.categoryParentSlug)}` }]
         : []),
       ...(nestedParent ? [{ label: nestedParent.label, to: `/hoi-suc-tich-cuc/${encodeURIComponent(nestedParent.slug)}` }] : []),
-      ...(resolvedChildLabel ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug, product.categoryParentSlug) }] : []),
+      ...(resolvedChildLabel && resolvedChildLabel.trim().localeCompare(product.title.trim(), 'vi', { sensitivity: 'base' }) !== 0
+        ? [{ label: resolvedChildLabel, to: subcategoryPageUrl(parentSlug, childSlug, product.categoryParentSlug) }]
+        : []),
       { label: product.title },
     ]
   }, [product, categories, parentSlug, childSlug, childLabel, nestedParent])
@@ -206,7 +230,7 @@ export function ProductDetailPage() {
       .filter((item) => item.id !== product.id && (item.status ?? 'active') === 'active')
       .filter((item) => getProductParentCategorySlug(item) === parentSlug)
       .sort((a, b) => Number(getProductChildCategorySlug(b) === childSlug) - Number(getProductChildCategorySlug(a) === childSlug))
-      .slice(0, 4)
+      .slice(0, 5)
   }, [catalog, parentSlug, childSlug, product])
 
   // The server redirects full page requests. Client-side visits to old links
@@ -228,18 +252,6 @@ export function ProductDetailPage() {
           ],
         }}
       /> : null}
-
-      <FigmaImage
-        className={styles.hero}
-        src="/assetsFull/page-banner-dna.png"
-        alt=""
-        ariaHidden
-        width={1920}
-        height={461}
-      />
-      <div className={styles.heroTitle}>
-        <div>Sản phẩm chi tiết</div>
-      </div>
 
       <main className={styles.container}>
         {breadcrumbs.length ? <Breadcrumb items={breadcrumbs} /> : null}
@@ -280,23 +292,26 @@ export function ProductDetailPage() {
 
                   <div className={styles.summary}>
                     <h1>{product.title}</h1>
+                    {product.brand || product.origin ? <div className={styles.brandOrigin}>
+                      {[product.brand, product.origin].filter(Boolean).join(' | ')}
+                    </div> : null}
                     {product.shortDescription ? <p className={styles.short}>{product.shortDescription}</p> : null}
-                    <dl className={styles.metaGrid}>
-                      {product.price ? <><dt>Giá</dt><dd>{product.price}</dd></> : null}
-                      {product.sku ? <><dt>Mã sản phẩm</dt><dd>{product.sku}</dd></> : null}
-                      {product.model ? <><dt>Model</dt><dd>{product.model}</dd></> : null}
-                      {product.brand ? <><dt>Hãng sản xuất</dt><dd>{product.brand}</dd></> : null}
-                      {product.origin ? <><dt>Xuất xứ</dt><dd>{product.origin}</dd></> : null}
-                      {childSlug ? <><dt>Danh mục</dt><dd>{childLabel}</dd></> : null}
-                    </dl>
+                    {highlights.length > 0 ? <div className={styles.highlights} aria-label="Điểm nổi bật của sản phẩm">
+                      {highlights.map((highlight, index) => {
+                        const Icon = highlightIcons[index]
+                        return <div className={styles.highlightCard} key={`${highlight}-${index}`}>
+                          <Icon aria-hidden="true" />
+                          <span>{highlight}</span>
+                        </div>
+                      })}
+                    </div> : null}
                     <div className={styles.actions}>
-                      <button className={styles.primaryButton} type="button" onClick={() => setQuoteFor(requestKey)}>Yêu cầu báo giá</button>
-                      <Link className={styles.primaryButton} to="/lien-he">Liên hệ tư vấn</Link>
+                      <button className={styles.primaryButton} type="button" onClick={() => setQuoteFor(requestKey)}>Yêu cầu báo giá <FiArrowRight aria-hidden="true" /></button>
                       {product.pdfUrl ? (
                         <a className={styles.secondaryButton} href={product.pdfUrl} target="_blank" rel="noreferrer">
-                          Tải PDF
+                          <FiDownload aria-hidden="true" /> Tải tài liệu kỹ thuật
                         </a>
-                      ) : null}
+                      ) : <Link className={styles.secondaryButton} to="/lien-he"><FiFileText aria-hidden="true" /> Yêu cầu tài liệu</Link>}
                     </div>
                   </div>
                 </section>
@@ -307,24 +322,52 @@ export function ProductDetailPage() {
                     <button className={`${styles.tab} ${activeTab === 'specs' ? styles.tabActive : ''}`} type="button" role="tab" id="product-specs-tab" aria-selected={activeTab === 'specs'} aria-controls="product-specs-panel" onClick={() => setTabSelection({ key: requestKey, tab: 'specs' })}>Thông số kỹ thuật</button>
                   </div>
                   <div className={styles.tabBody} role="tabpanel" id="product-description-panel" aria-labelledby="product-description-tab" hidden={activeTab !== 'description'}>
-                      <div className={styles.richText}>{product.description || product.shortDescription || 'Chưa có mô tả sản phẩm.'}</div>
-                      {youtube ? (
-                      <>
-                        <h2>Video sản phẩm</h2>
-                        <div className={styles.videoWrap}>
-                          <iframe src={youtube} title={product.title} allowFullScreen />
-                        </div>
-                      </>
-                      ) : null}
+                    <div className={styles.richText}>{product.description || product.shortDescription || 'Chưa có mô tả sản phẩm.'}</div>
                   </div>
                   <div className={styles.tabBody} role="tabpanel" id="product-specs-panel" aria-labelledby="product-specs-tab" hidden={activeTab !== 'specs'}>
                     {product.specs?.trim() ? <pre className={styles.specs}>{product.specs}</pre> : <p className={styles.noSpecs}>Sản phẩm này chưa có thông số kỹ thuật được công bố.</p>}
                   </div>
                 </section>
+
+                {installationPhotos.length > 0 ? <section className={styles.installationSection} aria-labelledby="installation-photos-title">
+                  <div className={styles.installationHeading}>
+                    <div className={styles.installationHeadingCopy}>
+                      <FiImage aria-hidden="true" />
+                      <div>
+                        <h2 id="installation-photos-title">HÌNH ẢNH LẮP ĐẶT THỰC TẾ</h2>
+                        <p>Thiết bị Ecolink triển khai tại các phòng xét nghiệm và cơ sở y tế</p>
+                      </div>
+                    </div>
+                    <button className={styles.viewAllPhotos} type="button" onClick={() => setInstallationPreview({ productId: product.id, index: 0 })}>
+                      Xem tất cả hình ảnh <FiArrowRight aria-hidden="true" />
+                    </button>
+                  </div>
+                  <div className={`${styles.installationGrid} ${installationPhotos.length >= 4 ? styles.installationGridFeatured : installationPhotos.length === 3 ? styles.installationGridTriplet : installationPhotos.length === 2 ? styles.installationGridPair : styles.installationGridSingle}`}>
+                    {installationPhotos.slice(0, 4).map((photo, index) => <figure className={styles.installationCard} key={`${photo.url}-${index}`}>
+                      <button type="button" onClick={() => setInstallationPreview({ productId: product.id, index })} aria-label={`Xem ảnh lắp đặt ${index + 1}`}>
+                        <img src={photo.url} alt={photo.caption || `Hình ảnh lắp đặt thực tế ${index + 1}`} loading="lazy" />
+                        <span className={styles.zoomIcon}><FiZoomIn aria-hidden="true" /></span>
+                        {photo.caption ? <span className={styles.photoCaption}>{photo.caption}</span> : null}
+                      </button>
+                    </figure>)}
+                  </div>
+                </section> : null}
+
+                {youtube ? <section className={styles.videoSection} aria-labelledby="product-video-title">
+                  <h2 id="product-video-title"><FiPlayCircle aria-hidden="true" /> VIDEO SẢN PHẨM</h2>
+                  <div className={styles.videoLayout}>
+                    <div className={styles.videoWrap}><iframe src={youtube} title={`Video ${product.title}`} loading="lazy" allowFullScreen /></div>
+                    <div className={styles.videoCopy}>
+                      <h3>{product.sku || product.model || product.title} – {product.title}</h3>
+                      <p>{product.shortDescription || product.description || 'Tìm hiểu thêm về sản phẩm qua video.'}</p>
+                      <a href={product.youtubeUrl} target="_blank" rel="noopener noreferrer">Xem video trên YouTube <FiArrowRight aria-hidden="true" /></a>
+                    </div>
+                  </div>
+                </section> : null}
               </div>
 
-              <aside className={styles.relatedSidebar}>
-                <h2>Sản phẩm liên quan</h2>
+              <section className={styles.relatedSection} aria-labelledby="related-products-title">
+                <h2 id="related-products-title"><FiStar aria-hidden="true" /> SẢN PHẨM LIÊN QUAN</h2>
                 {relatedProducts.length > 0 ? (
                   <div className={styles.relatedList}>
                     {relatedProducts.map((item) => {
@@ -344,11 +387,25 @@ export function ProductDetailPage() {
                 ) : (
                   <div className={styles.relatedEmpty}>Chưa có sản phẩm liên quan.</div>
                 )}
-              </aside>
+              </section>
             </div>
+
+            <ProductFaqSection key={product.id} product={product} />
           </>
         )}
       </main>
+      {activeInstallationPhoto ? createPortal(<div className={styles.lightbox} role="presentation" onClick={() => setInstallationPreview(null)}>
+        <div className={styles.lightboxContent} role="dialog" aria-modal="true" aria-label="Hình ảnh lắp đặt thực tế" onClick={(event) => event.stopPropagation()}>
+          <button className={styles.lightboxClose} type="button" aria-label="Đóng ảnh" autoFocus onClick={() => setInstallationPreview(null)}><FiX /></button>
+          <img src={activeInstallationPhoto.url} alt={activeInstallationPhoto.caption || `Hình ảnh lắp đặt thực tế ${(installationPreview?.index ?? 0) + 1}`} />
+          {activeInstallationPhoto.caption ? <p>{activeInstallationPhoto.caption}</p> : null}
+          {installationPhotos.length > 1 ? <div className={styles.lightboxNav}>
+            <button type="button" aria-label="Ảnh trước" onClick={() => setInstallationPreview((current) => current ? { ...current, index: (current.index - 1 + installationPhotos.length) % installationPhotos.length } : current)}><FiChevronLeft /></button>
+            <span>{(installationPreview?.index ?? 0) + 1} / {installationPhotos.length}</span>
+            <button type="button" aria-label="Ảnh tiếp theo" onClick={() => setInstallationPreview((current) => current ? { ...current, index: (current.index + 1) % installationPhotos.length } : current)}><FiChevronRight /></button>
+          </div> : null}
+        </div>
+      </div>, document.body) : null}
       {product && quoteOpen ? <QuoteRequestModal product={product} onClose={() => setQuoteFor(null)} /> : null}
     </div>
   )

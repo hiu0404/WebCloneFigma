@@ -1,3 +1,6 @@
+import type { InstallationPhoto } from '../lib/installationPhotos'
+import { normalizeProductHighlights } from '../lib/productHighlights'
+
 export type ForensicProductStatus = 'active' | 'hidden'
 
 export type ForensicProduct = {
@@ -6,6 +9,8 @@ export type ForensicProduct = {
   model: string
   categorySlug: string
   imageUrl?: string
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   slug?: string
   seoTitle?: string
@@ -24,6 +29,8 @@ export type ForensicProductInput = {
   model: string
   categorySlug: string
   imageUrl?: string
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   slug?: string
   seoTitle?: string
@@ -43,6 +50,7 @@ export function normalizeForensicProducts(products: ForensicProduct[]) {
     .map((item) => ({
       ...item,
       imageUrl: item.imageUrl || undefined,
+      highlights: normalizeProductHighlights(item.highlights),
       specs: item.specs || undefined,
       sortOrder: normalizeProductDisplayOrder(item.sortOrder),
       status: normalizeForensicProductStatus(item.status),

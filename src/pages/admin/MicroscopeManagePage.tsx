@@ -16,19 +16,26 @@ import {
   apiUpsertMicroscope,
 } from '../../services/microscopeService'
 import { sanitizeAdminImageUrls, sanitizeAdminMainImageUrl } from '../../lib/adminImages'
+import { installationPhotosMatch, normalizeInstallationPhotos, type InstallationPhoto } from '../../lib/installationPhotos'
+import { highlightsFromText, normalizeProductHighlights, productHighlightsMatch } from '../../lib/productHighlights'
 import { productUrl } from '../../lib/seo'
+import { InstallationPhotosField } from './InstallationPhotosField'
 import styles from './AdminPages.module.css'
 
 const PAGE_SIZE = 8
+const KEEP_VALUES_KEY = 'admin_microscopes_keep_values_v1'
 
 type FormValues = {
   id: string
   name: string
   model: string
   brand: string
+  categoryParentSlug: string
   categorySlug: string
   imageUrl: string
   imageUrls: string[]
+  installationPhotos: InstallationPhoto[]
+  highlightsText: string
   shortDescription: string
   description: string
   specs: string
@@ -47,9 +54,12 @@ function emptyForm(categorySlug = ''): FormValues {
     name: '',
     model: '',
     brand: '',
+    categoryParentSlug: categorySlug,
     categorySlug,
     imageUrl: '',
     imageUrls: [],
+    installationPhotos: [],
+    highlightsText: '',
     shortDescription: '',
     description: '',
     specs: '',
@@ -70,6 +80,7 @@ export function MicroscopeManagePage() {
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState('')
+  const [keepValues, setKeepValues] = useState(() => localStorage.getItem(KEEP_VALUES_KEY) !== '0')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState<'all' | Microscope['status']>('all')
   const [search, setSearch] = useState('')
@@ -81,11 +92,22 @@ export function MicroscopeManagePage() {
     isActiveMicroscopeCategory(category) &&
     (!category.parentSlug || categories.some((parent) => parent.slug === category.parentSlug && isActiveMicroscopeCategory(parent))),
   ), [categories])
-  const firstCategorySlug = activeCategories[0]?.slug ?? ''
+  const activeParentCategories = useMemo(() => activeCategories.filter((category) => !category.parentSlug), [activeCategories])
+  const firstCategorySlug = activeParentCategories[0]?.slug ?? ''
   const form = useForm<FormValues>({ defaultValues: emptyForm(firstCategorySlug) })
   const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors } } = form
   const imageUrlWatch = watch('imageUrl')
   const imageUrlsWatch = watch('imageUrls')
+  const installationPhotosWatch = watch('installationPhotos')
+  const selectedParentSlug = watch('categoryParentSlug')
+  const activeChildCategories = useMemo(
+    () => activeCategories.filter((category) => category.parentSlug === selectedParentSlug),
+    [activeCategories, selectedParentSlug],
+  )
+
+  useEffect(() => {
+    localStorage.setItem(KEEP_VALUES_KEY, keepValues ? '1' : '0')
+  }, [keepValues])
 
   const filteredMicroscopes = useMemo(() => {
     const keyword = search.trim().toLowerCase()
@@ -129,7 +151,7 @@ export function MicroscopeManagePage() {
     if (!name || !categorySlug) return
     setBusy(true)
     try {
-      await apiUpsertMicroscope({
+      const saved = await apiUpsertMicroscope({
         id: values.id,
         name,
         model: values.model.trim(),
@@ -137,6 +159,8 @@ export function MicroscopeManagePage() {
         categorySlug,
         imageUrl: sanitizeAdminMainImageUrl(values.imageUrl) || undefined,
         imageUrls: sanitizeAdminImageUrls(values.imageUrls),
+        installationPhotos: normalizeInstallationPhotos(values.installationPhotos),
+        highlights: highlightsFromText(values.highlightsText),
         shortDescription: values.shortDescription.trim(),
         description: values.description.trim() || undefined,
         specs: values.specs.trim() || undefined,
@@ -147,10 +171,22 @@ export function MicroscopeManagePage() {
         seoDescription: values.seoDescription.trim() || undefined,
         sortOrder: Number(values.sortOrder) || undefined,
         status: values.status,
-      })
+      }, true)
+      if (!installationPhotosMatch(values.installationPhotos, saved.installationPhotos)) {
+        throw new Error('Máy chủ chưa lưu ảnh lắp đặt. Vui lòng khởi động lại backend rồi lưu sản phẩm lần nữa.')
+      }
+      if (!productHighlightsMatch(highlightsFromText(values.highlightsText), saved.highlights)) {
+        throw new Error('Máy chủ chưa lưu điểm nổi bật. Vui lòng cập nhật backend rồi lưu sản phẩm lần nữa.')
+      }
       await reload()
       setEditingId(null)
-      reset(emptyForm(categorySlug))
+      reset(keepValues ? {
+        ...emptyForm(values.categoryParentSlug),
+        categorySlug,
+        brand: values.brand,
+        status: values.status,
+        sortOrder: values.sortOrder,
+      } : emptyForm(firstCategorySlug))
       setGalleryUrlDraft('')
       showToast(editingId ? 'Đã cập nhật kính hiển vi' : 'Đã thêm kính hiển vi')
     } catch (err) {
@@ -162,14 +198,18 @@ export function MicroscopeManagePage() {
 
   function editRow(microscope: Microscope) {
     setEditingId(microscope.id)
+    const category = categories.find((item) => item.slug === microscope.categorySlug)
     reset({
       id: microscope.id,
       name: microscope.name,
       model: microscope.model,
       brand: microscope.brand ?? '',
+      categoryParentSlug: category?.parentSlug || microscope.categorySlug,
       categorySlug: microscope.categorySlug,
       imageUrl: microscope.imageUrl ?? '',
       imageUrls: microscope.imageUrls ?? [],
+      installationPhotos: normalizeInstallationPhotos(microscope.installationPhotos),
+      highlightsText: normalizeProductHighlights(microscope.highlights).join('\n'),
       shortDescription: microscope.shortDescription,
       description: microscope.description ?? '',
       specs: microscope.specs ?? '',
@@ -261,22 +301,29 @@ export function MicroscopeManagePage() {
                 <input className={styles.input} {...register('brand')} />
               </label>
               <label className={styles.field}>
-                <span className={styles.label}>Danh mục *</span>
+                <span className={styles.label}>Danh mục cha *</span>
+                <select className={styles.select} {...register('categoryParentSlug', { required: 'Vui lòng chọn danh mục cha' })} onChange={(event) => {
+                  const parentSlug = event.target.value
+                  const firstChild = activeCategories.find((category) => category.parentSlug === parentSlug)
+                  setValue('categoryParentSlug', parentSlug, { shouldDirty: true, shouldValidate: true })
+                  setValue('categorySlug', firstChild?.slug || parentSlug, { shouldDirty: true, shouldValidate: true })
+                }}>
+                  <option value="">Chọn danh mục cha</option>
+                  {activeParentCategories.map((category) => <option value={category.slug} key={category.slug}>{category.label}</option>)}
+                </select>
+                {errors.categoryParentSlug ? <span className={styles.error}>{errors.categoryParentSlug.message}</span> : null}
+              </label>
+              <label className={styles.field}>
+                <span className={styles.label}>Danh mục con</span>
                 <select className={styles.select} {...register('categorySlug', { required: 'Vui lòng chọn danh mục' })}>
-                  <option value="">Chọn danh mục</option>
-                  {activeCategories.filter((category) => !category.parentSlug).map((category) => (
-                    <optgroup label={category.label} key={category.slug}>
-                      <option value={category.slug}>{category.label} (chưa phân vào danh mục con)</option>
-                      {activeCategories.filter((child) => child.parentSlug === category.slug).map((child) => (
-                        <option value={child.slug} key={child.slug}>{child.label}</option>
-                      ))}
-                    </optgroup>
-                  ))}
+                  <option value={selectedParentSlug || ''}>{selectedParentSlug ? 'Chưa phân vào danh mục con' : 'Chọn danh mục cha trước'}</option>
+                  {activeChildCategories.map((category) => <option value={category.slug} key={category.slug}>{category.label}</option>)}
                 </select>
                 {errors.categorySlug ? <span className={styles.error}>{errors.categorySlug.message}</span> : null}
               </label>
               <div className={styles.field}>
-                <span className={styles.label}>Ảnh kính hiển vi</span>
+                <span className={styles.label}>Hình ảnh *</span>
+                <span className={styles.muted}>Tải ảnh từ máy tính:</span>
                 <input
                   className={styles.input}
                   type="file"
@@ -287,7 +334,10 @@ export function MicroscopeManagePage() {
                     event.target.value = ''
                   }}
                 />
-                <input className={styles.input} placeholder="Hoặc nhập URL ảnh" {...register('imageUrl', { validate: (value) => !value || Boolean(sanitizeAdminMainImageUrl(value)) || 'URL ảnh không hợp lệ' })} />
+                <input className={styles.input} placeholder="Hoặc nhập URL ảnh" {...register('imageUrl', {
+                  required: 'Vui lòng chọn hoặc nhập ảnh kính hiển vi',
+                  validate: (value) => Boolean(sanitizeAdminMainImageUrl(value)) || 'URL ảnh không hợp lệ',
+                })} />
                 {errors.imageUrl ? <span className={styles.error}>{errors.imageUrl.message}</span> : null}
                 {imageUrlWatch ? (
                   <div className={styles.imagePreview}>
@@ -320,6 +370,13 @@ export function MicroscopeManagePage() {
                 <button className={styles.secondaryButton} type="button" disabled={!galleryUrlDraft.trim()} onClick={addGalleryImageUrl}>Thêm URL ảnh phụ</button>
                 {imageUrlsWatch?.length ? <span className={styles.muted}>Đang có {imageUrlsWatch.length} ảnh phụ</span> : <span className={styles.muted}>Chưa có ảnh phụ</span>}
               </div>
+              <InstallationPhotosField
+                value={installationPhotosWatch ?? []}
+                onChange={(photos) => setValue('installationPhotos', photos, { shouldDirty: true })}
+                uploadImage={apiUploadMicroscopeImage}
+                onBusyChange={setBusy}
+                disabled={busy}
+              />
               <label className={styles.field}>
                 <span className={styles.label}>Trạng thái</span>
                 <select className={styles.select} {...register('status')}>
@@ -340,8 +397,14 @@ export function MicroscopeManagePage() {
                 <textarea className={styles.textarea} rows={3} placeholder="Tự tạo từ mô tả nếu để trống" {...register('seoDescription')} />
               </label>
               <label className={`${styles.field} ${styles.full}`}>
-                <span className={styles.label}>Mô tả ngắn</span>
-                <textarea className={styles.textarea} rows={3} {...register('shortDescription')} />
+                <span className={styles.label}>Mô tả ngắn *</span>
+                <textarea className={styles.textarea} rows={3} {...register('shortDescription', { required: 'Vui lòng nhập mô tả ngắn' })} />
+                {errors.shortDescription ? <span className={styles.error}>{errors.shortDescription.message}</span> : null}
+              </label>
+              <label className={`${styles.field} ${styles.full}`}>
+                <span className={styles.label}>Điểm nổi bật trên trang chi tiết</span>
+                <textarea className={styles.textarea} rows={4} placeholder="Mỗi dòng là một điểm nổi bật" {...register('highlightsText')} />
+                <span className={styles.muted}>Tối đa 4 dòng, mỗi dòng hiển thị trong một thẻ.</span>
               </label>
               <label className={`${styles.field} ${styles.full}`}>
                 <span className={styles.label}>Mô tả chi tiết</span>
@@ -373,8 +436,12 @@ export function MicroscopeManagePage() {
             <div className={styles.actions}>
               <button className={styles.button} type="submit" disabled={busy || activeCategories.length === 0}>
                 <FiPlus aria-hidden />
-                {editingId ? 'Lưu kính hiển vi' : 'Thêm kính hiển vi'}
+                {busy ? 'Đang xử lý...' : editingId ? 'Lưu thay đổi' : 'Thêm kính hiển vi'}
               </button>
+              <label className={styles.switchRow}>
+                <input className={styles.checkbox} type="checkbox" checked={keepValues} onChange={(event) => setKeepValues(event.target.checked)} />
+                <span className={styles.muted}>Giữ danh mục, hãng và trạng thái sau khi thêm</span>
+              </label>
               {activeCategories.length === 0 ? <span className={styles.error}>Cần tạo danh mục hiển thị trước.</span> : null}
             </div>
           </form>
@@ -420,14 +487,17 @@ export function MicroscopeManagePage() {
                   <th>Kính hiển vi</th>
                   <th>Model</th>
                   <th>Hãng sản xuất</th>
-                  <th>Danh mục</th>
+                  <th>Danh mục cha</th>
+                  <th>Danh mục con</th>
                   <th>Trạng thái</th>
                   <th>Thứ tự</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {visibleMicroscopes.map((microscope) => (
+                {visibleMicroscopes.map((microscope) => {
+                  const category = categories.find((item) => item.slug === microscope.categorySlug)
+                  return (
                   <tr key={microscope.id}>
                     <td>
                       <div className={styles.productCell}>
@@ -437,7 +507,8 @@ export function MicroscopeManagePage() {
                     </td>
                     <td>{microscope.model}</td>
                     <td>{microscope.brand || 'Đang cập nhật'}</td>
-                    <td><span className={styles.pill}>{getMicroscopeCategoryLabel(categories, microscope.categorySlug)}</span></td>
+                    <td>{getMicroscopeCategoryLabel(categories, category?.parentSlug || microscope.categorySlug)}</td>
+                    <td><span className={styles.pill}>{category?.parentSlug ? category.label : 'Không có'}</span></td>
                     <td><span className={`${styles.pill} ${microscope.status === 'active' ? styles.statusActive : styles.statusHidden}`}>{microscope.status === 'active' ? 'Đang hiển thị' : 'Ẩn'}</span></td>
                     <td>{microscope.sortOrder ?? ''}</td>
                     <td>
@@ -451,7 +522,8 @@ export function MicroscopeManagePage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>

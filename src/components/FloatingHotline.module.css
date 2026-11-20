@@ -23,7 +23,7 @@
 }
 
 .hotline:hover { background: #c91f25; transform: translateY(-2px); }
-.hotline:focus-visible { outline: 3px solid #187093; outline-offset: 4px; }
+.hotline:focus-visible { outline: 3px solid var(--c-primary); outline-offset: 4px; }
 
 .callGraphic {
   position: relative;

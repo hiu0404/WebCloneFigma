@@ -1,0 +1,23 @@
+.field { grid-column: 1 / -1; display: grid; gap: 12px; padding: 18px; border: 1px solid #d9e7ed; border-radius: 10px; background: #f7fbfc; }
+.heading { display: grid; gap: 4px; color: #17455d; }
+.heading strong { font-size: 16px; }
+.heading span, .hint { color: #617985; font-size: 14px; line-height: 1.5; }
+.input { width: 100%; min-width: 0; min-height: 40px; padding: 9px 11px; border: 1px solid #cbdce3; border-radius: 8px; background: #fff; color: #173e52; font: inherit; font-size: 14px; }
+.input:focus { outline: 2px solid rgba(24,112,147,.2); border-color: #187093; }
+.addUrl { display: flex; gap: 8px; }
+.addButton { flex: 0 0 auto; padding: 0 16px; border: 1px solid #187093; border-radius: 8px; background: #187093; color: #fff; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.addButton:disabled, .itemActions button:disabled { opacity: .5; cursor: not-allowed; }
+.error { color: #b42318; font-size: 14px; }
+.list { display: grid; gap: 10px; }
+.item { display: grid; grid-template-columns: 100px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 10px; border: 1px solid #dfebef; border-radius: 9px; background: #fff; }
+.item img { width: 100px; height: 78px; border-radius: 6px; object-fit: cover; background: #edf4f7; }
+.itemContent { display: grid; gap: 5px; min-width: 0; }
+.itemContent label { color: #476573; font-size: 13px; font-weight: 700; }
+.url { overflow: hidden; color: #718894; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.itemActions { display: flex; gap: 4px; }
+.itemActions button { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #d3e2e8; border-radius: 7px; background: #fff; color: #187093; cursor: pointer; }
+.itemActions button:last-child { color: #b42318; }
+.saveRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 5px; }
+.saveRow .addButton { min-height: 40px; }
+@media (max-width: 700px) { .field { padding: 13px; } .item { grid-template-columns: 74px minmax(0, 1fr); } .item img { width: 74px; height: 70px; } .itemActions { grid-column: 1 / -1; justify-content: flex-end; } .addUrl { flex-wrap: wrap; } .addButton { min-height: 40px; } }
+@media (max-width: 700px) { .saveRow { align-items: stretch; flex-direction: column; } }

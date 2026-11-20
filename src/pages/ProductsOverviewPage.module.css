@@ -38,7 +38,7 @@
   flex: 0 0 auto;
   width: 26px;
   height: 26px;
-  color: #187093;
+  color: var(--c-primary);
 }
 
 .groupHeading h2 {
@@ -118,7 +118,7 @@
 
 .productCard:hover .productName,
 .productCard:focus-visible .productName {
-  color: #187093;
+  color: var(--c-primary);
 }
 
 .empty {
@@ -136,8 +136,8 @@
   width: 150px;
   min-height: 42px;
   margin: 46px auto 0;
-  border: 2px solid #187093;
-  background: #187093;
+  border: 2px solid var(--c-primary);
+  background: var(--c-primary);
   color: #fff;
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;
@@ -150,7 +150,7 @@
 .moreButton:hover,
 .moreButton:focus-visible {
   background: #fff;
-  color: #187093;
+  color: var(--c-primary);
   border-color: currentColor;
 }
 

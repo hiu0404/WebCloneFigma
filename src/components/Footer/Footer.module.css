@@ -1,7 +1,7 @@
 .footer {
   width: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #007aa4 0%, #006f96 50%, #006b90 100%);
+  background: var(--c-primary);
   color: #ffffff;
 }
 
@@ -88,6 +88,12 @@
 .brand > a,
 .office a {
   margin-top: 8px;
+  color: rgba(255,255,255,0.9);
+  font-size: max(14px, calc(14px / var(--figma-scale, 1)));
+  font-weight: 700;
+}
+
+.taxCode {
   color: rgba(255,255,255,0.9);
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 700;

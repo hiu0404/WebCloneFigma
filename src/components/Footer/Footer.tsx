@@ -41,6 +41,7 @@ export function Footer({ top }: FooterProps) {
               <img src="/assetsFull/logo-trang 3.png" alt="Ecolink" />
             </NavLink>
             <p>CUNG CẤP GIẢI PHÁP CÔNG NGHỆ TIÊN TIẾN CHO KHOA HỌC, Y TẾ VÀ AN NINH</p>
+            <div className={styles.taxCode}>Mã số thuế: 0109989039</div>
             <a href="mailto:info.ecolinkvn@gmail.com"><FaEnvelope />info.ecolinkvn@gmail.com</a>
             <a href="tel:+84812119668"><FaPhoneAlt /> +84 812 119 668</a>
           </div>

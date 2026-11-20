@@ -50,7 +50,7 @@ export async function apiGetProducts(): Promise<Product[]> {
   }
 }
 
-export async function apiUpsertProduct(p: Omit<Product, 'createdAt' | 'updatedAt'>): Promise<Product> {
+export async function apiUpsertProduct(p: Omit<Product, 'createdAt' | 'updatedAt'>, requireServer = false): Promise<Product> {
   const payload = normalizeLegacyProduct(p)
   try {
     const res = await fetch(apiUrl('/api/products'), {
@@ -62,7 +62,7 @@ export async function apiUpsertProduct(p: Omit<Product, 'createdAt' | 'updatedAt
     if (!res.ok) throw await apiErrorFromResponse(res, 'Failed to save product')
     return normalizeLegacyProduct((await res.json()) as Product)
   } catch (err) {
-    if (import.meta.env.DEV && !isAuthError(err)) return upsertProduct(p)
+    if (import.meta.env.DEV && !requireServer && !isAuthError(err)) return upsertProduct(p)
     throw err instanceof Error ? err : new Error('Failed to save product')
   }
 }

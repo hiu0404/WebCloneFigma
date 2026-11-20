@@ -98,7 +98,7 @@
   font-size: 20px;
   line-height: 1.35;
   font-weight: 700;
-  color: #187093;
+  color: var(--c-primary);
   text-decoration: none;
 }
 
@@ -122,7 +122,7 @@
   font-size: 40px;
   line-height: 1.2;
   font-weight: 700;
-  color: #187093;
+  color: var(--c-primary);
   margin: 0 0 14px;
 }
 
@@ -137,7 +137,7 @@
 .consultForm {
   position: relative;
   padding: 52px 139px 47px;
-  background: #187093;
+  background: var(--c-primary);
   border-radius: 10px;
 }
 
@@ -186,7 +186,7 @@
   width: 230px;
   height: 57px;
   margin: 27px auto 0;
-  background: #187093;
+  background: var(--c-primary);
   border: 3px solid #ffffff;
   border-radius: 20px;
   font-weight: 700;
@@ -199,7 +199,8 @@
 
 .submitBtn:hover,
 .submitBtn:focus {
-  background: #11536d;
+  background: var(--c-primary);
+  box-shadow: 0 8px 20px rgb(24 112 147 / 20%);
   transform: translateY(-3px);
 }
 

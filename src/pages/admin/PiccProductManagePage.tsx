@@ -12,6 +12,9 @@ import {
   type PiccProduct,
 } from '../../data/piccProducts'
 import { apiGetCategories } from '../../services/categoryService'
+import { installationPhotosMatch, normalizeInstallationPhotos, type InstallationPhoto } from '../../lib/installationPhotos'
+import { highlightsFromText, normalizeProductHighlights, productHighlightsMatch } from '../../lib/productHighlights'
+import { InstallationPhotosField } from './InstallationPhotosField'
 import {
   apiDeletePiccProduct,
   apiGetPiccProducts,
@@ -28,6 +31,8 @@ type FormValues = {
   model: string
   categorySlug: string
   imageUrl: string
+  installationPhotos: InstallationPhoto[]
+  highlightsText: string
   shortDescription: string
   specs: string
   sortOrder: number | ''
@@ -40,6 +45,8 @@ function emptyForm(categorySlug = ''): FormValues {
     model: '',
     categorySlug,
     imageUrl: '',
+    installationPhotos: [],
+    highlightsText: '',
     shortDescription: '',
     specs: '',
     sortOrder: '',
@@ -60,6 +67,7 @@ export function PiccProductManagePage() {
   const form = useForm<FormValues>({ defaultValues: emptyForm(firstCategorySlug) })
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = form
   const imageUrlWatch = watch('imageUrl')
+  const installationPhotosWatch = watch('installationPhotos')
 
   const filteredProducts = useMemo(() => {
     if (categoryFilter === 'all') return products
@@ -98,17 +106,25 @@ export function PiccProductManagePage() {
     if (!name || !categorySlug) return
     setBusy(true)
     try {
-      await apiUpsertPiccProduct({
+      const saved = await apiUpsertPiccProduct({
         id: values.id,
         name,
         model: values.model.trim(),
         categorySlug,
         imageUrl: values.imageUrl.trim() || undefined,
+        installationPhotos: normalizeInstallationPhotos(values.installationPhotos),
+        highlights: highlightsFromText(values.highlightsText),
         shortDescription: values.shortDescription.trim(),
         specs: values.specs.trim() || undefined,
         sortOrder: Number(values.sortOrder) || undefined,
         status: 'active',
-      })
+      }, true)
+      if (!installationPhotosMatch(values.installationPhotos, saved.installationPhotos)) {
+        throw new Error('Máy chủ chưa lưu ảnh lắp đặt. Vui lòng khởi động lại backend rồi lưu sản phẩm lần nữa.')
+      }
+      if (!productHighlightsMatch(highlightsFromText(values.highlightsText), saved.highlights)) {
+        throw new Error('Máy chủ chưa lưu điểm nổi bật. Vui lòng cập nhật backend rồi lưu sản phẩm lần nữa.')
+      }
       await reload()
       setEditingId(null)
       reset(emptyForm(categorySlug))
@@ -128,6 +144,8 @@ export function PiccProductManagePage() {
       model: product.model,
       categorySlug: product.categorySlug,
       imageUrl: product.imageUrl ?? '',
+      installationPhotos: normalizeInstallationPhotos(product.installationPhotos),
+      highlightsText: normalizeProductHighlights(product.highlights).join('\n'),
       shortDescription: product.shortDescription,
       specs: product.specs ?? '',
       sortOrder: product.sortOrder ?? '',
@@ -226,9 +244,21 @@ export function PiccProductManagePage() {
                   <span className={styles.muted}>Chưa chọn ảnh</span>
                 )}
               </label>
+              <InstallationPhotosField
+                value={installationPhotosWatch ?? []}
+                onChange={(photos) => setValue('installationPhotos', photos, { shouldDirty: true })}
+                uploadImage={apiUploadPiccProductImage}
+                onBusyChange={setBusy}
+                disabled={busy}
+              />
               <label className={`${styles.field} ${styles.full}`}>
                 <span className={styles.label}>Mô tả ngắn</span>
                 <textarea className={styles.textarea} rows={3} {...register('shortDescription')} />
+              </label>
+              <label className={`${styles.field} ${styles.full}`}>
+                <span className={styles.label}>Điểm nổi bật trên trang chi tiết</span>
+                <textarea className={styles.textarea} rows={4} placeholder="Mỗi dòng là một điểm nổi bật" {...register('highlightsText')} />
+                <span className={styles.muted}>Tối đa 4 dòng, mỗi dòng hiển thị trong một thẻ.</span>
               </label>
               <label className={`${styles.field} ${styles.full}`}>
                 <span className={styles.label}>Thông số kỹ thuật</span>

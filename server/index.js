@@ -543,6 +543,8 @@ function normalizeMicroscope(item) {
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
     imageUrls: Array.isArray(item?.imageUrls) ? item.imageUrls.map((url) => normalizeUploadRef(String(url || '').trim())).filter(Boolean) : undefined,
+    installationPhotos: normalizeInstallationPhotos(item?.installationPhotos),
+    highlights: normalizeProductHighlights(item?.highlights),
     shortDescription: String(item?.shortDescription || '').trim(),
     description: String(item?.description || '').trim() || undefined,
     specs: String(item?.specs || '').trim() || undefined,
@@ -579,6 +581,8 @@ function normalizeForensicProduct(item) {
     model: String(item?.model || '').trim(),
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
+    installationPhotos: normalizeInstallationPhotos(item?.installationPhotos),
+    highlights: normalizeProductHighlights(item?.highlights),
     shortDescription: String(item?.shortDescription || '').trim(),
     slug: String(item?.slug || '').trim() || undefined,
     seoTitle: String(item?.seoTitle || '').trim() || undefined,
@@ -612,6 +616,8 @@ function normalizePiccProduct(item) {
     model: String(item?.model || '').trim(),
     categorySlug: String(item?.categorySlug || '').trim(),
     imageUrl: normalizeUploadRef(String(item?.imageUrl || '').trim()) || undefined,
+    installationPhotos: normalizeInstallationPhotos(item?.installationPhotos),
+    highlights: normalizeProductHighlights(item?.highlights),
     shortDescription: String(item?.shortDescription || '').trim(),
     slug: String(item?.slug || '').trim() || undefined,
     seoTitle: String(item?.seoTitle || '').trim() || undefined,
@@ -871,11 +877,29 @@ function normalizeUploadRef(url) {
   return url
 }
 
+function normalizeInstallationPhotos(value) {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((item) => {
+    if (!item || typeof item !== 'object') return []
+    const url = normalizeUploadRef(String(item.url || '').trim())
+    if (!url) return []
+    const caption = String(item.caption || '').trim()
+    return [{ url, ...(caption ? { caption } : {}) }]
+  })
+}
+
+function normalizeProductHighlights(value) {
+  if (!Array.isArray(value)) return []
+  return value.filter((item) => typeof item === 'string').map((item) => item.trim()).filter(Boolean).slice(0, 4)
+}
+
 function normalizeProductImages(p) {
   if (!p || typeof p !== 'object') return p
   const next = { ...p }
   if (typeof next.imageUrl === 'string') next.imageUrl = normalizeUploadRef(next.imageUrl)
   if (Array.isArray(next.imageUrls)) next.imageUrls = next.imageUrls.map(normalizeUploadRef)
+  if (Array.isArray(next.installationPhotos)) next.installationPhotos = normalizeInstallationPhotos(next.installationPhotos)
+  next.highlights = normalizeProductHighlights(next.highlights)
   return next
 }
 
@@ -1520,6 +1544,8 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     chemicalGroup,
     imageUrl,
     imageUrls,
+    installationPhotos,
+    highlights,
     shortDescription,
     price,
     sku,
@@ -1571,6 +1597,8 @@ app.post('/api/products', requireAdminApi, (req, res) => {
       ...categoryPayload,
       imageUrl,
       imageUrls: normalizedImageUrls,
+      installationPhotos: normalizeInstallationPhotos(installationPhotos),
+      highlights: highlights === undefined ? list[idx].highlights : normalizeProductHighlights(highlights),
       shortDescription,
       price,
       sku,
@@ -1599,6 +1627,8 @@ app.post('/api/products', requireAdminApi, (req, res) => {
     ...categoryPayload,
     imageUrl,
     imageUrls: normalizedImageUrls,
+    installationPhotos: normalizeInstallationPhotos(installationPhotos),
+    highlights: normalizeProductHighlights(highlights),
     shortDescription,
     price,
     sku,
@@ -1732,6 +1762,8 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
   const categorySlug = String(req.body?.categorySlug || '').trim()
   const imageUrl = normalizeUploadRef(String(req.body?.imageUrl || '').trim()) || undefined
   const imageUrls = Array.isArray(req.body?.imageUrls) ? req.body.imageUrls.map((url) => normalizeUploadRef(String(url || '').trim())).filter(Boolean) : undefined
+  const installationPhotos = normalizeInstallationPhotos(req.body?.installationPhotos)
+  const highlights = normalizeProductHighlights(req.body?.highlights)
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const description = String(req.body?.description || '').trim() || undefined
   const specs = String(req.body?.specs || '').trim() || undefined
@@ -1765,6 +1797,8 @@ app.post('/api/microscopes', requireAdminApi, (req, res) => {
     categorySlug,
     imageUrl,
     imageUrls: req.body?.imageUrls === undefined ? previous?.imageUrls : imageUrls,
+    installationPhotos: req.body?.installationPhotos === undefined ? previous?.installationPhotos : installationPhotos,
+    highlights: req.body?.highlights === undefined ? previous?.highlights : highlights,
     shortDescription,
     description: req.body?.description === undefined ? previous?.description : description,
     specs: req.body?.specs === undefined ? previous?.specs : specs,
@@ -1807,6 +1841,8 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
   const model = String(req.body?.model || '').trim()
   const categorySlug = String(req.body?.categorySlug || '').trim()
   const imageUrl = normalizeUploadRef(String(req.body?.imageUrl || '').trim()) || undefined
+  const installationPhotos = normalizeInstallationPhotos(req.body?.installationPhotos)
+  const highlights = normalizeProductHighlights(req.body?.highlights)
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const specs = String(req.body?.specs || '').trim() || undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
@@ -1826,6 +1862,8 @@ app.post('/api/forensic-products', requireAdminApi, (req, res) => {
     model,
     categorySlug,
     imageUrl,
+    installationPhotos,
+    highlights,
     shortDescription,
     slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
     seoTitle: String(req.body?.seoTitle || '').trim() || undefined,
@@ -1864,6 +1902,8 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
   const model = String(req.body?.model || '').trim()
   const categorySlug = String(req.body?.categorySlug || '').trim()
   const imageUrl = normalizeUploadRef(String(req.body?.imageUrl || '').trim()) || undefined
+  const installationPhotos = normalizeInstallationPhotos(req.body?.installationPhotos)
+  const highlights = normalizeProductHighlights(req.body?.highlights)
   const shortDescription = String(req.body?.shortDescription || '').trim()
   const specs = String(req.body?.specs || '').trim() || undefined
   const status = req.body?.status === 'hidden' ? 'hidden' : 'active'
@@ -1883,6 +1923,8 @@ app.post('/api/picc-products', requireAdminApi, (req, res) => {
     model,
     categorySlug,
     imageUrl,
+    installationPhotos,
+    highlights,
     shortDescription,
     slug: String(req.body?.slug || list[index]?.slug || makeSeoSlug(name) || id).trim(),
     seoTitle: String(req.body?.seoTitle || '').trim() || undefined,

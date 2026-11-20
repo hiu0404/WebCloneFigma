@@ -103,8 +103,8 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  border: 2px solid #0b83b6;
-  color: #0b83b6;
+  border: 2px solid var(--c-primary);
+  color: var(--c-primary);
   font-size: 24px;
   line-height: 1;
 }
@@ -129,7 +129,7 @@
 
 .title {
   margin: 0 0 26px;
-  color: #0d6896;
+  color: var(--c-primary);
   font-size: 30px;
   line-height: 1.25;
   font-weight: 900;
@@ -160,7 +160,7 @@
 .sidebar h2,
 .dmsp h2 {
   margin: 0 28px 22px;
-  color: #0d6896;
+  color: var(--c-primary);
   font-size: 22px;
   line-height: 1.25;
   font-weight: 900;
@@ -202,13 +202,13 @@
 }
 
 .categoryLink span {
-  color: #0b83b6;
+  color: var(--c-primary);
 }
 
 .active,
 .categoryLink:hover,
 .categoryLink:focus {
-  background: #0879a8;
+  background: var(--c-primary);
   color: #ffffff;
 }
 
@@ -224,7 +224,7 @@
   margin-top: 32px;
   padding: 28px 24px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #0b83b6, #00739f);
+  background: var(--c-primary);
   color: #ffffff;
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   line-height: 1.65;
@@ -289,7 +289,7 @@
   padding: 22px;
   object-fit: contain;
   background: #ffffff;
-  color: #0d6896;
+  color: var(--c-primary);
   font-size: 36px;
   font-weight: 900;
   transition: transform 0.28s ease;
@@ -320,7 +320,7 @@
   padding: 4px 10px;
   border-radius: 999px;
   background: #e9f6fb;
-  color: #0d6896;
+  color: var(--c-primary);
   font-size: max(14px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }
@@ -338,7 +338,7 @@
   content: "Xem chi tiết  →";
   display: inline-flex;
   margin-top: 18px;
-  color: #0078a7;
+  color: var(--c-primary);
   font-size: max(15px, calc(14px / var(--figma-scale, 1)));
   font-weight: 900;
 }

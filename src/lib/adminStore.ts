@@ -1,3 +1,6 @@
+import type { InstallationPhoto } from './installationPhotos'
+import { normalizeProductHighlights } from './productHighlights'
+
 export type Product = {
   id: string
   title: string
@@ -9,6 +12,8 @@ export type Product = {
   chemicalGroup?: string
   imageUrl?: string
   imageUrls?: string[]
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription?: string
   price?: string
   sku?: string
@@ -113,6 +118,7 @@ export function normalizeLegacyProduct<T extends Partial<Product>>(input: T): T 
 
   return {
     ...input,
+    highlights: normalizeProductHighlights(input.highlights),
     category: parentCategorySlug,
     parentCategorySlug,
     categoryId: input.categoryId ?? categorySlug,

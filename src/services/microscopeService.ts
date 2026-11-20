@@ -61,7 +61,7 @@ export async function apiGetMicroscopes(): Promise<Microscope[]> {
   }
 }
 
-export async function apiUpsertMicroscope(input: MicroscopeInput): Promise<Microscope> {
+export async function apiUpsertMicroscope(input: MicroscopeInput, requireServer = false): Promise<Microscope> {
   try {
     const res = await fetch(apiUrl('/api/microscopes'), {
       method: 'POST',
@@ -72,7 +72,7 @@ export async function apiUpsertMicroscope(input: MicroscopeInput): Promise<Micro
     if (!res.ok) throw new Error(await readApiError(res, 'Không lưu được kính hiển vi'))
     return (await res.json()) as Microscope
   } catch (err) {
-    if (import.meta.env.DEV) return upsertLocal(input)
+    if (import.meta.env.DEV && !requireServer) return upsertLocal(input)
     throw err instanceof Error ? err : new Error('Không lưu được kính hiển vi')
   }
 }

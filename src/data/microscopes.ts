@@ -1,3 +1,6 @@
+import type { InstallationPhoto } from '../lib/installationPhotos'
+import { normalizeProductHighlights } from '../lib/productHighlights'
+
 export type MicroscopeCategoryStatus = 'active' | 'hidden'
 
 export type MicroscopeCategory = {
@@ -17,6 +20,8 @@ export type Microscope = {
   categorySlug: string
   imageUrl?: string
   imageUrls?: string[]
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   description?: string
   specs?: string
@@ -49,6 +54,8 @@ export type MicroscopeInput = {
   categorySlug: string
   imageUrl?: string
   imageUrls?: string[]
+  installationPhotos?: InstallationPhoto[]
+  highlights?: string[]
   shortDescription: string
   description?: string
   specs?: string
@@ -103,6 +110,7 @@ export function normalizeMicroscopes(microscopes: Microscope[]) {
     .map((item) => ({
       ...item,
       imageUrl: item.imageUrl || undefined,
+      highlights: normalizeProductHighlights(item.highlights),
       sortOrder: normalizeProductDisplayOrder(item.sortOrder),
       status: normalizeMicroscopeCategoryStatus(item.status),
       createdAt: Number(item.createdAt) || Date.now(),
